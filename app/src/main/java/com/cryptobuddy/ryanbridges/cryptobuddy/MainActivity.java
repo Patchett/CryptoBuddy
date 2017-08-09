@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
+            lineChart.animateX(1500);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             String crypto = getArguments().getString(ARG_SECTION_NAME);
             Calendar cal = Calendar.getInstance();
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                             LineDataSet dataSet = new LineDataSet(closePrices, "Price");
                             LineData lineData = new LineData(dataSet);
                             lineChart.setData(lineData);
+                            lineChart.invalidate();
                         }
                     }, new Response.ErrorListener() {
                 @Override
