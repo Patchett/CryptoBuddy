@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -22,14 +21,23 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
     public final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
-    public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=1495699200&end=9999999999&period=14400";
+    public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -116,17 +124,33 @@ public class MainActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            final TextView api_response_text = (TextView) rootView.findViewById(R.id.api_response);
+            final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             String crypto = getArguments().getString(ARG_SECTION_NAME);
-            String formattedChartURL = String.format(CHART_URL, crypto);
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, -5);
+            long fiveDaysAgo = cal.getTimeInMillis() / 1000;
+            String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
+            Log.d("I", formattedChartURL);
             JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, formattedChartURL, null,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray response) {
-                            String resp_string = response.toString();
-                            Log.d("I", resp_string);
-                            api_response_text.setText(resp_string);
+                            List<Entry> closePrices = new ArrayList<Entry>();
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    JSONObject row = response.getJSONObject(i);
+                                    int closePrice = row.getInt("close");
+                                    int unixSeconds = row.getInt("date");
+                                    closePrices.add(new Entry( (float) unixSeconds, (float) closePrice));
+                                }
+                                catch (Exception e) {
+                                    continue;
+                                }
+                            }
+                            LineDataSet dataSet = new LineDataSet(closePrices, "Price");
+                            LineData lineData = new LineData(dataSet);
+                            lineChart.setData(lineData);
                         }
                     }, new Response.ErrorListener() {
                 @Override
