@@ -1,5 +1,6 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -22,6 +23,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -36,6 +39,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    public final static int materialLightGreen = Color.rgb(153,255,153);
+    public final static int darkGreen = Color.rgb(0,153,0);
+    public final static int materialLightBlue = Color.rgb(51,153,255);
+    public final static int materialLightPurple = Color.rgb(178,102,255);
     public final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
     /**
@@ -125,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-            lineChart.animateX(1500);
+            lineChart.animateX(700);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             String crypto = getArguments().getString(ARG_SECTION_NAME);
             Calendar cal = Calendar.getInstance();
@@ -150,8 +157,32 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                             LineDataSet dataSet = new LineDataSet(closePrices, "Price");
+                            dataSet.setColor(Color.BLACK);
+                            dataSet.setFillColor(materialLightGreen);
+                            dataSet.setDrawFilled(true);
+                            dataSet.setDrawCircles(false);
+                            dataSet.setDrawValues(false);
                             LineData lineData = new LineData(dataSet);
+                            lineChart.setDoubleTapToZoomEnabled(false);
+                            dataSet.setHighLightColor(materialLightPurple);
+                            // Disable zooming completely
+                            lineChart.setScaleEnabled(false);
+                            lineChart.getDescription().setEnabled(false);
                             lineChart.setData(lineData);
+                            lineChart.setNoDataText("Pulling price data...");
+                            lineChart.setContentDescription("");
+                            lineChart.setBorderWidth(3);
+                            lineChart.setBorderColor(darkGreen);
+                            lineChart.setDrawBorders(true);
+                            Legend legend = lineChart.getLegend();
+                            legend.setEnabled(false);
+                            XAxis xAxis = lineChart.getXAxis();
+                            xAxis.setAvoidFirstLastClipping(true);
+                            lineChart.getAxisRight().setEnabled(false);
+                            lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
+                            xAxis.setDrawAxisLine(false);
+                            xAxis.setValueFormatter(new XAxisDateFormatter());
+                            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                             lineChart.invalidate();
                         }
                     }, new Response.ErrorListener() {

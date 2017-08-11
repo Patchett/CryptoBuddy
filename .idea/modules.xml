@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CryptoBuddy.iml" filepath="$PROJECT_DIR$/CryptoBuddy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/CryptoBuddy.iml" filepath="$PROJECT_DIR$/CryptoBuddy.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
