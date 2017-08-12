@@ -79,8 +79,8 @@ public class GraphFragment extends Fragment {
 
     public JsonObjectRequest getTickerRequest(View rootView) {
         final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
-        final TextView percent_change = (TextView) rootView.findViewById(R.id.percent_change);
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, TICKER_URL, null,
+        final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
+        return new JsonObjectRequest(Request.Method.GET, TICKER_URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -88,8 +88,14 @@ public class GraphFragment extends Fragment {
                             String currencyPair = String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
                             response = response.getJSONObject(currencyPair);
                             Log.d("I", "TICKER_RESPONSE" + response);
-                            currentPrice.setText(String.format(getString(R.string.price_format), Float.valueOf(response.getString("last"))));
-                            percent_change.setText(String.format(getString(R.string.percent_change_format), Float.valueOf(response.getString("percentChange")) * 100));
+                            float lastValue = Float.valueOf(response.getString("last"));
+                            float percentChange = Float.valueOf(response.getString("percentChange"));
+                            float amountChange = lastValue * percentChange;
+                            currentPrice.setText(String.format(getString(R.string.price_format), lastValue));
+                            currentPrice.setTextColor(Color.BLACK);
+                            Log.d("I", "amountChange " + amountChange);
+                            percentChangeText.setText(String.format(getString(R.string.percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
+                            percentChangeText.setTextColor(ResourcesCompat.getColor(getResources(), R.color.percentPositiveGreen, null));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -100,12 +106,11 @@ public class GraphFragment extends Fragment {
                         e.printStackTrace();
                     }
                 });
-        return jsonRequest;
         }
 
     public JsonArrayRequest getChartDataRequest(View rootView, String formattedChartURL) {
         final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-        JsonArrayRequest chartDataRequest = new JsonArrayRequest(Request.Method.GET, formattedChartURL, null,
+        return new JsonArrayRequest(Request.Method.GET, formattedChartURL, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -148,7 +153,6 @@ public class GraphFragment extends Fragment {
                 e.printStackTrace();
             }
         });
-        return chartDataRequest;
     }
 
     @Override

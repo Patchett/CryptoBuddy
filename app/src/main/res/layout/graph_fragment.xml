@@ -12,20 +12,22 @@
         android:id="@+id/current_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"/>
+        android:textSize="34sp"/>
 
     <TextView
         android:id="@+id/percent_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="40dp"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="80dp"/>
 
 
 </RelativeLayout>

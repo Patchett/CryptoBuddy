@@ -9,6 +9,7 @@
     <color name="darkGreen">#009900</color>
     <color name="materialLightBlue">#3399FF</color>
     <color name="materialLightPurple">#B266FF</color>
+    <color name="percentPositiveGreen">#52BE80</color>
 
 </resources>
 
