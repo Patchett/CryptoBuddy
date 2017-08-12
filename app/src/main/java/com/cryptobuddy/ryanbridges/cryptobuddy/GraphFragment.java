@@ -12,12 +12,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -26,6 +28,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -72,6 +75,31 @@ public class GraphFragment extends Fragment {
         dataSet.setDrawValues(false);
         return dataSet;
     }
+
+    public JsonObjectRequest getTickerRequest(View rootView) {
+        final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
+        final TextView percent_change = (TextView) rootView.findViewById(R.id.percent_change);
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, TICKER_URL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            response = response.getJSONObject("USDT_BTC");
+                            Log.d("I", "TICKER_RESPONSE" + response);
+                            currentPrice.setText(String.format(getString(R.string.price_format), Float.valueOf(response.getString("last"))));
+                            percent_change.setText(String.format(getString(R.string.percent_change_format), Float.valueOf(response.getString("percentChange")) * 100));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError e) {
+                        e.printStackTrace();
+                    }
+                });
+        return jsonRequest;
+        }
 
     public JsonArrayRequest getChartDataRequest(View rootView, String formattedChartURL) {
         final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
@@ -135,7 +163,9 @@ public class GraphFragment extends Fragment {
         String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
         Log.d("I", formattedChartURL);
         JsonArrayRequest chartDataRequest = getChartDataRequest(rootView, formattedChartURL);
+        JsonObjectRequest tickerRequest = getTickerRequest(rootView);
         requestQueue.add(chartDataRequest);
+        requestQueue.add(tickerRequest);
         return rootView;
     }
 }
