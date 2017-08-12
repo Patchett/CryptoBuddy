@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="materialLightGreen">#99FF99</color>
+    <color name="darkGreen">#009900</color>
+    <color name="materialLightBlue">#3399FF</color>
+    <color name="materialLightPurple">#B266FF</color>
+
 </resources>
+
+    <!--public final static int materialLightGreen = Color.rgb(153,255,153);-->
+    <!--public final static int darkGreen = Color.rgb(0,153,0);-->
+    <!--public final static int materialLightBlue = Color.rgb(51,153,255);-->
+    <!--public final static int materialLightPurple = Color.rgb(178,102,255);-->

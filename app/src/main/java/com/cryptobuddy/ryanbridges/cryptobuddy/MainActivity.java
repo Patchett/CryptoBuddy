@@ -1,6 +1,5 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,42 +8,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    public final static int materialLightGreen = Color.rgb(153,255,153);
-    public final static int darkGreen = Color.rgb(0,153,0);
-    public final static int materialLightBlue = Color.rgb(51,153,255);
-    public final static int materialLightPurple = Color.rgb(178,102,255);
-    public final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
-    public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -100,100 +69,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class GraphFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NAME = "section_name";
-
-        public GraphFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static GraphFragment newInstance(String tabName) {
-            GraphFragment fragment = new GraphFragment();
-            Bundle args = new Bundle();
-            args.putString(ARG_SECTION_NAME, tabName);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-            lineChart.animateX(700);
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-            String crypto = getArguments().getString(ARG_SECTION_NAME);
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DAY_OF_YEAR, -5);
-            long fiveDaysAgo = cal.getTimeInMillis() / 1000;
-            String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
-            Log.d("I", formattedChartURL);
-            JsonArrayRequest jsonRequest = new JsonArrayRequest(Request.Method.GET, formattedChartURL, null,
-                    new Response.Listener<JSONArray>() {
-                        @Override
-                        public void onResponse(JSONArray response) {
-                            List<Entry> closePrices = new ArrayList<Entry>();
-                            for (int i = 0; i < response.length(); i++) {
-                                try {
-                                    JSONObject row = response.getJSONObject(i);
-                                    int closePrice = row.getInt("close");
-                                    int unixSeconds = row.getInt("date");
-                                    closePrices.add(new Entry( (float) unixSeconds, (float) closePrice));
-                                }
-                                catch (Exception e) {
-                                    continue;
-                                }
-                            }
-                            LineDataSet dataSet = new LineDataSet(closePrices, "Price");
-                            dataSet.setColor(Color.BLACK);
-                            dataSet.setFillColor(materialLightGreen);
-                            dataSet.setDrawFilled(true);
-                            dataSet.setDrawCircles(false);
-                            dataSet.setDrawValues(false);
-                            LineData lineData = new LineData(dataSet);
-                            lineChart.setDoubleTapToZoomEnabled(false);
-                            dataSet.setHighLightColor(materialLightPurple);
-                            // Disable zooming completely
-                            lineChart.setScaleEnabled(false);
-                            lineChart.getDescription().setEnabled(false);
-                            lineChart.setData(lineData);
-                            lineChart.setNoDataText("Pulling price data...");
-                            lineChart.setContentDescription("");
-                            lineChart.setBorderWidth(3);
-                            lineChart.setBorderColor(darkGreen);
-                            lineChart.setDrawBorders(true);
-                            Legend legend = lineChart.getLegend();
-                            legend.setEnabled(false);
-                            XAxis xAxis = lineChart.getXAxis();
-                            xAxis.setAvoidFirstLastClipping(true);
-                            lineChart.getAxisRight().setEnabled(false);
-                            lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
-                            xAxis.setDrawAxisLine(false);
-                            xAxis.setValueFormatter(new XAxisDateFormatter());
-                            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-                            lineChart.invalidate();
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError e) {
-                    e.printStackTrace();
-                }
-            });
-            requestQueue.add(jsonRequest);
-            return rootView;
-        }
     }
 
     /**
