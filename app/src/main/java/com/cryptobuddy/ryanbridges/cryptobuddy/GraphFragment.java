@@ -34,6 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -84,7 +85,8 @@ public class GraphFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            response = response.getJSONObject("USDT_BTC");
+                            String currencyPair = String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
+                            response = response.getJSONObject(currencyPair);
                             Log.d("I", "TICKER_RESPONSE" + response);
                             currentPrice.setText(String.format(getString(R.string.price_format), Float.valueOf(response.getString("last"))));
                             percent_change.setText(String.format(getString(R.string.percent_change_format), Float.valueOf(response.getString("percentChange")) * 100));
