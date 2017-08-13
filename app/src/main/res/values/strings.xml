@@ -3,5 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="price_format">&#36;%1$.2f</string>
-    <string name="percent_change_format">%1$.2f%% &#40;%2$.2f&#41;</string>
+    <string name="negative_percent_change_format">%1$.2f%% &#40;&#36;%2$.2f&#41;</string>
+    <string name="positive_percent_change_format">&#43;%1$.2f%% &#40;&#43;&#36;%2$.2f&#41;</string>
 </resources>

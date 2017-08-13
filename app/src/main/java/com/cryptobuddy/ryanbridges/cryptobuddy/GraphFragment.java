@@ -109,7 +109,7 @@ public class GraphFragment extends Fragment {
             setColors(percentChange);
             currentPrice.setText(String.format(getString(R.string.price_format), lastValue));
             currentPrice.setTextColor(Color.BLACK);
-            percentChangeText.setText(String.format(getString(R.string.percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
+            percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
             percentChangeText.setTextColor(percentageColor);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -132,7 +132,11 @@ public class GraphFragment extends Fragment {
                             setColors(percentChange);
                             currentPrice.setText(String.format(getString(R.string.price_format), lastValue));
                             currentPrice.setTextColor(Color.BLACK);
-                            percentChangeText.setText(String.format(getString(R.string.percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
+                            if (percentChange < 0) {
+                                percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
+                            } else {
+                                percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
+                            }
                             percentChangeText.setTextColor(percentageColor);
                             JsonArrayRequest chartDataRequest = getChartDataRequest(rootView, formattedChartURL);
                             requestQueue.add(chartDataRequest);
