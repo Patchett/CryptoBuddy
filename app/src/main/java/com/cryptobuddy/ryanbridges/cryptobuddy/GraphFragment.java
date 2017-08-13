@@ -97,24 +97,6 @@ public class GraphFragment extends Fragment {
         return dataSet;
     }
 
-    public void renderTicker(final View rootView, JSONObject response) {
-        String currencyPair = getCurrencyPair();
-        final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
-        final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-        try {
-            response = response.getJSONObject(currencyPair);
-            float lastValue = Float.valueOf(response.getString("last"));
-            float percentChange = Float.valueOf(response.getString("percentChange"));
-            float amountChange = lastValue * percentChange;
-            setColors(percentChange);
-            currentPrice.setText(String.format(getString(R.string.price_format), lastValue));
-            currentPrice.setTextColor(Color.BLACK);
-            percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
-            percentChangeText.setTextColor(percentageColor);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
     public JsonObjectRequest getTickerRequest(final View rootView, final String formattedChartURL, final RequestQueue requestQueue) {
         final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
@@ -204,7 +186,7 @@ public class GraphFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.graph_fragment, container, false);
         final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-        lineChart.animateX(1000);
+        lineChart.animateX(1500);
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String crypto = getArguments().getString(ARG_SECTION_NAME);
         Calendar cal = Calendar.getInstance();
