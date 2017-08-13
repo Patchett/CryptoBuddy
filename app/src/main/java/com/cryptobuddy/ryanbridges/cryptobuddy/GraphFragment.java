@@ -44,6 +44,7 @@ public class GraphFragment extends Fragment {
     public final static String TICKER_URL = "https://poloniex.com/public?command=returnTicker";
     public final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
+    public final static String BTC_NEWS_URL = "http://eventregistry.org/json/article?query=%7B\"%24query\"%3A%7B\"%24and\"%3A%5B%7B\"conceptUri\"%3A%7B\"%24and\"%3A%5B\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEthereum\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FCryptocurrency\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FBitcoin\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLitecoin\"%5D%7D%7D%2C%7B\"lang\"%3A\"eng\"%7D%5D%7D%7D&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=20";
     public int chartFillColor = Color.YELLOW;
     public int chartBorderColor = Color.BLACK;
     public int percentageColor = Color.BLACK;
@@ -181,12 +182,27 @@ public class GraphFragment extends Fragment {
         });
     }
 
+    public JsonObjectRequest getNewsRequest(final View rootView) {
+        return new JsonObjectRequest(Request.Method.GET, BTC_NEWS_URL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("I", "NEWS: " + response.toString());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.graph_fragment, container, false);
         final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
-        lineChart.animateX(1500);
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String crypto = getArguments().getString(ARG_SECTION_NAME);
         Calendar cal = Calendar.getInstance();
@@ -194,6 +210,8 @@ public class GraphFragment extends Fragment {
         long fiveDaysAgo = cal.getTimeInMillis() / 1000;
         String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
         Log.d("I", formattedChartURL);
+        JsonObjectRequest newsRequest = getNewsRequest(rootView);
+        requestQueue.add(newsRequest);
         JsonObjectRequest tickerRequest = getTickerRequest(rootView, formattedChartURL, requestQueue);
         requestQueue.add(tickerRequest);
         return rootView;
