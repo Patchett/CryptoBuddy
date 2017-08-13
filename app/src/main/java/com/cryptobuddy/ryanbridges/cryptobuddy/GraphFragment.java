@@ -115,7 +115,7 @@ public class GraphFragment extends Fragment {
                             currentPrice.setText(String.format(getString(R.string.price_format), lastValue));
                             currentPrice.setTextColor(Color.BLACK);
                             if (percentChange < 0) {
-                                percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
+                                percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, Math.abs(amountChange)));
                             } else {
                                 percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
                             }
