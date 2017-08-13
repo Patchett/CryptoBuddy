@@ -75,14 +75,14 @@ public class GraphFragment extends Fragment {
 
     public void setColors(float percentChange) {
         if (percentChange >= 0) {
-            chartFillColor = ResourcesCompat.getColor(getResources(), R.color.materialLightGreen, null);
-            chartBorderColor = ResourcesCompat.getColor(getResources(), R.color.darkGreen, null);
-            percentageColor = ResourcesCompat.getColor(getResources(), R.color.percentPositiveGreen, null);
+            chartFillColor = ResourcesCompat.getColor(getActivity().getResources(), R.color.materialLightGreen, null);
+            chartBorderColor = ResourcesCompat.getColor(getActivity().getResources(), R.color.darkGreen, null);
+            percentageColor = ResourcesCompat.getColor(getActivity().getResources(), R.color.percentPositiveGreen, null);
         }
         else {
-            chartFillColor = ResourcesCompat.getColor(getResources(), R.color.materialLightRed, null);
-            chartBorderColor = ResourcesCompat.getColor(getResources(), R.color.darkRed, null);
-            percentageColor = ResourcesCompat.getColor(getResources(), R.color.percentNegativeRed, null);
+            chartFillColor = ResourcesCompat.getColor(getActivity().getResources(), R.color.materialLightRed, null);
+            chartBorderColor = ResourcesCompat.getColor(getActivity().getResources(), R.color.darkRed, null);
+            percentageColor = ResourcesCompat.getColor(getActivity().getResources(), R.color.percentNegativeRed, null);
         }
     }
 
@@ -90,7 +90,7 @@ public class GraphFragment extends Fragment {
         LineDataSet dataSet = new LineDataSet(entries, "Price");
         dataSet.setColor(Color.BLACK);
         dataSet.setFillColor(chartFillColor);
-        dataSet.setHighLightColor(ResourcesCompat.getColor(getResources(), R.color.materialLightPurple, null));
+        dataSet.setHighLightColor(ResourcesCompat.getColor(getActivity().getResources(), R.color.materialLightPurple, null));
         dataSet.setDrawFilled(true);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
