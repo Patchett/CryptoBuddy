@@ -8,8 +8,13 @@
     <color name="materialLightGreen">#99FF99</color>
     <color name="darkGreen">#009900</color>
     <color name="materialLightBlue">#3399FF</color>
-    <color name="materialLightPurple">#B266FF</color>
     <color name="percentPositiveGreen">#52BE80</color>
+
+    <color name="materialLightPurple">#B266FF</color>
+
+    <color name="materialLightRed">#FA5858</color>
+    <color name="darkRed">#FF0000</color>
+    <color name="percentNegativeRed">#FE2E2E</color>
 
 </resources>
 
