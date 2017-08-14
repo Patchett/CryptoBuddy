@@ -90,7 +90,8 @@ public class GraphFragment extends Fragment {
         LineDataSet dataSet = new LineDataSet(entries, "Price");
         dataSet.setColor(Color.BLACK);
         dataSet.setFillColor(chartFillColor);
-        dataSet.setHighLightColor(ResourcesCompat.getColor(getActivity().getResources(), R.color.materialLightPurple, null));
+        dataSet.setDrawHighlightIndicators(false);
+//        dataSet.setHighLightColor(ResourcesCompat.getColor(getActivity().getResources(), R.color.materialLightPurple, null));
         dataSet.setDrawFilled(true);
         dataSet.setDrawCircles(false);
         dataSet.setDrawValues(false);
