@@ -185,7 +185,6 @@ public class GraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.graph_fragment, container, false);
-        final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String crypto = getArguments().getString(ARG_SECTION_NAME);
         Calendar cal = Calendar.getInstance();
