@@ -8,11 +8,11 @@ public class NewsItem {
 
     public String articleTitle;
     public String articleURL;
-    public String body;
+    public String articleBody;
 
-    public NewsItem(String articleTitle, String articleURL, String body) {
+    public NewsItem(String articleTitle, String articleURL, String articleBody) {
         this.articleTitle = articleTitle;
         this.articleURL = articleURL;
-        this.body = body;
+        this.articleBody = articleBody;
     }
 }

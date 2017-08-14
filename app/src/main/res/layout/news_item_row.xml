@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="175dp"
+    android:focusable="true"
+    android:clickable="true">
 
-    <TextView
+
+
+<TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/articleTitle"
         android:layout_gravity="start"
         android:textStyle="bold"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp" />
+    />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/articleTitle"
+        android:id="@+id/articleBody" />
+
+</RelativeLayout>

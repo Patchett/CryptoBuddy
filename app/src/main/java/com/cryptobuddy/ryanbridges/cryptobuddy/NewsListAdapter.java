@@ -29,11 +29,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     public void onBindViewHolder(NewsListAdapter.ViewHolder holder, int position) {
         NewsItem currNewsItem = newsList.get(position);
         holder.articleTitle.setText(currNewsItem.articleTitle);
+        holder.articleBody.setText(currNewsItem.articleBody);
     }
 
     @Override
     public NewsListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a layout
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.news_item_row, parent, false);
         viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;
@@ -41,11 +41,13 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView articleTitle;
+        public TextView articleBody;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
             articleTitle = (TextView) itemLayoutView.findViewById(R.id.articleTitle);
+            articleBody = (TextView) itemLayoutView.findViewById(R.id.articleBody);
         }
 
         @Override

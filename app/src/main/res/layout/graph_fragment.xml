@@ -18,16 +18,24 @@
         android:id="@+id/percent_change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_below="@+id/current_price"
         android:textStyle="bold"
         android:textSize="16sp"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_marginTop="80dp"/>
+        android:layout_below="@+id/percent_change"
+        android:padding="30dp"
+        android:layout_height="250dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/newsListRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/chart"
+        android:padding="5dp"
+        />
 
 
 </RelativeLayout>
