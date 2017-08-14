@@ -4,14 +4,10 @@ package com.cryptobuddy.ryanbridges.cryptobuddy;
  * Created by Ryan on 8/11/2017.
  */
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +26,6 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +44,6 @@ public class GraphFragment extends Fragment {
     public final static String TICKER_URL = "https://poloniex.com/public?command=returnTicker";
     public final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
-    public final static String BTC_NEWS_URL = "http://eventregistry.org/json/article?query=%7B\"%24query\"%3A%7B\"%24and\"%3A%5B%7B\"conceptUri\"%3A%7B\"%24and\"%3A%5B\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEthereum\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FCryptocurrency\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FBitcoin\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLitecoin\"%5D%7D%7D%2C%7B\"lang\"%3A\"eng\"%7D%5D%7D%7D&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=20&apiKey=0a4f710c-cac5-4e7a-8db2-f9a68c579353";
     public int chartFillColor = Color.YELLOW;
     public int chartBorderColor = Color.BLACK;
     public int percentageColor = Color.BLACK;
@@ -187,53 +181,6 @@ public class GraphFragment extends Fragment {
         });
     }
 
-    public JsonObjectRequest getNewsRequest(final View rootView) {
-        final RecyclerView mRecyclerView = (RecyclerView) rootView.findViewById(R.id.newsListRecyclerView);
-
-        return new JsonObjectRequest(Request.Method.GET, BTC_NEWS_URL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("I", "NEWS: " + response.toString());
-                        final List<NewsItem> newsItemList = new ArrayList<>();
-                        try {
-                            JSONArray articles = response.getJSONObject("articles").getJSONArray("results");
-                            Log.d("I", "NEWS_ARTICLES: " + articles);
-                            for (int i = 0; i < articles.length(); i++) {
-                                JSONObject row = articles.getJSONObject(i);
-                                String articleTitle = row.getString("title");
-                                final String articleURL = row.getString("url");
-                                String articleBody = row.getString("body");
-                                newsItemList.add(new NewsItem(articleTitle, articleURL, articleBody));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        NewsListAdapter adapter = new NewsListAdapter(newsItemList, new CustomItemClickListener() {
-                            @Override
-                            public void onItemClick(int position, View v) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(newsItemList.get(position).articleURL));
-                                startActivity(browserIntent);
-
-                            }
-                        });
-                        mRecyclerView.setAdapter(adapter);
-                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-                        llm.setOrientation(LinearLayoutManager.VERTICAL);
-                        HorizontalDividerItemDecoration horizontalDivider = new HorizontalDividerItemDecoration.Builder(getContext()).build();
-                        mRecyclerView.addItemDecoration(horizontalDivider);
-                        mRecyclerView.setLayoutManager(llm);
-                        mRecyclerView.setHasFixedSize(true);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -246,8 +193,6 @@ public class GraphFragment extends Fragment {
         long fiveDaysAgo = cal.getTimeInMillis() / 1000;
         String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
         Log.d("I", formattedChartURL);
-        JsonObjectRequest newsRequest = getNewsRequest(rootView);
-        requestQueue.add(newsRequest);
         JsonObjectRequest tickerRequest = getTickerRequest(rootView, formattedChartURL, requestQueue);
         requestQueue.add(tickerRequest);
         return rootView;
