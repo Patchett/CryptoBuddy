@@ -2,6 +2,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.newsListRecyclerView);
         mRecyclerView.addItemDecoration(divider);
