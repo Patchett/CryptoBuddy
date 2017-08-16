@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -186,15 +187,24 @@ public class GraphFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.graph_fragment, container, false);
+        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         final RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String crypto = getArguments().getString(ARG_SECTION_NAME);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -5);
-        long fiveDaysAgo = cal.getTimeInMillis() / 1000;
-        String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
+        final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
+        final String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
         Log.d("I", formattedChartURL);
-        JsonObjectRequest tickerRequest = getTickerRequest(rootView, formattedChartURL, requestQueue);
+        final JsonObjectRequest tickerRequest = getTickerRequest(rootView, formattedChartURL, requestQueue);
         requestQueue.add(tickerRequest);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(true);
+                requestQueue.add(getTickerRequest(getView(), formattedChartURL, requestQueue));
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
         return rootView;
     }
 }
