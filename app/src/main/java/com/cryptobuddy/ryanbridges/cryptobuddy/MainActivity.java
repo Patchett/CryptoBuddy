@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(3);
+        final SwipeRefreshLayout recyclerSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_recycler);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -67,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.newsListRecyclerView);
         mRecyclerView.addItemDecoration(divider);
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        final RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        recyclerSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                recyclerSwipeRefresh.setRefreshing(true);
+                requestQueue.add(getNewsRequest());
+                recyclerSwipeRefresh.setRefreshing(false);
+            }
+        });
         requestQueue.add(getNewsRequest());
     }
 
