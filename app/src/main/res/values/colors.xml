@@ -16,6 +16,8 @@
     <color name="darkRed">#FF0000</color>
     <color name="percentNegativeRed">#FE2E2E</color>
 
+    <color name="progressBarColor">#4dd0e1</color>
+
 </resources>
 
     <!--public final static int materialLightGreen = Color.rgb(153,255,153);-->

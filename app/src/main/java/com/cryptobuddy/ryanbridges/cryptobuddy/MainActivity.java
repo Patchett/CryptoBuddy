@@ -3,7 +3,6 @@ package com.cryptobuddy.ryanbridges.cryptobuddy;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -106,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
                         NewsListAdapter adapter = new NewsListAdapter(newsItemList, new CustomItemClickListener() {
                             @Override
                             public void onItemClick(int position, View v) {
-                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(newsItemList.get(position).articleURL));
+                                Intent browserIntent = new Intent(MainActivity.this, WebViewActivity.class);
+                                browserIntent.putExtra("url", newsItemList.get(position).articleURL);
                                 startActivity(browserIntent);
-
                             }
                         });
                         mRecyclerView.setAdapter(adapter);
