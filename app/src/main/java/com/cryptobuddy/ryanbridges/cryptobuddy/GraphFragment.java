@@ -168,8 +168,9 @@ public class GraphFragment extends Fragment {
                         lineChart.getLegend().setEnabled(false);
                         XAxis xAxis = lineChart.getXAxis();
                         xAxis.setAvoidFirstLastClipping(true);
-                        lineChart.getAxisRight().setEnabled(false);
-                        lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
+                        lineChart.getAxisRight().setEnabled(true);
+                        lineChart.getAxisRight().setValueFormatter(new YAxisPriceFormatter());
+                        lineChart.getAxisLeft().setEnabled(false);
                         xAxis.setDrawAxisLine(false);
                         xAxis.setValueFormatter(new XAxisDateFormatter());
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
