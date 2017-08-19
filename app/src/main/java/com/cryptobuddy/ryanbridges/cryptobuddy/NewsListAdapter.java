@@ -16,9 +16,8 @@ import java.util.List;
 public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHolder> {
 
     private List<NewsItem> newsList;
-    ViewHolder viewHolder;
+    private ViewHolder viewHolder;
     private static CustomItemClickListener listener;
-
 
     public NewsListAdapter(List<NewsItem> newsList, CustomItemClickListener listener) {
         this.newsList = newsList;
