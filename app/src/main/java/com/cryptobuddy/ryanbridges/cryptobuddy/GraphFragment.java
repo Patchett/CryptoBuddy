@@ -53,7 +53,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
     private View rootView;
-    private String TAG = "GraphFragment";
+    private String TAG = MainActivity.class.getSimpleName();
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -206,7 +206,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         cal.add(Calendar.DAY_OF_YEAR, -5);
         final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
         formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
-        Log.d("I", formattedChartURL);
+        Log.d(TAG, formattedChartURL);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
