@@ -27,6 +27,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
+
 
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
         recyclerView.setHasFixedSize(true);
+        swipeRefreshLayout.setColorSchemeResources(colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override

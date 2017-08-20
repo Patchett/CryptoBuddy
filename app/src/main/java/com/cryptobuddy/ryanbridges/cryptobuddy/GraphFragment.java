@@ -14,14 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -37,18 +36,24 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
+
 /**
  * A placeholder fragment containing a simple view.
  */
-public class GraphFragment extends Fragment {
+public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    public final static String TICKER_URL = "https://poloniex.com/public?command=returnTicker";
-    public final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
-    public final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
-    public int chartFillColor = Color.YELLOW;
-    public int chartBorderColor = Color.BLACK;
-    public int percentageColor = Color.BLACK;
-
+    private final static String TICKER_URL = "https://poloniex.com/public?command=returnTicker";
+    private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
+    private final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
+    private String formattedChartURL;
+    private int chartFillColor;
+    private int chartBorderColor;
+    private int percentageColor;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private LineChart lineChart;
+    private View rootView;
+    private String TAG = "GraphFragment";
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -99,11 +104,11 @@ public class GraphFragment extends Fragment {
         return dataSet;
     }
 
-    public JsonObjectRequest getTickerRequest(final View rootView, final String formattedChartURL, final RequestQueue requestQueue) {
+    public void getTickerRequest() {
         final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-
-        return new JsonObjectRequest(Request.Method.GET, TICKER_URL, null,
+        swipeRefreshLayout.setRefreshing(true);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, TICKER_URL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -122,8 +127,8 @@ public class GraphFragment extends Fragment {
                                 percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
                             }
                             percentChangeText.setTextColor(percentageColor);
-                            JsonArrayRequest chartDataRequest = getChartDataRequest(rootView, formattedChartURL);
-                            requestQueue.add(chartDataRequest);
+                            JsonArrayRequest chartDataRequest = getChartDataRequest();
+                            VolleySingleton.getInstance().addToRequestQueue(chartDataRequest) ;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -131,13 +136,15 @@ public class GraphFragment extends Fragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "Server Error: " + e.getMessage());
+                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
+        VolleySingleton.getInstance().addToRequestQueue(request);
         }
 
-    public JsonArrayRequest getChartDataRequest(View rootView, String formattedChartURL) {
-        final LineChart lineChart = (LineChart) rootView.findViewById(R.id.chart);
+    public JsonArrayRequest getChartDataRequest() {
         return new JsonArrayRequest(Request.Method.GET, formattedChartURL, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -175,11 +182,14 @@ public class GraphFragment extends Fragment {
                         xAxis.setValueFormatter(new XAxisDateFormatter());
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                         lineChart.invalidate();
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError e) {
-                e.printStackTrace();
+                Log.e(TAG, "Server Error: " + e.getMessage());
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -187,25 +197,30 @@ public class GraphFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.graph_fragment, container, false);
-        final SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
-        final RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        rootView = inflater.inflate(R.layout.graph_fragment, container, false);
+        lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setColorSchemeResources(colorAccent);
         String crypto = getArguments().getString(ARG_SECTION_NAME);
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -5);
         final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
-        final String formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
+        formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
         Log.d("I", formattedChartURL);
-        final JsonObjectRequest tickerRequest = getTickerRequest(rootView, formattedChartURL, requestQueue);
-        requestQueue.add(tickerRequest);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mSwipeRefreshLayout.setRefreshing(true);
-                requestQueue.add(getTickerRequest(getView(), formattedChartURL, requestQueue));
-                mSwipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
+                                        getTickerRequest();
+                                    }
+                                }
+        );
         return rootView;
+    }
+
+    @Override
+    public void onRefresh() {
+        getTickerRequest();
     }
 }
