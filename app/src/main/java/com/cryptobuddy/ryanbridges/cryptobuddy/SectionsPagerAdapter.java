@@ -24,7 +24,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 3 total pages.
-        return 3;
+        return 4;
     }
 
     @Override
@@ -36,6 +36,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
                 return "ETH";
             case 2:
                 return "LTC";
+            case 3:
+                return "BCH";
         }
         return null;
     }
