@@ -18,26 +18,28 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a GraphFragment (defined as a static inner class below).
-        return GraphFragment.newInstance((String) this.getPageTitle(position));
+        switch (position) {
+            case 0:
+                return GraphFragment.newInstance((String) this.getPageTitle(position));
+            case 1:
+                return NewsListFragment.newInstance((String) this.getPageTitle(position));
+        }
+        return null;
     }
 
     @Override
     public int getCount() {
-        // Show 3 total pages.
-        return 4;
+        // Total pages to show
+        return 2;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "BTC";
+                return "Price";
             case 1:
-                return "ETH";
-            case 2:
-                return "LTC";
-            case 3:
-                return "BCH";
+                return "News";
         }
         return null;
     }

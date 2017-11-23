@@ -1,0 +1,18 @@
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout_recycler"
+    android:layout_width="match_parent"
+    android:layout_gravity="center|bottom"
+    android:layout_alignParentBottom="true"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/newsListRecyclerView"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:paddingTop="5dp"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp"
+        android:layout_height="match_parent"/>
+
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -34,7 +34,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
@@ -76,7 +75,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public String getCurrencyPair() {
-        return String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
+        return "USDT_BTC";
+//        return String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
     }
 
     public void setColors(float percentChange) {
@@ -201,7 +201,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        String crypto = getArguments().getString(ARG_SECTION_NAME);
+        String crypto = "BTC";
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -5);
         final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
