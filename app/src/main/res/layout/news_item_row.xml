@@ -5,16 +5,13 @@
     android:focusable="true"
     android:clickable="true">
 
-
-
-<TextView
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/articleTitle"
         android:layout_gravity="start"
         android:textColor="#48a999"
-        android:textStyle="bold"
-    />
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"

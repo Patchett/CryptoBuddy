@@ -114,7 +114,6 @@ public class NewsListFragment extends Fragment implements SwipeRefreshLayout.OnR
                 startActivity(browserIntent);
             }
         });
-        swipeRefreshLayout.setColorSchemeResources(colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
