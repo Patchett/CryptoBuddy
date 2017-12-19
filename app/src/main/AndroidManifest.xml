@@ -23,6 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".WebViewActivity"></activity>
+        <activity android:name=".CurrencyTabsActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>

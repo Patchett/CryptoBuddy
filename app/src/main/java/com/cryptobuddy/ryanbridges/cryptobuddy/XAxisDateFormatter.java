@@ -1,5 +1,7 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy;
 
+import android.util.Log;
+
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
@@ -18,7 +20,7 @@ public class XAxisDateFormatter  implements IAxisValueFormatter {
     public String getFormattedValue(float unixSeconds, AxisBase axis) {
         Date date = new Date((int)unixSeconds*1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd", Locale.ENGLISH);
-        String formattedDate = sdf.format(date);
-        return formattedDate;
+        Log.d("I", "Date: " + sdf.format(date));
+        return sdf.format(date);
     }
 }

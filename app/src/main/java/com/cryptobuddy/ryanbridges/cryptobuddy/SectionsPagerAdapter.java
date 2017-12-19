@@ -10,8 +10,14 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+    private String symbol;
+
     public SectionsPagerAdapter(FragmentManager fm) {
         super(fm);
+    }
+    public SectionsPagerAdapter(FragmentManager fm, String symbol) {
+        super(fm);
+        this.symbol = symbol;
     }
 
     @Override
@@ -20,7 +26,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         // Return a GraphFragment (defined as a static inner class below).
         switch (position) {
             case 0:
-                return GraphFragment.newInstance((String) this.getPageTitle(position));
+                return GraphFragment.newInstance(this.symbol);
             case 1:
                 return NewsListFragment.newInstance((String) this.getPageTitle(position));
         }
@@ -37,9 +43,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return "Price";
+                return "Chart";
             case 1:
-                return "News";
+                return "Technicals";
         }
         return null;
     }

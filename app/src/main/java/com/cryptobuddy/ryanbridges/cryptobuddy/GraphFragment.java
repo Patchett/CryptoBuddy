@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -32,8 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
@@ -44,6 +43,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private final static String TICKER_URL = "https://poloniex.com/public?command=returnTicker";
     private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
+    private final static String CHART_URL_5_DAYS = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=30&aggregate=4";
     private final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
     private String formattedChartURL;
     private int chartFillColor;
@@ -66,17 +66,17 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static GraphFragment newInstance(String tabName) {
+    public static GraphFragment newInstance(String symbol) {
         GraphFragment fragment = new GraphFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SECTION_NAME, tabName);
+        args.putString(ARG_SECTION_NAME, symbol);
         fragment.setArguments(args);
         return fragment;
     }
 
     public String getCurrencyPair() {
-        return "USDT_BTC";
-//        return String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
+//        return "USDT_BTC";
+        return String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
     }
 
     public void setColors(float percentChange) {
@@ -127,7 +127,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
                             }
                             percentChangeText.setTextColor(percentageColor);
-                            JsonArrayRequest chartDataRequest = getChartDataRequest();
+                            JsonObjectRequest chartDataRequest = getChartDataRequest();
                             VolleySingleton.getInstance().addToRequestQueue(chartDataRequest) ;
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -144,23 +144,26 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         VolleySingleton.getInstance().addToRequestQueue(request);
         }
 
-    public JsonArrayRequest getChartDataRequest() {
-        return new JsonArrayRequest(Request.Method.GET, formattedChartURL, null,
-                new Response.Listener<JSONArray>() {
+    public JsonObjectRequest getChartDataRequest() {
+        return new JsonObjectRequest(Request.Method.GET, formattedChartURL, null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(JSONObject response) {
                         List<Entry> closePrices = new ArrayList<Entry>();
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject row = response.getJSONObject(i);
+                        try {
+                            JSONArray rawData = response.getJSONArray("Data");
+                            Log.d("I", "rawData: " + rawData);
+                            for (int i = 0; i < rawData.length(); i++) {
+                                JSONObject row = rawData.getJSONObject(i);
                                 int closePrice = row.getInt("close");
-                                int unixSeconds = row.getInt("date");
-                                closePrices.add(new Entry( (float) unixSeconds, (float) closePrice));
+                                int unixSeconds = row.getInt("time");
+                                closePrices.add(new Entry((float) unixSeconds, (float) closePrice));
+                                Log.d("I", "i in for loop: " + i + " | close: " + closePrice + " | unixSeconds: " + unixSeconds);
                             }
-                            catch (Exception e) {
-                                continue;
-                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
+                        Log.d("I", "closePrices size: " + closePrices.size());
                         LineDataSet dataSet = setUpLineDataSet(closePrices);
                         LineData lineData = new LineData(dataSet);
                         lineChart.setDoubleTapToZoomEnabled(false);
@@ -201,11 +204,11 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        String crypto = "BTC";
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, -5);
-        final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
-        formattedChartURL = String.format(CHART_URL, crypto, fiveDaysAgo);
+        String crypto = getArguments().getString(ARG_SECTION_NAME);
+//        Calendar cal = Calendar.getInstance();
+//        cal.add(Calendar.DAY_OF_YEAR, -5);
+//        final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
+        formattedChartURL = String.format(CHART_URL_5_DAYS, crypto);
         Log.d(TAG, formattedChartURL);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
