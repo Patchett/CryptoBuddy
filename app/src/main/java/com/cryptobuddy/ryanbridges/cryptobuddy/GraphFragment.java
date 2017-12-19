@@ -41,13 +41,14 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
  */
 public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
-    private final static String TICKER_URL = "https://poloniex.com/public?command=returnTicker";
     private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     private final static String CHART_URL_5_DAYS = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=30&aggregate=4";
-    private final static String CHART_URL = "https://poloniex.com/public?command=returnChartData&currencyPair=USDT_%s&start=%s&end=9999999999&period=14400";
+    private final static String TICKER_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
+    private String formattedTickerURL;
     private String formattedChartURL;
     private int chartFillColor;
     private int chartBorderColor;
+    private String crypto;
     private int percentageColor;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
@@ -106,28 +107,21 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void getTickerRequest() {
         final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
-        final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
         swipeRefreshLayout.setRefreshing(true);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, TICKER_URL, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedTickerURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            String currencyPair = getCurrencyPair();
-                            response = response.getJSONObject(currencyPair);
-                            float lastValue = Float.valueOf(response.getString("last"));
-                            float percentChange = Float.valueOf(response.getString("percentChange"));
-                            float amountChange = lastValue * percentChange;
-                            setColors(percentChange);
-                            currentPrice.setText(String.format(getString(R.string.price_format), lastValue));
+                            Log.d("I", "Ticker response: " + response);
+                            JSONObject rawData = response.getJSONObject("RAW").getJSONObject(crypto).getJSONObject("USD");
+                            float currPrice = Float.valueOf(rawData.getString("PRICE"));
+//                            float percentChange = Float.valueOf(response.getString("percentChange"));
+//                            float amountChange = lastValue * percentChange;
+
+                            currentPrice.setText(String.format(getString(R.string.price_format), currPrice));
                             currentPrice.setTextColor(Color.BLACK);
-                            if (percentChange < 0) {
-                                percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, Math.abs(amountChange)));
-                            } else {
-                                percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), Float.valueOf(response.getString("percentChange")) * 100, amountChange));
-                            }
-                            percentChangeText.setTextColor(percentageColor);
-                            JsonObjectRequest chartDataRequest = getChartDataRequest();
+                            JsonObjectRequest chartDataRequest = getChartDataRequest(currPrice);
                             VolleySingleton.getInstance().addToRequestQueue(chartDataRequest) ;
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -144,7 +138,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         VolleySingleton.getInstance().addToRequestQueue(request);
         }
 
-    public JsonObjectRequest getChartDataRequest() {
+    public JsonObjectRequest getChartDataRequest(final float currPrice) {
+        final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
         return new JsonObjectRequest(Request.Method.GET, formattedChartURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -155,15 +150,24 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             Log.d("I", "rawData: " + rawData);
                             for (int i = 0; i < rawData.length(); i++) {
                                 JSONObject row = rawData.getJSONObject(i);
-                                int closePrice = row.getInt("close");
-                                int unixSeconds = row.getInt("time");
+                                double closePrice = row.getDouble("close");
+                                double unixSeconds = row.getDouble("time");
                                 closePrices.add(new Entry((float) unixSeconds, (float) closePrice));
-                                Log.d("I", "i in for loop: " + i + " | close: " + closePrice + " | unixSeconds: " + unixSeconds);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Log.d("I", "closePrices size: " + closePrices.size());
+                        float firstPrice = closePrices.get(0).getY();
+                        float difference = (currPrice - firstPrice);
+                        float percentChange = (difference / currPrice) * 100;
+                        if (percentChange < 0) {
+                            percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), percentChange, Math.abs(difference)));
+                        } else {
+                            percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), percentChange, Math.abs(difference)));
+                        }
+                        setColors(percentChange);
+                        percentChangeText.setTextColor(percentageColor);
+
                         LineDataSet dataSet = setUpLineDataSet(closePrices);
                         LineData lineData = new LineData(dataSet);
                         lineChart.setDoubleTapToZoomEnabled(false);
@@ -204,11 +208,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        String crypto = getArguments().getString(ARG_SECTION_NAME);
-//        Calendar cal = Calendar.getInstance();
-//        cal.add(Calendar.DAY_OF_YEAR, -5);
-//        final long fiveDaysAgo = cal.getTimeInMillis() / 1000;
+        crypto = getArguments().getString(ARG_SECTION_NAME);
         formattedChartURL = String.format(CHART_URL_5_DAYS, crypto);
+        formattedTickerURL = String.format(TICKER_URL, crypto);
         Log.d(TAG, formattedChartURL);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
