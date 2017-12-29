@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -117,6 +118,12 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                                 }
         );
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.news_activity_menu, menu);
+        return true;
+    }
+
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
         return true;

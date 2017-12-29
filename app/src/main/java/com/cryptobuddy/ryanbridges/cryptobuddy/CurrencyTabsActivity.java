@@ -33,9 +33,6 @@ public class CurrencyTabsActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
-//        Intent myIntent = new Intent(getApplicationContext(), CurrencyListActivity.class);
-//        startActivityForResult(myIntent, 0);
-//        this.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.);
         return true;
     }
 }
