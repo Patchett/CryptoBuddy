@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,13 +28,13 @@ import java.util.List;
 
 
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String NEWS_API_KEY = BuildConfig.API_KEY;
     public final static String BTC_NEWS_URL_TEMPLATE = "http://eventregistry.org/json/article?query=%7B\"%24query\"%3A%7B\"%24and\"%3A%5B%7B\"conceptUri\"%3A%7B\"%24and\"%3A%5B\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEthereum\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FCryptocurrency\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FBitcoin\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLitecoin\"%5D%7D%7D%2C%7B\"lang\"%3A\"eng\"%7D%5D%7D%7D&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=20&apiKey=";
-    private String homeCurrencyListURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SONM&tsyms=USD";
+    private String homeCurrencyListURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SONM,LSK,SALT&tsyms=USD";
     public final static String BTC_NEWS_URL = BTC_NEWS_URL_TEMPLATE + NEWS_API_KEY;
-    private String TAG = MainActivity.class.getSimpleName();
+    private String TAG = CurrencyListActivity.class.getSimpleName();
     public final static String SYMBOL = "SYMBOL";
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
@@ -63,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
                 intent.putExtra(SYMBOL, currencyItemList.get(position).symbol);
                 startActivity(intent);
-                Toast.makeText(MainActivity.this, "You selected: " + currencyItemList.get(position).symbol, Toast.LENGTH_LONG).show();
+                Toast.makeText(CurrencyListActivity.this, "You selected: " + currencyItemList.get(position).symbol, Toast.LENGTH_LONG).show();
 
             }
         });
@@ -120,11 +122,27 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void onErrorResponse(VolleyError e) {
                 Log.e("ERROR", "Server Error: " + e.getMessage());
-                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
         VolleySingleton.getInstance().addToRequestQueue(request);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.news_button:
+                startActivity(new Intent(this, NewsListActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
     private View rootView;
-    private String TAG = MainActivity.class.getSimpleName();
+    private String TAG = CurrencyListActivity.class.getSimpleName();
     /**
      * The fragment argument representing the section number for this
      * fragment.

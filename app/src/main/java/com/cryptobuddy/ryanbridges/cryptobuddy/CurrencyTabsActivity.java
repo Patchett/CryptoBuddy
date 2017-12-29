@@ -19,7 +19,7 @@ public class CurrencyTabsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.currency_tabs_activity);
-        String symbol = getIntent().getStringExtra(MainActivity.SYMBOL);
+        String symbol = getIntent().getStringExtra(CurrencyListActivity.SYMBOL);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), symbol);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -33,7 +33,7 @@ public class CurrencyTabsActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
-//        Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
+//        Intent myIntent = new Intent(getApplicationContext(), CurrencyListActivity.class);
 //        startActivityForResult(myIntent, 0);
 //        this.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.);
         return true;
