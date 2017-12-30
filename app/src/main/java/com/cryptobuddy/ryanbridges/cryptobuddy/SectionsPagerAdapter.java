@@ -28,7 +28,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return GraphFragment.newInstance(this.symbol);
             case 1:
-                return NewsListFragment.newInstance((String) this.getPageTitle(position));
+                return TechnicalsFragment.newInstance((String) this.getPageTitle(position));
         }
         return null;
     }
