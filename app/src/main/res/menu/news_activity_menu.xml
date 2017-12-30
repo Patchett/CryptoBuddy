@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyListActivity">
     <item
-        android:id="@+id/news_button"
-        android:title="News Settings"
-        android:icon="@drawable/ic_rss_feed_black_24dp"
+        android:id="@+id/home_button"
+        android:title="@string/Home"
+        android:icon="@drawable/ic_home_white_24dp"
         app:showAsAction="always" />
 </menu>

@@ -123,9 +123,15 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         return true;
     }
 
-    public boolean onOptionsItemSelected(MenuItem item){
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.home_button:
+                startActivity(new Intent(this, CurrencyListActivity.class));
+        }
         finish();
         return true;
     }
+
 
 }
