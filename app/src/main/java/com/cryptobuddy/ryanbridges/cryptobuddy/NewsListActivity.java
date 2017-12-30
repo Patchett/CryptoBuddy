@@ -58,7 +58,10 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                                 final String articleURL = row.getString("url");
                                 String articleTitle = row.getString("title");
                                 String articleBody = row.getString("body");
-                                newsItemList.add(new NewsItem(articleTitle, articleURL, articleBody));
+                                String imageURL = row.getString("imageurl");
+                                String sourceName = row.getJSONObject("source_info").getString("name");
+                                long publishedOn = row.getLong("published_on");
+                                newsItemList.add(new NewsItem(articleTitle, articleURL, articleBody, imageURL, sourceName, publishedOn));
                             }
                             adapter.notifyDataSetChanged();
                             recyclerView.setAdapter(adapter);
@@ -96,7 +99,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         recyclerView.setHasFixedSize(true);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
         newsItemList = new ArrayList<>();
-        adapter = new NewsListAdapter(newsItemList, new CustomItemClickListener() {
+        adapter = new NewsListAdapter(newsItemList, this, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent browserIntent = new Intent(mActivity, WebViewActivity.class);

@@ -4,7 +4,7 @@
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyListActivity">
     <item
         android:id="@+id/news_button"
-        android:title="News"
+        android:title="@string/News"
         android:icon="@drawable/ic_library_books_white_24dp"
         app:showAsAction="always" />
 </menu>

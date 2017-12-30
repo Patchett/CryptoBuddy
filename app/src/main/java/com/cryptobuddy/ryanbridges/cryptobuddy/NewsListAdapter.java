@@ -1,12 +1,19 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
+
+import static android.text.format.DateUtils.MINUTE_IN_MILLIS;
 
 
 /**
@@ -17,18 +24,23 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
 
     private List<NewsItem> newsList;
     private ViewHolder viewHolder;
+    private Context context;
     private static CustomItemClickListener listener;
 
-    public NewsListAdapter(List<NewsItem> newsList, CustomItemClickListener listener) {
+    public NewsListAdapter(List<NewsItem> newsList, Context context, CustomItemClickListener listener) {
         this.newsList = newsList;
+        this.context = context;
         this.listener = listener;
     }
 
     @Override
     public void onBindViewHolder(NewsListAdapter.ViewHolder holder, int position) {
         NewsItem currNewsItem = newsList.get(position);
-        holder.articleTitle.setText(currNewsItem.articleTitle);
-        holder.articleBody.setText(currNewsItem.articleBody);
+        holder.articleTitleTextView.setText(currNewsItem.articleTitle);
+        String publishTimeString = (String) DateUtils.getRelativeTimeSpanString((long) currNewsItem.publishedOn * 1000, System.currentTimeMillis(), MINUTE_IN_MILLIS);
+        holder.ageTextView.setText(publishTimeString);
+        holder.sourceNameTextView.setText(currNewsItem.sourceName);
+        Picasso.with(context).load(currNewsItem.imageURL).into(holder.articleImageView);
     }
 
     @Override
@@ -39,14 +51,18 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView articleTitle;
-        public TextView articleBody;
+        private TextView articleTitleTextView;
+        private ImageView articleImageView;
+        private TextView ageTextView;
+        private TextView sourceNameTextView;
 
-        public ViewHolder(View itemLayoutView) {
+        private ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            articleTitle = (TextView) itemLayoutView.findViewById(R.id.articleTitle);
-            articleBody = (TextView) itemLayoutView.findViewById(R.id.articleBody);
+            articleTitleTextView = (TextView) itemLayoutView.findViewById(R.id.articleTitle);
+            ageTextView = (TextView) itemLayoutView.findViewById(R.id.age);
+            articleImageView = (ImageView) itemLayoutView.findViewById(R.id.articleImage);
+            sourceNameTextView = (TextView) itemLayoutView.findViewById(R.id.sourceName);
         }
 
         @Override
