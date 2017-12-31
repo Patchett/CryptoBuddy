@@ -132,6 +132,4 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         finish();
         return true;
     }
-
-
 }

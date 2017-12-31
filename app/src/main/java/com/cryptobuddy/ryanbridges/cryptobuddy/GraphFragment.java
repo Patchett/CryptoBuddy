@@ -116,9 +116,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             Log.d("I", "Ticker response: " + response);
                             JSONObject rawData = response.getJSONObject("RAW").getJSONObject(crypto).getJSONObject("USD");
                             float currPrice = Float.valueOf(rawData.getString("PRICE"));
-//                            float percentChange = Float.valueOf(response.getString("percentChange"));
-//                            float amountChange = lastValue * percentChange;
-
                             currentPrice.setText(String.format(getString(R.string.price_format), currPrice));
                             currentPrice.setTextColor(Color.BLACK);
                             JsonObjectRequest chartDataRequest = getChartDataRequest(currPrice);

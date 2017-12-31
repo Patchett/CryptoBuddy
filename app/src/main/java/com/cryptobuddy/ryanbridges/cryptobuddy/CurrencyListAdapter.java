@@ -1,10 +1,14 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy;
 
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -21,8 +25,9 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private String priceStringResource;
     private int positiveGreenColor;
     private int negativeRedColor;
+    private AppCompatActivity context;
 
-    public CurrencyListAdapter(List<CurrencyListItem> currencyList, String negativePercentStringResource, String positivePercentStringResource, String priceStringResource, int positiveGreenColor, int negativeRedColor, CustomItemClickListener listener) {
+    public CurrencyListAdapter(List<CurrencyListItem> currencyList, String negativePercentStringResource, String positivePercentStringResource, String priceStringResource, int positiveGreenColor, int negativeRedColor, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.listener = listener;
         this.negativePercentStringResource = negativePercentStringResource;
@@ -30,13 +35,13 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         this.priceStringResource = priceStringResource;
         this.positiveGreenColor = positiveGreenColor;
         this.negativeRedColor = negativeRedColor;
+        this.context = context;
     }
 
     @Override
     public void onBindViewHolder(CurrencyListAdapter.ViewHolder holder, int position) {
         CurrencyListItem item = currencyList.get(position);
-        holder.symbolName.setText(item.symbol);
-        String changeStr;
+        holder.symbolName.setText(item.fullName);
         if (item.change24hr < 0) {
             holder.changeText.setText(String.format(negativePercentStringResource, item.changePCT24hr, item.change24hr));
             holder.changeText.setTextColor(negativeRedColor);
@@ -44,8 +49,8 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
             holder.changeText.setText(String.format(positivePercentStringResource, item.changePCT24hr, item.change24hr));
             holder.changeText.setTextColor(positiveGreenColor);
         }
-
         holder.currPriceText.setText(String.format(priceStringResource, item.currPrice));
+        Picasso.with(context).load(CurrencyListActivity.baseImageURL + item.imageURL).into(holder.coinImageView);
     }
 
     @Override
@@ -59,6 +64,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         public TextView symbolName;
         public TextView changeText;
         public TextView currPriceText;
+        public ImageView coinImageView;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
@@ -66,6 +72,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
             symbolName = (TextView) itemLayoutView.findViewById(R.id.symbolName);
             changeText = (TextView) itemLayoutView.findViewById(R.id.changeText);
             currPriceText = (TextView) itemLayoutView.findViewById(R.id.currPriceText);
+            coinImageView = (ImageView) itemLayoutView.findViewById(R.id.coinImage);
         }
 
         @Override

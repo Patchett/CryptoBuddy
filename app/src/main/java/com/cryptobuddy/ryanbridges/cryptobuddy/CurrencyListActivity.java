@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,17 +31,16 @@ import java.util.List;
 
 public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String NEWS_API_KEY = BuildConfig.API_KEY;
-    public final static String BTC_NEWS_URL_TEMPLATE = "http://eventregistry.org/json/article?query=%7B\"%24query\"%3A%7B\"%24and\"%3A%5B%7B\"conceptUri\"%3A%7B\"%24and\"%3A%5B\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FEthereum\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FCryptocurrency\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FBitcoin\"%2C\"http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FLitecoin\"%5D%7D%7D%2C%7B\"lang\"%3A\"eng\"%7D%5D%7D%7D&action=getArticles&resultType=articles&articlesSortBy=date&articlesCount=20&apiKey=";
-    private String homeCurrencyListURL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SONM,LSK,SALT&tsyms=USD";
-    public final static String BTC_NEWS_URL = BTC_NEWS_URL_TEMPLATE + NEWS_API_KEY;
-    private String TAG = CurrencyListActivity.class.getSimpleName();
+    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SNM,LSK,SALT,XP,ADA&tsyms=USD";
     public final static String SYMBOL = "SYMBOL";
+    public static String baseImageURL;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
     private CurrencyListAdapter adapter;
     private List<CurrencyListItem> currencyItemList;
+    private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
+    private String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
 
 
     @Override
@@ -59,7 +59,8 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
-        adapter = new CurrencyListAdapter(currencyItemList, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format), getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen), getResources().getColor(R.color.percentNegativeRed), new CustomItemClickListener() {
+        coinMetadataTable = new Hashtable<>();
+        adapter = new CurrencyListAdapter(currencyItemList, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format), getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen), getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
@@ -79,7 +80,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
-                getCurrencyList();
+                getAllCoinsList();
             }
         });
     }
@@ -87,7 +88,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     public void getCurrencyList() {
         swipeRefreshLayout.setRefreshing(true);
         Log.d("I", "inside of getCurrencyList()");
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, homeCurrencyListURL, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, HOME_CURRENCY_LIST_URL, null,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -103,7 +104,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                 Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
                                 Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
                                 Double currPrice = currencyDetails.getDouble("PRICE");
-                                currencyItemList.add(new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr));
+                                currencyItemList.add(new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr, coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName));
                                 Log.d("I", "PRICE: " + currPrice);
                                 Log.d("I", "CHANGE24HOUR: " + change24hr);
                                 Log.d("I", "CHANGEPCT24HOUR " + changePCT24hr);
@@ -119,6 +120,49 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                     swipeRefreshLayout.setRefreshing(false);
                 }
     }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+        VolleySingleton.getInstance().addToRequestQueue(request);
+    }
+
+    public void getAllCoinsList() {
+        Log.d("I", "inside of getAllCoinsList()");
+        swipeRefreshLayout.setRefreshing(true);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ALL_COINS_LIST_URL, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            baseImageURL = response.getString("BaseImageUrl");
+                            JSONObject data = response.getJSONObject("Data");
+                            Log.d("I", "Data from getAllCoinsList(): " + data);
+                            for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
+                                String currency = iter.next();
+                                try {
+                                    JSONObject currencyDetails = data.getJSONObject(currency);
+                                    String imageURL = currencyDetails.getString("ImageUrl");
+                                    String fullName = currencyDetails.getString("FullName");
+                                    String symbol = currencyDetails.getString("Symbol");
+                                    coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
+                                    Log.d("I", "ImageUrl: " + imageURL);
+                                    Log.d("I", "FullName: " + fullName);
+                                    Log.d("I", "Symbol " + symbol);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            getCurrencyList();
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError e) {
                 Log.e("ERROR", "Server Error: " + e.getMessage());
@@ -147,6 +191,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     @Override
     public void onRefresh() {
-        getCurrencyList();
+        getAllCoinsList();
     }
 }
