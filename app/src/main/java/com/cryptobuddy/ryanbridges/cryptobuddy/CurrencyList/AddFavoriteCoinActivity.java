@@ -46,7 +46,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
         getSupportActionBar().setTitle("Favorite Coins");
         coinList = new ArrayList<>();
         me = this;
-        coinRecyclerView = (RecyclerView) findViewById(R.id.coin_list_recycler_view);
+        coinRecyclerView = (RecyclerView) findViewById(R.id.coin_favs_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
         coinRecyclerView.addItemDecoration(divider);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -62,7 +62,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
         });
 
         // Setup swipe refresh layout
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.coin_list_swipe_refresh);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.coin_favs_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
@@ -75,7 +75,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
     }
 
     public void getAllCoinsList() {
-        Log.d("I", "inside of getAllCoinsList()");
+        Log.d("I", "inside of in addfavoritecoinactivity()");
         swipeRefreshLayout.setRefreshing(true);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ALL_COINS_LIST_URL, null,
                 new Response.Listener<JSONObject>() {
@@ -83,19 +83,22 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject data = response.getJSONObject("Data");
+                            Log.d("I", "Data in getAllCoinsList addfavorite: " + data);
                             for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
                                 String currency = iter.next();
                                 try {
                                     JSONObject currencyDetails = data.getJSONObject(currency);
-                                    String imageURL = currencyDetails.getString("ImageUrl");
+                                    Log.d("I", "currencyDetails in getAllCoinsList addfavorite: " + currencyDetails);
                                     String fullName = currencyDetails.getString("FullName");
                                     String symbol = currencyDetails.getString("Symbol");
-                                    coinList.add(new CoinMetadata(imageURL, fullName, symbol));
+                                    coinList.add(new CoinMetadata("", fullName, symbol));
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                             adapter.notifyDataSetChanged();
+                            Log.d("I", "coinListSize: " + coinList.size());
                             coinRecyclerView.setAdapter(adapter);
                         }
                         catch (JSONException e) {
@@ -116,7 +119,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
 
     @Override
     public void onRefresh() {
-        getAllCoinsList();
+        this.getAllCoinsList();
     }
 
 }

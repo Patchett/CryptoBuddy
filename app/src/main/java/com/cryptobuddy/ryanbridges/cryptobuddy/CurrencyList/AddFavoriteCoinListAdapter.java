@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
@@ -17,44 +17,43 @@ import java.util.List;
  * Created by Ryan on 12/31/2017.
  */
 
-public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavoriteCoinListAdapter.ViewHolder> {
-    private List<CoinMetadata> currencyList;
-    private AddFavoriteCoinListAdapter.ViewHolder viewHolder;
+public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList> {
+    private List<CoinMetadata> coinlist;
+    private AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList viewHolder;
     private static CustomItemClickListener listener;
     private AppCompatActivity context;
 
-    public AddFavoriteCoinListAdapter(List<CoinMetadata> currencyList, AppCompatActivity context, CustomItemClickListener listener) {
-        this.currencyList = currencyList;
+    public AddFavoriteCoinListAdapter(List<CoinMetadata> coinlist, AppCompatActivity context, CustomItemClickListener listener) {
+        this.coinlist = coinlist;
         this.listener = listener;
         this.context = context;
     }
 
     @Override
-    public void onBindViewHolder(AddFavoriteCoinListAdapter.ViewHolder holder, int position) {
-        CoinMetadata item = currencyList.get(position);
+    public void onBindViewHolder(AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList holder, int position) {
+        CoinMetadata item = coinlist.get(position);
         String[] namePieces = item.fullName.split("(?=\\()");
-        holder.fullNameTextView.setText(namePieces[0]);
-        holder.symbolNameTextView.setText(namePieces[1]);
+        holder.fullNameTextView.setText(item.fullName);
     }
 
     @Override
-    public AddFavoriteCoinListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_currency_list_item, parent, false);
-        viewHolder = new AddFavoriteCoinListAdapter.ViewHolder(itemLayoutView);
+    public AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_coin_favorites_list_item, parent, false);
+        viewHolder = new AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList(itemLayoutView);
         return viewHolder;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView fullNameTextView;
-        private TextView symbolNameTextView;
-        private ImageButton favoriteButton;
+    public static class ViewHolderFavoriteCoinList extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public TextView fullNameTextView;
+//        public TextView symbolNameTextView;
+        public ImageView favoriteButton;
 
-        private ViewHolder(View itemLayoutView) {
+        public ViewHolderFavoriteCoinList(View itemLayoutView) {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.fullName);
-            symbolNameTextView = (TextView) itemLayoutView.findViewById(R.id.symbolName);
-            favoriteButton = (ImageButton) itemLayoutView.findViewById(R.id.favorite_button);
+            fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.full_name_coin_favs_textview);
+//            symbolNameTextView = (TextView) itemLayoutView.findViewById(R.id.symbol_coin_favs_textview);
+            favoriteButton = (ImageView) itemLayoutView.findViewById(R.id.favorite_button);
         }
 
         @Override
@@ -64,6 +63,6 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
     }
 
     public int getItemCount() {
-        return currencyList.size();
+        return coinlist.size();
     }
 }

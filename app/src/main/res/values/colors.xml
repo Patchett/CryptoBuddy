@@ -19,6 +19,7 @@
     <color name="progressBarColor">#4dd0e1</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
 </resources>
 
     <!--public final static int materialLightGreen = Color.rgb(153,255,153);-->
