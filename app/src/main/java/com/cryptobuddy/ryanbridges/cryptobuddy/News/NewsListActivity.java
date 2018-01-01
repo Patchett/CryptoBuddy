@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy;
+package com.cryptobuddy.ryanbridges.cryptobuddy.News;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.cryptobuddy.ryanbridges.cryptobuddy.BuildConfig;
+import com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
+import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;

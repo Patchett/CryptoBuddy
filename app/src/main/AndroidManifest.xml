@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CurrencyListActivity"
+            android:name=".CurrencyList.CurrencyListActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,10 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewsListActivity"></activity>
-        <activity android:name=".WebViewActivity"></activity>
-        <activity android:name=".CurrencyTabsActivity"
-            android:parentActivityName=".CurrencyListActivity">
+        <activity android:name=".News.NewsListActivity"></activity>
+        <activity android:name=".News.WebViewActivity"></activity>
+        <activity android:name=".ChartsAndPriceData.CurrencyTabsActivity"
+            android:parentActivityName=".CurrencyList.CurrencyListActivity">
         </activity>
     </application>
 

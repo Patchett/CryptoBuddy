@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyListActivity">
+    tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity">
     <item
         android:id="@+id/news_button"
         android:title="@string/News"

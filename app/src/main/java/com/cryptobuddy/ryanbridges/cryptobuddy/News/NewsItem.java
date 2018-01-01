@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy;
+package com.cryptobuddy.ryanbridges.cryptobuddy.News;
 
 /**
  * Created by Ryan on 8/13/2017.

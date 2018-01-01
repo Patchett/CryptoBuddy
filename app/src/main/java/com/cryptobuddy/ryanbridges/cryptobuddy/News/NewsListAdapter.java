@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy;
+package com.cryptobuddy.ryanbridges.cryptobuddy.News;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
+import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

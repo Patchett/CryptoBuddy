@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy;
+package com.cryptobuddy.ryanbridges.cryptobuddy.News;
 
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
