@@ -93,6 +93,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         setContentView(R.layout.fragment_news_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Cryptobuddy News");
         mActivity = this;
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_recycler);
         recyclerView = (RecyclerView) findViewById(R.id.newsListRecyclerView);
