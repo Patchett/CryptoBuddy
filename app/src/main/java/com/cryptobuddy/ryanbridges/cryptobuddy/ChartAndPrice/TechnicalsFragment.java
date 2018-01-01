@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.ChartsAndPriceData;
+package com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

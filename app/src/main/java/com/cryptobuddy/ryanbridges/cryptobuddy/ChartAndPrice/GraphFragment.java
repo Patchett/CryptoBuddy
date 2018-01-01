@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.ChartsAndPriceData;
+package com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice;
 
 /**
  * Created by Ryan on 8/11/2017.

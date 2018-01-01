@@ -24,7 +24,7 @@
         </activity>
         <activity android:name=".News.NewsListActivity"></activity>
         <activity android:name=".News.WebViewActivity"></activity>
-        <activity android:name=".ChartsAndPriceData.CurrencyTabsActivity"
+        <activity android:name=".ChartAndPrice.CurrencyTabsActivity"
             android:parentActivityName=".CurrencyList.CurrencyListActivity">
         </activity>
     </application>

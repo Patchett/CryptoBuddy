@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.ChartsAndPriceData;
+package com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice;
 
 import android.content.Intent;
 import android.graphics.Color;

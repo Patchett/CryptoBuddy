@@ -17,7 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.cryptobuddy.ryanbridges.cryptobuddy.ChartsAndPriceData.CurrencyTabsActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice.CurrencyTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.News.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
