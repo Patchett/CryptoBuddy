@@ -41,15 +41,17 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     @Override
     public void onBindViewHolder(CurrencyListAdapter.ViewHolder holder, int position) {
         CurrencyListItem item = currencyList.get(position);
-        holder.symbolName.setText(item.fullName);
         if (item.change24hr < 0) {
-            holder.changeText.setText(String.format(negativePercentStringResource, item.changePCT24hr, item.change24hr));
-            holder.changeText.setTextColor(negativeRedColor);
+            holder.changeTextView.setText(String.format(negativePercentStringResource, item.changePCT24hr, item.change24hr));
+            holder.changeTextView.setTextColor(negativeRedColor);
         } else {
-            holder.changeText.setText(String.format(positivePercentStringResource, item.changePCT24hr, item.change24hr));
-            holder.changeText.setTextColor(positiveGreenColor);
+            holder.changeTextView.setText(String.format(positivePercentStringResource, item.changePCT24hr, item.change24hr));
+            holder.changeTextView.setTextColor(positiveGreenColor);
         }
-        holder.currPriceText.setText(String.format(priceStringResource, item.currPrice));
+        String[] namePieces = item.fullName.split("(?=\\()");
+        holder.fullNameTextView.setText(namePieces[0]);
+        holder.symbolNameTextView.setText(namePieces[1]);
+        holder.currPriceTextView.setText(String.format(priceStringResource, item.currPrice));
         Picasso.with(context).load(CurrencyListActivity.baseImageURL + item.imageURL).into(holder.coinImageView);
     }
 
@@ -61,18 +63,20 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView symbolName;
-        public TextView changeText;
-        public TextView currPriceText;
+        public TextView fullNameTextView;
+        public TextView changeTextView;
+        public TextView currPriceTextView;
         public ImageView coinImageView;
+        public TextView symbolNameTextView;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            symbolName = (TextView) itemLayoutView.findViewById(R.id.symbolName);
-            changeText = (TextView) itemLayoutView.findViewById(R.id.changeText);
-            currPriceText = (TextView) itemLayoutView.findViewById(R.id.currPriceText);
+            fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.fullName);
+            changeTextView = (TextView) itemLayoutView.findViewById(R.id.changeText);
+            currPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currPriceText);
             coinImageView = (ImageView) itemLayoutView.findViewById(R.id.coinImage);
+            symbolNameTextView = (TextView) itemLayoutView.findViewById(R.id.symbolName);
         }
 
         @Override
