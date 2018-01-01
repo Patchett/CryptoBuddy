@@ -45,7 +45,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private List<CurrencyListItem> currencyItemList;
     private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
-    private String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
+    public static final String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
 
 
     @Override
@@ -189,6 +189,9 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         switch(item.getItemId()) {
             case R.id.news_button:
                 startActivity(new Intent(this, NewsListActivity.class));
+                return true;
+            case R.id.add_currency_button:
+                startActivity(new Intent(this, AddFavoriteCoinActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);

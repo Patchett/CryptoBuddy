@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity">
     <item
+        android:id="@+id/add_currency_button"
+        android:title="@string/AddCurrency"
+        android:icon="@drawable/ic_add_white_24dp"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/news_button"
         android:title="@string/News"
         android:icon="@drawable/ic_library_books_white_24dp"

@@ -27,6 +27,9 @@
         <activity android:name=".ChartAndPrice.CurrencyTabsActivity"
             android:parentActivityName=".CurrencyList.CurrencyListActivity">
         </activity>
+        <activity android:name=".CurrencyList.AddFavoriteCoinActivity"
+            android:parentActivityName=".CurrencyList.CurrencyListActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -90,7 +90,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.news_list_fragment);
+        setContentView(R.layout.fragment_news_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         mActivity = this;

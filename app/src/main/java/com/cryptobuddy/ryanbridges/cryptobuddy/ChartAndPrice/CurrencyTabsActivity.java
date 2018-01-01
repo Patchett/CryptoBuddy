@@ -24,7 +24,7 @@ public class CurrencyTabsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.currency_tabs_activity);
+        setContentView(R.layout.activity_currency_tabs);
         String symbol = getIntent().getStringExtra(CurrencyListActivity.SYMBOL);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), symbol);
         mViewPager = (ViewPager) findViewById(R.id.container);

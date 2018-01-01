@@ -8,5 +8,8 @@
     <string name="News">News</string>
     <string name="Home">Home</string>
     <string name="CoinImage">Coin Image</string>
+    <string name="AddCurrency">Add Currency</string>
+    <string name="Favorite">Favorite</string>
+
 
 </resources>

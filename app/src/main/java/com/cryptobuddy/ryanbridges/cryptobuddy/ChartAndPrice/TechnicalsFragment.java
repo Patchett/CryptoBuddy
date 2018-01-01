@@ -36,7 +36,7 @@ public class TechnicalsFragment extends Fragment implements SwipeRefreshLayout.O
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.technical_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_technical, container, false);
         return rootView;
     }
 

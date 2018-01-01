@@ -204,7 +204,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.graph_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
