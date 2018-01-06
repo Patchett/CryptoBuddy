@@ -36,7 +36,7 @@ import java.util.List;
 
 public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SNM,LSK,SALT,XP,ADA&tsyms=USD";
+    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SNM,LSK,SALT,XP,ADA,STEEM,ENG,EVX,UFR,CND,DBC,LINK,KCS&tsyms=USD";
     public final static String SYMBOL = "SYMBOL";
     public static String baseImageURL;
     private SwipeRefreshLayout swipeRefreshLayout;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- When selected, use grey -->
+    <item android:drawable="@drawable/ic_star_enabled_24dp"
+        android:state_checked="true" />
+    <!-- When not selected, use white-->
+    <item android:drawable="@drawable/ic_star_border_black_24dp"
+        android:state_checked="false"/>
+
+</selector>

@@ -53,13 +53,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         coinRecyclerView.setLayoutManager(llm);
 
-        adapter = new AddFavoriteCoinListAdapter(coinList, me, new CustomItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Toast.makeText(AddFavoriteCoinActivity.this, "You selected: " + coinList.get(position).symbol, Toast.LENGTH_LONG).show();
-
-            }
-        });
+        adapter = new AddFavoriteCoinListAdapter(coinList, me);
 
         // Setup swipe refresh layout
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.coin_favs_swipe_refresh);

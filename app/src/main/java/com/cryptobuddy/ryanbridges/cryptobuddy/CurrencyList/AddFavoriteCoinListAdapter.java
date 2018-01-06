@@ -1,14 +1,12 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 
 import java.util.List;
@@ -20,19 +18,16 @@ import java.util.List;
 public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList> {
     private List<CoinMetadata> coinlist;
     private AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList viewHolder;
-    private static CustomItemClickListener listener;
     private AppCompatActivity context;
 
-    public AddFavoriteCoinListAdapter(List<CoinMetadata> coinlist, AppCompatActivity context, CustomItemClickListener listener) {
+    public AddFavoriteCoinListAdapter(List<CoinMetadata> coinlist, AppCompatActivity context) {
         this.coinlist = coinlist;
-        this.listener = listener;
         this.context = context;
     }
 
     @Override
     public void onBindViewHolder(AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList holder, int position) {
         CoinMetadata item = coinlist.get(position);
-        String[] namePieces = item.fullName.split("(?=\\()");
         holder.fullNameTextView.setText(item.fullName);
     }
 
@@ -45,20 +40,18 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
 
     public static class ViewHolderFavoriteCoinList extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView fullNameTextView;
-//        public TextView symbolNameTextView;
-        public ImageView favoriteButton;
+        public ToggleButton favoriteButton;
 
         public ViewHolderFavoriteCoinList(View itemLayoutView) {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
             fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.full_name_coin_favs_textview);
-//            symbolNameTextView = (TextView) itemLayoutView.findViewById(R.id.symbol_coin_favs_textview);
-            favoriteButton = (ImageView) itemLayoutView.findViewById(R.id.favorite_button);
+            favoriteButton = (ToggleButton) itemLayoutView.findViewById(R.id.favorite_button);
         }
 
         @Override
         public void onClick(View v) {
-            listener.onItemClick(getAdapterPosition(), v);
+            favoriteButton.toggle();
         }
     }
 
