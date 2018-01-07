@@ -18,7 +18,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice.CurrencyTabsActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
+import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.News.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
@@ -36,7 +38,9 @@ import java.util.List;
 
 public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SNM,LSK,SALT,XP,ADA,STEEM,ENG,EVX,UFR,CND,DBC,LINK,KCS&tsyms=USD";
+    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
+    private String formattedCurrencyListURL;
+//    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SNM,LSK,SALT,XP,ADA,STEEM,ENG,EVX,UFR,CND,DBC,LINK,KCS&tsyms=USD";
     public final static String SYMBOL = "SYMBOL";
     public static String baseImageURL;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -45,6 +49,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private List<CurrencyListItem> currencyItemList;
     private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
+    private DatabaseHelperSingleton db;
     public static final String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
 
 
@@ -55,7 +60,10 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        me = this;
+        this.me = this;
+        this.db = DatabaseHelperSingleton.getInstance(this);
+        CoinFavoritesStructures coinFavs = db.getFavorites();
+        formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
         // Setup currency list
         currencyRecyclerView = (RecyclerView) findViewById(R.id.currency_list_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
@@ -72,7 +80,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                 intent.putExtra(SYMBOL, currencyItemList.get(position).symbol);
                 startActivity(intent);
                 Toast.makeText(CurrencyListActivity.this, "You selected: " + currencyItemList.get(position).symbol, Toast.LENGTH_LONG).show();
-
             }
         });
 
@@ -93,7 +100,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     public void getCurrencyList() {
         swipeRefreshLayout.setRefreshing(true);
         Log.d("I", "inside of getCurrencyList()");
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, HOME_CURRENCY_LIST_URL, null,
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedCurrencyListURL, null,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
