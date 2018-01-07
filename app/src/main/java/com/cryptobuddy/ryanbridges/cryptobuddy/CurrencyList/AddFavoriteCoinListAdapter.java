@@ -35,8 +35,8 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
         this.context = context;
         this.db = db;
         this.listener = listener;
-        this.starDisabled = (Drawable) context.getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
-        this.starEnabled = (Drawable) context.getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
+        this.starDisabled = context.getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
+        this.starEnabled = context.getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
     }
 
     @Override

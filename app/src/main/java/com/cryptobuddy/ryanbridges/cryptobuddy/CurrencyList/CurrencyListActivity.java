@@ -47,6 +47,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private RecyclerView currencyRecyclerView;
     private CurrencyListAdapter adapter;
     private List<CurrencyListItem> currencyItemList;
+    private Hashtable<String, CurrencyListItem> currencyItemMap;
     private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
@@ -71,6 +72,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         coinMetadataTable = new Hashtable<>();
+        currencyItemMap = new Hashtable<>();
         adapter = new CurrencyListAdapter(currencyItemList, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
                 getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen),
                 getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
@@ -115,7 +117,9 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                 Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
                                 Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
                                 Double currPrice = currencyDetails.getDouble("PRICE");
-                                currencyItemList.add(new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr, coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName));
+                                CurrencyListItem newItem = new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr, coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName);
+                                currencyItemList.add(newItem);
+                                currencyItemMap.put(currency, newItem);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -141,7 +145,19 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     @Override
     public void onResume() {
         super.onResume();
-        getAllCoinsList();
+        CoinFavoritesStructures favs = this.db.getFavorites();
+        for (int i = 0; i < favs.favoriteList.size(); i++) { // Check if a coin was added to favorites
+            if (currencyItemMap.get(favs.favoriteList.get(i)) == null) {
+                getAllCoinsList();
+                return;
+            }
+        }
+        for (int i = 0; i < currencyItemList.size(); i++) { // Check if a coin was removed from favorites
+            if (favs.favoritesMap.get(currencyItemList.get(i).symbol) == null) {
+                getAllCoinsList();
+                return;
+            }
+        }
     }
 
     public void getAllCoinsList() {
