@@ -5,7 +5,7 @@
     <item
         android:id="@+id/add_currency_button"
         android:title="@string/AddCurrency"
-        android:icon="@drawable/ic_add_white_24dp"
+        android:icon="@drawable/ic_bookmark_white_24dp"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/news_button"
