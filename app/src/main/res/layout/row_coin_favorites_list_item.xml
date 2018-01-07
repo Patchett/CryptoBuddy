@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.647" />
 
-    <ToggleButton
+    <ImageView
         android:id="@+id/fav_coin_row_favorite_button"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -27,7 +27,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/button_custom_star"
+        android:background="@drawable/ic_star_border_black_24dp"
         android:contentDescription="@string/Favorite"
         android:focusable="false"
         android:focusableInTouchMode="false"

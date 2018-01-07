@@ -62,8 +62,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         this.me = this;
         this.db = DatabaseHelperSingleton.getInstance(this);
-        CoinFavoritesStructures coinFavs = db.getFavorites();
-        formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
         // Setup currency list
         currencyRecyclerView = (RecyclerView) findViewById(R.id.currency_list_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
@@ -101,27 +99,23 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     public void getCurrencyList() {
         swipeRefreshLayout.setRefreshing(true);
-        Log.d("I", "inside of getCurrencyList()");
+        CoinFavoritesStructures coinFavs = db.getFavorites();
+        formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedCurrencyListURL, null,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Log.d("I", "Currency List: " + response.toString());
                     currencyItemList.clear();
                     try {
                         JSONObject rawResponse = response.getJSONObject("RAW");
                         for(Iterator<String> iter = rawResponse.keys();iter.hasNext();) {
                             String currency = iter.next();
-                            Log.d("I", "currency " + currency);
                             try {
                                 JSONObject currencyDetails = rawResponse.getJSONObject(currency).getJSONObject("USD");
                                 Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
                                 Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
                                 Double currPrice = currencyDetails.getDouble("PRICE");
                                 currencyItemList.add(new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr, coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName));
-                                Log.d("I", "PRICE: " + currPrice);
-                                Log.d("I", "CHANGE24HOUR: " + change24hr);
-                                Log.d("I", "CHANGEPCT24HOUR " + changePCT24hr);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -144,8 +138,13 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         VolleySingleton.getInstance().addToRequestQueue(request);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getAllCoinsList();
+    }
+
     public void getAllCoinsList() {
-        Log.d("I", "inside of getAllCoinsList()");
         swipeRefreshLayout.setRefreshing(true);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ALL_COINS_LIST_URL, null,
                 new Response.Listener<JSONObject>() {
@@ -154,7 +153,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                         try {
                             baseImageURL = response.getString("BaseImageUrl");
                             JSONObject data = response.getJSONObject("Data");
-                            Log.d("I", "Data from getAllCoinsList(): " + data);
                             for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
                                 String currency = iter.next();
                                 try {
@@ -163,9 +161,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                     String fullName = currencyDetails.getString("FullName");
                                     String symbol = currencyDetails.getString("Symbol");
                                     coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
-                                    Log.d("I", "ImageUrl: " + imageURL);
-                                    Log.d("I", "FullName: " + fullName);
-                                    Log.d("I", "Symbol " + symbol);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

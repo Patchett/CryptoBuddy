@@ -1,13 +1,13 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
@@ -27,12 +27,16 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
     private AppCompatActivity context;
     public DatabaseHelperSingleton db;
     private CustomItemClickListener listener;
+    private Drawable starDisabled;
+    private Drawable starEnabled;
 
     public AddFavoriteCoinListAdapter(List<CoinMetadata> coinlist, AppCompatActivity context, DatabaseHelperSingleton db, CustomItemClickListener listener) {
         this.coinlist = coinlist;
         this.context = context;
         this.db = db;
         this.listener = listener;
+        this.starDisabled = (Drawable) context.getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
+        this.starEnabled = (Drawable) context.getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
     }
 
     @Override
@@ -41,15 +45,19 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
         holder.fullNameTextView.setText(item.fullName);
         CoinFavoritesStructures favs = db.getFavorites();
         if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet.
-            holder.favoriteButton.setChecked(false);
+            holder.favoriteButton.setBackground(starDisabled);
         } else { // Coin is a favorite
-            holder.favoriteButton.setChecked(true);
+            holder.favoriteButton.setBackground(starEnabled);
         }
         holder.favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("I", "Inside of favoriteButton Listener");
-                holder.favoriteButton.toggle();
+                if (holder.favoriteButton.getBackground() == starDisabled) {
+                    holder.favoriteButton.setBackground(starEnabled);
+                }
+                else {
+                    holder.favoriteButton.setBackground(starDisabled);
+                }
                 CoinFavoritesStructures favs = db.getFavorites();
                 CoinMetadata item = coinlist.get(position);
                 if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet. Add it.
@@ -68,27 +76,34 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
     @Override
     public AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_coin_favorites_list_item, parent, false);
-        viewHolder = new AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList(itemLayoutView, this.listener);
+        viewHolder = new AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList(itemLayoutView, this.listener, starEnabled, starDisabled);
         return viewHolder;
     }
 
     public static class ViewHolderFavoriteCoinList extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView fullNameTextView;
-        public ToggleButton favoriteButton;
+        public ImageView favoriteButton;
         private WeakReference<CustomItemClickListener> listenerRef;
-        private DatabaseHelperSingleton db;
+        private Drawable starEnabled, starDisabled;
 
-        public ViewHolderFavoriteCoinList(View itemLayoutView, CustomItemClickListener listener) {
+        public ViewHolderFavoriteCoinList(View itemLayoutView, CustomItemClickListener listener, Drawable starEnabled, Drawable starDisabled) {
             super(itemLayoutView);
-            listenerRef = new WeakReference<>(listener);
+            this.listenerRef = new WeakReference<>(listener);
             itemLayoutView.setOnClickListener(this);
-            fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.full_name_coin_favs_textview);
-            favoriteButton = (ToggleButton) itemLayoutView.findViewById(R.id.fav_coin_row_favorite_button);
+            this.fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.full_name_coin_favs_textview);
+            this.favoriteButton = (ImageView) itemLayoutView.findViewById(R.id.fav_coin_row_favorite_button);
+            this.starDisabled = starDisabled;
+            this.starEnabled = starEnabled;
         }
 
         @Override
         public void onClick(View v) {
-            favoriteButton.toggle();
+            if (favoriteButton.getBackground() == starDisabled) {
+                favoriteButton.setBackground(starEnabled);
+            }
+            else {
+                favoriteButton.setBackground(starDisabled);
+            }
             listenerRef.get().onItemClick(getAdapterPosition(), v);
         }
     }

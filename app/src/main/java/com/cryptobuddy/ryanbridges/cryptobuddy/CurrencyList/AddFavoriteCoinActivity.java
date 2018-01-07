@@ -132,7 +132,6 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
 
 
     public void getAllCoinsList() {
-        Log.d("I", "inside of in addfavoritecoinactivity()");
         swipeRefreshLayout.setRefreshing(true);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ALL_COINS_LIST_URL, null,
                 new Response.Listener<JSONObject>() {
@@ -140,13 +139,11 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
                     public void onResponse(JSONObject response) {
                         try {
                             JSONObject data = response.getJSONObject("Data");
-                            Log.d("I", "Data in getAllCoinsList addfavorite: " + data);
                             coinList.clear();
                             for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
                                 String currency = iter.next();
                                 try {
                                     JSONObject currencyDetails = data.getJSONObject(currency);
-                                    Log.d("I", "currencyDetails in getAllCoinsList addfavorite: " + currencyDetails);
                                     String fullName = currencyDetails.getString("FullName");
                                     String symbol = currencyDetails.getString("Symbol");
                                     coinList.add(new CoinMetadata("", fullName, symbol));
