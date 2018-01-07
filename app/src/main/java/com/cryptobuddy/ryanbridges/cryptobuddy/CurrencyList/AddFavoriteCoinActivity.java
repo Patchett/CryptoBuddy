@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -13,6 +14,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.cryptobuddy.ryanbridges.cryptobuddy.CoinFavoritesStructures;
+import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
+import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -38,6 +42,8 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
     private AddFavoriteCoinListAdapter adapter;
     private AppCompatActivity me;
     private SearchView searchView;
+    private DatabaseHelperSingleton db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +58,22 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         coinRecyclerView.setLayoutManager(llm);
-
-        adapter = new AddFavoriteCoinListAdapter(coinList, me);
+        this.db = DatabaseHelperSingleton.getInstance(this);
+        adapter = new AddFavoriteCoinListAdapter(coinList, me, db, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                CoinFavoritesStructures favs = db.getFavorites();
+                CoinMetadata item = coinList.get(position);
+                if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet. Add it.
+                    favs.favoritesMap.put(item.symbol, item.symbol);
+                    favs.favoriteList.add(item.symbol);
+                } else { // Coin is already a favorite, remove it
+                    favs.favoritesMap.remove(item.symbol);
+                    favs.favoriteList.remove(item.symbol);
+                }
+                db.saveCoinFavorites(favs);
+            }
+        });
 
         // Setup swipe refresh layout
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.coin_favs_swipe_refresh);
@@ -79,16 +99,29 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
             @Override
             public boolean onQueryTextChange(String newText) {
                 newText = newText.toLowerCase();
-                List<CoinMetadata> filteredList = new ArrayList<>();
+                final List<CoinMetadata> filteredList = new ArrayList<>();
                 for (int i = 0; i < coinList.size(); i++) {
                     CoinMetadata currCoin = coinList.get(i);
                     if (currCoin.fullName.toLowerCase().contains(newText)) {
                         filteredList.add(currCoin);
                     }
                 }
-                adapter = new AddFavoriteCoinListAdapter(filteredList, me);
+                adapter = new AddFavoriteCoinListAdapter(filteredList, me, db, new CustomItemClickListener() {
+                    @Override
+                    public void onItemClick(int position, View v) {
+                        CoinFavoritesStructures favs = db.getFavorites();
+                        CoinMetadata item = filteredList.get(position);
+                        if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet. Add it.
+                            favs.favoritesMap.put(item.symbol, item.symbol);
+                            favs.favoriteList.add(item.symbol);
+                        } else { // Coin is already a favorite, remove it
+                            favs.favoritesMap.remove(item.symbol);
+                            favs.favoriteList.remove(item.symbol);
+                        }
+                        db.saveCoinFavorites(favs);
+                    }
+                });
                 coinRecyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
                 return true;
             }
         });

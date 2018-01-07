@@ -73,7 +73,9 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         coinMetadataTable = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format), getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen), getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
+        adapter = new CurrencyListAdapter(currencyItemList, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
+                getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen),
+                getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);

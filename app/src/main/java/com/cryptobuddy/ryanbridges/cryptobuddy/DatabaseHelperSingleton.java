@@ -80,4 +80,12 @@ public class DatabaseHelperSingleton extends SQLiteOpenHelper {
         return new CoinFavoritesStructures(favoritesList, favoritesMap);
     }
 
+    public void saveCoinFavorites(CoinFavoritesStructures favs) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Gson gson = new Gson();
+        String favoritesListString = gson.toJson(favs.favoriteList);
+        ContentValues newCoinFavorites = new ContentValues();
+        newCoinFavorites.put(FAVORITE_COINS_COL_1, favoritesListString);
+        db.update(DATABASE_TABLE, newCoinFavorites, null, null);
+    }
 }
