@@ -76,13 +76,14 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
         public TextView fullNameTextView;
         public ToggleButton favoriteButton;
         private WeakReference<CustomItemClickListener> listenerRef;
+        private DatabaseHelperSingleton db;
 
         public ViewHolderFavoriteCoinList(View itemLayoutView, CustomItemClickListener listener) {
             super(itemLayoutView);
             listenerRef = new WeakReference<>(listener);
             itemLayoutView.setOnClickListener(this);
             fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.full_name_coin_favs_textview);
-            favoriteButton = (ToggleButton) itemLayoutView.findViewById(R.id.favorite_button);
+            favoriteButton = (ToggleButton) itemLayoutView.findViewById(R.id.fav_coin_row_favorite_button);
         }
 
         @Override

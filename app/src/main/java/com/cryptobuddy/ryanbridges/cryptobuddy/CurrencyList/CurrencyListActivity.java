@@ -201,6 +201,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                 return true;
             case R.id.add_currency_button:
                 startActivity(new Intent(this, AddFavoriteCoinActivity.class));
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
         }
         return super.onOptionsItemSelected(item);

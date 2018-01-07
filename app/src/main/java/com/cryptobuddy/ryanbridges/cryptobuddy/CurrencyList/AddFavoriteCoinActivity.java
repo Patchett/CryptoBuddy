@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -172,6 +173,19 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
             }
         });
         VolleySingleton.getInstance().addToRequestQueue(request);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
