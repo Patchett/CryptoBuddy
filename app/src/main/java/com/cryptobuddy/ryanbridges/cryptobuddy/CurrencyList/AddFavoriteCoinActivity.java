@@ -146,10 +146,11 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
                                     JSONObject currencyDetails = data.getJSONObject(currency);
                                     String fullName = currencyDetails.getString("FullName");
                                     String symbol = currencyDetails.getString("Symbol");
-                                    coinList.add(new CoinMetadata("", fullName, symbol));
-
+                                    String imageURL = currencyDetails.getString("ImageUrl");
+                                    coinList.add(new CoinMetadata(imageURL, fullName, symbol));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    continue;
                                 }
                             }
                             adapter.notifyDataSetChanged();

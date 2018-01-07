@@ -20,4 +20,9 @@ public class CurrencyListItem {
         this.imageURL = imageURL;
         this.fullName = fullName;
     }
+
+    @Override
+    public String toString() {
+        return symbol;
+    }
 }

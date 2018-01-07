@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,7 +41,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
     private String formattedCurrencyListURL;
-//    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,LTC,ETC,XRP,XMR,DASH,BCH,BTG,XLM,XVG,XRB,SNM,LSK,SALT,XP,ADA,STEEM,ENG,EVX,UFR,CND,DBC,LINK,KCS&tsyms=USD";
     public final static String SYMBOL = "SYMBOL";
     public static String baseImageURL;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -52,6 +52,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
     public static final String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
+    private ItemTouchHelper mItemTouchHelper;
 
 
     @Override
@@ -73,7 +74,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         currencyItemList = new ArrayList<>();
         coinMetadataTable = new Hashtable<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
+        adapter = new CurrencyListAdapter(currencyItemList, db, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
                 getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen),
                 getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
             @Override
@@ -84,7 +85,9 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                 Toast.makeText(CurrencyListActivity.this, "You selected: " + currencyItemList.get(position).symbol, Toast.LENGTH_LONG).show();
             }
         });
-
+        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(currencyRecyclerView);
 
         // Setup swipe refresh layout
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.currency_list_swipe_refresh);
@@ -103,11 +106,13 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         swipeRefreshLayout.setRefreshing(true);
         CoinFavoritesStructures coinFavs = db.getFavorites();
         formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
+        Log.d("I", "formattedCurrencyListURL: %s" + formattedCurrencyListURL);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedCurrencyListURL, null,
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     currencyItemList.clear();
+                    currencyItemMap.clear();
                     try {
                         JSONObject rawResponse = response.getJSONObject("RAW");
                         for(Iterator<String> iter = rawResponse.keys();iter.hasNext();) {
@@ -124,6 +129,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                 e.printStackTrace();
                             }
                         }
+                        adapter.setCurrencyList(currencyItemList);
                         adapter.notifyDataSetChanged();
                         currencyRecyclerView.setAdapter(adapter);
                     } catch (JSONException e) {
@@ -169,16 +175,19 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                         try {
                             baseImageURL = response.getString("BaseImageUrl");
                             JSONObject data = response.getJSONObject("Data");
+                            Log.d("I", "data in getAllCoinsList: " + data);
                             for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
                                 String currency = iter.next();
                                 try {
                                     JSONObject currencyDetails = data.getJSONObject(currency);
-                                    String imageURL = currencyDetails.getString("ImageUrl");
                                     String fullName = currencyDetails.getString("FullName");
+                                    Log.d("I", "current fullName: " + fullName);
                                     String symbol = currencyDetails.getString("Symbol");
+                                    String imageURL = currencyDetails.getString("ImageUrl");
                                     coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    continue;
                                 }
                             }
                             getCurrencyList();
