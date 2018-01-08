@@ -126,7 +126,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                 currencyItemList.add(newItem);
                                 currencyItemMap.put(currency, newItem);
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                continue;
                             }
                         }
                         adapter.setCurrencyList(currencyItemList);
@@ -186,7 +186,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                     String imageURL = currencyDetails.getString("ImageUrl");
                                     coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
                                     continue;
                                 }
                             }

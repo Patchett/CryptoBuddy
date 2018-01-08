@@ -149,7 +149,6 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
                                     String imageURL = currencyDetails.getString("ImageUrl");
                                     coinList.add(new CoinMetadata(imageURL, fullName, symbol));
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
                                     continue;
                                 }
                             }
