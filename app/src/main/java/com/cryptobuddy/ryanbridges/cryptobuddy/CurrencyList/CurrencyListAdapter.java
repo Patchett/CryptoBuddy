@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -35,8 +36,10 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private CustomItemClickListener listener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
+    private Hashtable<String, CurrencyListItem> currencyItemMap;
 
-    public CurrencyListAdapter(List<CurrencyListItem> currencyList, DatabaseHelperSingleton db, String negativePercentStringResource,
+    public CurrencyListAdapter(List<CurrencyListItem> currencyList, Hashtable<String, CurrencyListItem> currencyItemMap,
+                               DatabaseHelperSingleton db, String negativePercentStringResource,
                                String positivePercentStringResource, String priceStringResource, int positiveGreenColor,
                                int negativeRedColor, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
@@ -48,6 +51,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         this.contextRef = new WeakReference<>(context);
         this.listener = listener;
         this.dbRef = new WeakReference<>(db);
+        this.currencyItemMap = currencyItemMap;
     }
 
     @Override
@@ -112,6 +116,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
 
     @Override
     public void onItemDismiss(int position) {
+        this.currencyItemMap.remove(this.currencyList.get(position).symbol);
         this.currencyList.remove(position);
         notifyItemRemoved(position);
     }

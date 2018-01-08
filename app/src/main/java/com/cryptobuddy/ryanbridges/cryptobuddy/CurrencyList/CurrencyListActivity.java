@@ -74,7 +74,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         currencyItemList = new ArrayList<>();
         coinMetadataTable = new Hashtable<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, db, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
+        adapter = new CurrencyListAdapter(currencyItemList, currencyItemMap, db, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
                 getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen),
                 getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
             @Override
