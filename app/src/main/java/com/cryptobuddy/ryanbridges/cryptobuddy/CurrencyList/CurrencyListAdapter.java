@@ -32,7 +32,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private String priceStringResource;
     private int positiveGreenColor;
     private int negativeRedColor;
-    private WeakReference<CustomItemClickListener> listenerRef;
+    private CustomItemClickListener listener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
 
@@ -46,7 +46,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         this.positiveGreenColor = positiveGreenColor;
         this.negativeRedColor = negativeRedColor;
         this.contextRef = new WeakReference<>(context);
-        this.listenerRef = new WeakReference<>(listener);
+        this.listener = listener;
         this.dbRef = new WeakReference<>(db);
     }
 
@@ -70,7 +70,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     @Override
     public CurrencyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_currency_list_item, parent, false);
-        viewHolder = new CurrencyListAdapter.ViewHolder(itemLayoutView, listenerRef);
+        viewHolder = new CurrencyListAdapter.ViewHolder(itemLayoutView, listener);
         return viewHolder;
     }
 
@@ -80,9 +80,9 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         public TextView currPriceTextView;
         public ImageView coinImageView;
         public TextView symbolNameTextView;
-        private WeakReference<CustomItemClickListener> listenerRef;
+        private CustomItemClickListener listener;
 
-        public ViewHolder(View itemLayoutView, WeakReference<CustomItemClickListener> listenerRef)
+        public ViewHolder(View itemLayoutView, CustomItemClickListener listener)
         {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
@@ -91,7 +91,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
             currPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currPriceText);
             coinImageView = (ImageView) itemLayoutView.findViewById(R.id.coinImage);
             symbolNameTextView = (TextView) itemLayoutView.findViewById(R.id.symbolName);
-            this.listenerRef = listenerRef;
+            this.listener = listener;
         }
 
         @Override
@@ -106,7 +106,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
 
         @Override
         public void onClick(View v) {
-            listenerRef.get().onItemClick(getAdapterPosition(), v);
+            listener.onItemClick(getAdapterPosition(), v);
         }
     }
 
