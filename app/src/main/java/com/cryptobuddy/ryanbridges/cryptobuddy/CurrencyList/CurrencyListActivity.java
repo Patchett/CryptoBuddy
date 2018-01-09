@@ -25,10 +25,14 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.News.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
+import com.grizzly.rest.GenericRestCall;
+import com.grizzly.rest.Model.afterTaskCompletion;
+import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpMethod;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -97,7 +101,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
-                getAllCoinsList();
+                getAllCoinsListEasyRest();
             }
         });
     }
@@ -154,16 +158,63 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         CoinFavoritesStructures favs = this.db.getFavorites();
         for (int i = 0; i < favs.favoriteList.size(); i++) { // Check if a coin was added to favorites
             if (currencyItemMap.get(favs.favoriteList.get(i)) == null) {
-                getAllCoinsList();
+                getAllCoinsListEasyRest();
                 return;
             }
         }
         for (int i = 0; i < currencyItemList.size(); i++) { // Check if a coin was removed from favorites
             if (favs.favoritesMap.get(currencyItemList.get(i).symbol) == null) {
-                getAllCoinsList();
+                getAllCoinsListEasyRest();
                 return;
             }
         }
+    }
+
+    public void getAllCoinsListEasyRest() {
+        swipeRefreshLayout.setRefreshing(true);
+        GenericRestCall<String, JSONObject, String> restCall = new GenericRestCall<>(String.class, JSONObject.class, String.class)
+                .setUrl(ALL_COINS_LIST_URL)
+                .isCacheEnabled(true)
+                .setCacheTime(604800000L)
+                .setMethodToCall(HttpMethod.GET)
+                .setTaskCompletion(new afterTaskCompletion<JSONObject>() {
+                    @Override
+                    public void onTaskCompleted(JSONObject response) {
+                        try {
+                            Log.d("I", "response in getAllCoinsListEasyRest: " + response);
+                            baseImageURL = response.getString("BaseImageUrl");
+                            JSONObject data = response.getJSONObject("Data");
+                            Log.d("I", "data in getAllCoinsList: " + data);
+                            for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
+                                String currency = iter.next();
+                                try {
+                                    JSONObject currencyDetails = data.getJSONObject(currency);
+                                    String fullName = currencyDetails.getString("FullName");
+                                    Log.d("I", "current fullName: " + fullName);
+                                    String symbol = currencyDetails.getString("Symbol");
+                                    String imageURL = currencyDetails.getString("ImageUrl");
+                                    coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
+                                } catch (JSONException e) {
+                                    continue;
+                                }
+                            }
+                            getCurrencyList();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                })
+                .setTaskFailure(new afterTaskFailure() {
+                    @Override
+                    public void onTaskFailed(Object o, Exception e) {
+                        Log.e("ERROR", "Server Error: " + e.getMessage());
+                        Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                })
+                .setAutomaticCacheRefresh(true);
+        restCall.execute();
     }
 
     public void getAllCoinsList() {
@@ -228,6 +279,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     @Override
     public void onRefresh() {
-        getAllCoinsList();
+        getAllCoinsListEasyRest();
     }
 }
