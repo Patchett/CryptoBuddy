@@ -24,26 +24,26 @@ import java.util.List;
 public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList> {
     private List<CoinMetadata> coinlist;
     private AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList viewHolder;
-    private AppCompatActivity context;
-    public DatabaseHelperSingleton db;
+    private WeakReference<AppCompatActivity> contextRef;
+    private WeakReference<DatabaseHelperSingleton> dbRef;
     private CustomItemClickListener listener;
     private Drawable starDisabled;
     private Drawable starEnabled;
 
     public AddFavoriteCoinListAdapter(List<CoinMetadata> coinlist, AppCompatActivity context, DatabaseHelperSingleton db, CustomItemClickListener listener) {
         this.coinlist = coinlist;
-        this.context = context;
-        this.db = db;
+        this.contextRef = new WeakReference<>(context);
+        this.dbRef = new WeakReference<>(db);
         this.listener = listener;
-        this.starDisabled = context.getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
-        this.starEnabled = context.getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
+        this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
+        this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
     }
 
     @Override
     public void onBindViewHolder(final AddFavoriteCoinListAdapter.ViewHolderFavoriteCoinList holder, final int position) {
         CoinMetadata item = coinlist.get(position);
         holder.fullNameTextView.setText(item.fullName);
-        CoinFavoritesStructures favs = db.getFavorites();
+        CoinFavoritesStructures favs = dbRef.get().getFavorites();
         if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet.
             holder.favoriteButton.setBackground(starDisabled);
         } else { // Coin is a favorite
@@ -58,7 +58,7 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
                 else {
                     holder.favoriteButton.setBackground(starDisabled);
                 }
-                CoinFavoritesStructures favs = db.getFavorites();
+                CoinFavoritesStructures favs = dbRef.get().getFavorites();
                 CoinMetadata item = coinlist.get(position);
                 if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet. Add it.
                     favs.favoritesMap.put(item.symbol, item.symbol);
@@ -67,7 +67,7 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
                     favs.favoritesMap.remove(item.symbol);
                     favs.favoriteList.remove(item.symbol);
                 }
-                db.saveCoinFavorites(favs);
+                dbRef.get().saveCoinFavorites(favs);
             }
         });
 
