@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
 
 import android.util.Log;
 

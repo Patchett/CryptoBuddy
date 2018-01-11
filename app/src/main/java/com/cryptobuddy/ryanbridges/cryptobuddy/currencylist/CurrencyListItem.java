@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 /**
  * Created by Ryan on 12/9/2017.

@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,8 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity;
-import com.cryptobuddy.ryanbridges.cryptobuddy.News.NewsListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 
 /**

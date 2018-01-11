@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 import android.support.v7.widget.RecyclerView;
 

@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.News;
+package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 
 import android.content.Intent;
 import android.graphics.Bitmap;

@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.News;
+package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

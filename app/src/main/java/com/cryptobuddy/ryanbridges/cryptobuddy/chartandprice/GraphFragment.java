@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.ChartAndPrice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
 
 /**
  * Created by Ryan on 8/11/2017.
@@ -20,7 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
 import com.github.mikephil.charting.charts.LineChart;

@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity.ALL_COINS_LIST_URL;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity.ALL_COINS_LIST_URL;
 
 /**
  * Created by Ryan on 12/31/2017.
