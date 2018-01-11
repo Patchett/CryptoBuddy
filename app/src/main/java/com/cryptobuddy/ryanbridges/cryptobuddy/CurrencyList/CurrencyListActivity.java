@@ -26,10 +26,16 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.News.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
+import com.grizzly.rest.GenericRestCall;
+import com.grizzly.rest.Model.afterTaskCompletion;
+import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpMethod;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -154,42 +160,38 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ALL_COINS_LIST_URL, null,
-                new Response.Listener<JSONObject>() {
+        GenericRestCall<String, CoinList, String> restCall = new GenericRestCall<>(String.class, CoinList.class, String.class)
+                .setUrl(ALL_COINS_LIST_URL)
+                .setContext(getApplicationContext())
+                .isCacheEnabled(true)
+                .setCacheTime(604800000L)
+                .setMethodToCall(HttpMethod.GET)
+                .setTaskCompletion(new afterTaskCompletion<CoinList>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onTaskCompleted(CoinList coinList) {
+
                         try {
-                            baseImageURL = response.getString("BaseImageUrl");
-                            JSONObject data = response.getJSONObject("Data");
-                            Log.d("I", "data in getAllCoinsList: " + data);
-                            for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
-                                String currency = iter.next();
-                                try {
-                                    JSONObject currencyDetails = data.getJSONObject(currency);
-                                    String fullName = currencyDetails.getString("FullName");
-                                    Log.d("I", "current fullName: " + fullName);
-                                    String symbol = currencyDetails.getString("Symbol");
-                                    String imageURL = currencyDetails.getString("ImageUrl");
-                                    coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
-                                } catch (JSONException e) {
-                                    continue;
-                                }
+                            baseImageURL = coinList.getBaseImageUrl();
+                            for(DataNode data : coinList.getData().getDataList()){
+                                coinMetadataTable.put(data.getSymbol(), new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
                             }
                             getCurrencyList();
-                        }
-                        catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError e) {
-                Log.e("ERROR", "Server Error: " + e.getMessage());
-                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-        VolleySingleton.getInstance().addToRequestQueue(request);
+                })
+                .setTaskFailure(new afterTaskFailure() {
+                    @Override
+                    public void onTaskFailed(Object o, Exception e) {
+                        Log.e("ERROR", "Server Error: " + e.getMessage());
+                        Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                })
+                .setAutomaticCacheRefresh(true);
+        restCall.execute(true);
     }
 
     @Override
