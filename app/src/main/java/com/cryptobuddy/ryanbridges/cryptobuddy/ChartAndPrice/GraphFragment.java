@@ -146,7 +146,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     public void onResponse(JSONObject response) {
                         List<Entry> closePrices = new ArrayList<Entry>();
                         try {
-                            JSONArray rawData = response.getJSONArray("DataNode");
+                            JSONArray rawData = response.getJSONArray("Data");
                             Log.d("I", "rawData: " + rawData);
                             for (int i = 0; i < rawData.length(); i++) {
                                 JSONObject row = rawData.getJSONObject(i);

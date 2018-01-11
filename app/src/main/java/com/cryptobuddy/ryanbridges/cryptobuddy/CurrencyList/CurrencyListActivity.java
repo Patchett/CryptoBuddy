@@ -174,6 +174,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     public void getAllCoinsListEasyRest() {
         swipeRefreshLayout.setRefreshing(true);
+
         GenericRestCall<String, CoinList, String> restCall = new GenericRestCall<>(String.class, CoinList.class, String.class)
                 .setUrl(ALL_COINS_LIST_URL)
                 .setContext(getApplicationContext())
@@ -216,7 +217,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                     public void onResponse(JSONObject response) {
                         try {
                             baseImageURL = response.getString("BaseImageUrl");
-                            JSONObject data = response.getJSONObject("DataNode");
+                            JSONObject data = response.getJSONObject("Data");
                             Log.d("I", "data in getAllCoinsList: " + data);
                             for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
                                 String currency = iter.next();
