@@ -28,6 +28,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinService;
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
@@ -160,38 +161,29 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
-        GenericRestCall<String, CoinList, String> restCall = new GenericRestCall<>(String.class, CoinList.class, String.class)
-                .setUrl(ALL_COINS_LIST_URL)
-                .setContext(getApplicationContext())
-                .isCacheEnabled(true)
-                .setCacheTime(604800000L)
-                .setMethodToCall(HttpMethod.GET)
-                .setTaskCompletion(new afterTaskCompletion<CoinList>() {
-                    @Override
-                    public void onTaskCompleted(CoinList coinList) {
+        CoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
+            @Override
+            public void onTaskCompleted(CoinList coinList) {
 
-                        try {
-                            baseImageURL = coinList.getBaseImageUrl();
-                            for(DataNode data : coinList.getData().getDataList()){
-                                coinMetadataTable.put(data.getSymbol(), new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
-                            }
-                            getCurrencyList();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                try {
+                    baseImageURL = coinList.getBaseImageUrl();
+                    for(DataNode data : coinList.getData().getDataList()){
+                        coinMetadataTable.put(data.getSymbol(), new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
+                    }
+                    getCurrencyList();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                    }
-                })
-                .setTaskFailure(new afterTaskFailure() {
-                    @Override
-                    public void onTaskFailed(Object o, Exception e) {
-                        Log.e("ERROR", "Server Error: " + e.getMessage());
-                        Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                })
-                .setAutomaticCacheRefresh(true);
-        restCall.execute(true);
+            }
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, true);
     }
 
     @Override
