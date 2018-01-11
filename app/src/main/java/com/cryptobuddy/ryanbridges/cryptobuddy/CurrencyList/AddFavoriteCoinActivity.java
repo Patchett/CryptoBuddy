@@ -138,7 +138,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            JSONObject data = response.getJSONObject("Data");
+                            JSONObject data = response.getJSONObject("DataNode");
                             coinList.clear();
                             for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
                                 String currency = iter.next();
