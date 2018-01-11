@@ -10,6 +10,7 @@
     <string name="CoinImage">Coin Image</string>
     <string name="AddCurrency">Add Currency</string>
     <string name="Favorite">Favorite</string>
+    <string name="Refresh">Refresh</string>
 
 
 </resources>

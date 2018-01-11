@@ -45,11 +45,6 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     private SwipeRefreshLayout swipeRefreshLayout;
 
 
-    @Override
-    public void onRefresh() {
-        getNewsRequest();
-    }
-
     public void getNewsRequest() {
         swipeRefreshLayout.setRefreshing(true);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BTC_NEWS_URL, null,
@@ -93,7 +88,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         setContentView(R.layout.fragment_news_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Cryptobuddy News");
+        getSupportActionBar().setTitle(getResources().getString(R.string.News));
         mActivity = this;
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_recycler);
         recyclerView = (RecyclerView) findViewById(R.id.newsListRecyclerView);
@@ -123,6 +118,12 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                                 }
         );
     }
+
+    @Override
+    public void onRefresh() {
+        getNewsRequest();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.news_activity_menu, menu);
@@ -134,6 +135,11 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         switch(item.getItemId()) {
             case R.id.home_button:
                 startActivity(new Intent(this, CurrencyListActivity.class));
+                finish();
+                return true;
+            case R.id.news_refresh_button:
+                onRefresh();
+                return true;
         }
         finish();
         return true;

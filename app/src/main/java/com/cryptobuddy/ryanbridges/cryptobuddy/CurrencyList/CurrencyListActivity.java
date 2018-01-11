@@ -2,6 +2,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -111,6 +112,8 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    Parcelable recyclerViewState;
+                    recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
                     currencyItemList.clear();
                     currencyItemMap.clear();
                     try {
@@ -136,6 +139,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                         e.printStackTrace();
                     }
                     swipeRefreshLayout.setRefreshing(false);
+                    currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 }
     }, new Response.ErrorListener() {
             @Override
@@ -146,24 +150,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             }
         });
         VolleySingleton.getInstance().addToRequestQueue(request);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        CoinFavoritesStructures favs = this.db.getFavorites();
-        for (int i = 0; i < favs.favoriteList.size(); i++) { // Check if a coin was added to favorites
-            if (currencyItemMap.get(favs.favoriteList.get(i)) == null) {
-                getAllCoinsList();
-                return;
-            }
-        }
-        for (int i = 0; i < currencyItemList.size(); i++) { // Check if a coin was removed from favorites
-            if (favs.favoritesMap.get(currencyItemList.get(i).symbol) == null) {
-                getAllCoinsList();
-                return;
-            }
-        }
     }
 
     public void getAllCoinsList() {
@@ -221,6 +207,9 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             case R.id.add_currency_button:
                 startActivity(new Intent(this, AddFavoriteCoinActivity.class));
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                return true;
+            case R.id.currency_refresh_button:
+                onRefresh();
                 return true;
         }
         return super.onOptionsItemSelected(item);

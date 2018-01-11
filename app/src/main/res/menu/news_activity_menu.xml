@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity">
+
+    <item
+        android:id="@+id/news_refresh_button"
+        android:title="@string/Refresh"
+        android:icon="@drawable/ic_refresh_white_24dp"
+        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/home_button"
         android:title="@string/Home"

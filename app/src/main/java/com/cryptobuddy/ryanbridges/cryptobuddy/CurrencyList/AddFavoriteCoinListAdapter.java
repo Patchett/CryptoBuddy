@@ -100,8 +100,7 @@ public class AddFavoriteCoinListAdapter extends RecyclerView.Adapter<AddFavorite
         public void onClick(View v) {
             if (favoriteButton.getBackground() == starDisabled) {
                 favoriteButton.setBackground(starEnabled);
-            }
-            else {
+            } else {
                 favoriteButton.setBackground(starDisabled);
             }
             listenerRef.get().onItemClick(getAdapterPosition(), v);
