@@ -2,6 +2,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.News;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -49,7 +50,8 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-//                        Log.d("I", "NEWS: " + response.toString());
+                        Parcelable recyclerViewState;
+                        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject row = response.getJSONObject(i);
@@ -67,6 +69,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                             e.printStackTrace();
                         }
                         swipeRefreshLayout.setRefreshing(false);
+                        recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                     }
                 }, new Response.ErrorListener() {
             @Override
