@@ -11,22 +11,20 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
+import com.grizzly.rest.GenericRestCall;
+import com.grizzly.rest.Model.afterTaskCompletion;
+import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.springframework.http.HttpMethod;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity.ALL_COINS_LIST_URL;
@@ -39,7 +37,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
 
     private RecyclerView coinRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<CoinMetadata> coinList;
+    private List<CoinMetadata> allCoinList;
     private AddFavoriteCoinListAdapter adapter;
     private AppCompatActivity me;
     private SearchView searchView;
@@ -51,7 +49,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_favorite_coin);
         getSupportActionBar().setTitle("Favorite Coins");
-        coinList = new ArrayList<>();
+        allCoinList = new ArrayList<>();
         me = this;
         coinRecyclerView = (RecyclerView) findViewById(R.id.coin_favs_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
@@ -60,11 +58,11 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         coinRecyclerView.setLayoutManager(llm);
         this.db = DatabaseHelperSingleton.getInstance(this);
-        adapter = new AddFavoriteCoinListAdapter(coinList, me, db, new CustomItemClickListener() {
+        adapter = new AddFavoriteCoinListAdapter(allCoinList, me, db, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 CoinFavoritesStructures favs = db.getFavorites();
-                CoinMetadata item = coinList.get(position);
+                CoinMetadata item = allCoinList.get(position);
                 if (favs.favoritesMap.get(item.symbol) == null) { // Coin is not a favorite yet. Add it.
                     favs.favoritesMap.put(item.symbol, item.symbol);
                     favs.favoriteList.add(item.symbol);
@@ -101,8 +99,8 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
             public boolean onQueryTextChange(String newText) {
                 newText = newText.toLowerCase();
                 final List<CoinMetadata> filteredList = new ArrayList<>();
-                for (int i = 0; i < coinList.size(); i++) {
-                    CoinMetadata currCoin = coinList.get(i);
+                for (int i = 0; i < allCoinList.size(); i++) {
+                    CoinMetadata currCoin = allCoinList.get(i);
                     if (currCoin.fullName.toLowerCase().contains(newText)) {
                         filteredList.add(currCoin);
                     }
@@ -130,46 +128,42 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
 
     }
 
-
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, ALL_COINS_LIST_URL, null,
-                new Response.Listener<JSONObject>() {
+        GenericRestCall<String, CoinList, String> restCall = new GenericRestCall<>(String.class, CoinList.class, String.class)
+                .setUrl(ALL_COINS_LIST_URL)
+                .setContext(getApplicationContext())
+                .isCacheEnabled(true)
+                .setCacheTime(604800000L)
+                .setMethodToCall(HttpMethod.GET)
+                .setTaskCompletion(new afterTaskCompletion<CoinList>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onTaskCompleted(CoinList coinList) {
+
                         try {
-                            JSONObject data = response.getJSONObject("Data");
-                            coinList.clear();
-                            for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
-                                String currency = iter.next();
-                                try {
-                                    JSONObject currencyDetails = data.getJSONObject(currency);
-                                    String fullName = currencyDetails.getString("FullName");
-                                    String symbol = currencyDetails.getString("Symbol");
-                                    String imageURL = currencyDetails.getString("ImageUrl");
-                                    coinList.add(new CoinMetadata(imageURL, fullName, symbol));
-                                } catch (JSONException e) {
-                                    continue;
-                                }
+                            CurrencyListActivity.baseImageURL = coinList.getBaseImageUrl();
+                            for(DataNode data : coinList.getData().getDataList()){
+                                allCoinList.add(new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
                             }
-                            adapter.notifyDataSetChanged();
-                            Log.d("I", "coinListSize: " + coinList.size());
-                            coinRecyclerView.setAdapter(adapter);
-                        }
-                        catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
+                        adapter.notifyDataSetChanged();
+                        Log.d("I", "coinListSize: " + allCoinList.size());
+                        coinRecyclerView.setAdapter(adapter);
                         swipeRefreshLayout.setRefreshing(false);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError e) {
-                Log.e("ERROR", "Server Error: " + e.getMessage());
-                Toast.makeText(AddFavoriteCoinActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-        VolleySingleton.getInstance().addToRequestQueue(request);
+                })
+                .setTaskFailure(new afterTaskFailure() {
+                    @Override
+                    public void onTaskFailed(Object o, Exception e) {
+                        Log.e("ERROR", "Server Error: " + e.getMessage());
+                        Toast.makeText(AddFavoriteCoinActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                })
+                .setAutomaticCacheRefresh(true);
+        restCall.execute(true);
     }
 
     @Override
