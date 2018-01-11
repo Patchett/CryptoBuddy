@@ -14,7 +14,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.cryptobuddy.ryanbridges.cryptobuddy.BuildConfig;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CurrencyList.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -36,7 +35,6 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
 public class NewsListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String NEWS_API_KEY = BuildConfig.API_KEY;
     public final static String BTC_NEWS_URL = "https://min-api.cryptocompare.com/data/news/";
     private NewsListAdapter adapter;
     private List<NewsItem> newsItemList;
