@@ -25,6 +25,8 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.News.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
@@ -172,34 +174,24 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     public void getAllCoinsListEasyRest() {
         swipeRefreshLayout.setRefreshing(true);
-        GenericRestCall<String, JSONObject, String> restCall = new GenericRestCall<>(String.class, JSONObject.class, String.class)
+
+        GenericRestCall<String, CoinList, String> restCall = new GenericRestCall<>(String.class, CoinList.class, String.class)
                 .setUrl(ALL_COINS_LIST_URL)
+                .setContext(getApplicationContext())
                 .isCacheEnabled(true)
                 .setCacheTime(604800000L)
                 .setMethodToCall(HttpMethod.GET)
-                .setTaskCompletion(new afterTaskCompletion<JSONObject>() {
+                .setTaskCompletion(new afterTaskCompletion<CoinList>() {
                     @Override
-                    public void onTaskCompleted(JSONObject response) {
+                    public void onTaskCompleted(CoinList coinList) {
+
                         try {
-                            Log.d("I", "response in getAllCoinsListEasyRest: " + response);
-                            baseImageURL = response.getString("BaseImageUrl");
-                            JSONObject data = response.getJSONObject("Data");
-                            Log.d("I", "data in getAllCoinsList: " + data);
-                            for (Iterator<String> iter = data.keys(); iter.hasNext(); ) {
-                                String currency = iter.next();
-                                try {
-                                    JSONObject currencyDetails = data.getJSONObject(currency);
-                                    String fullName = currencyDetails.getString("FullName");
-                                    Log.d("I", "current fullName: " + fullName);
-                                    String symbol = currencyDetails.getString("Symbol");
-                                    String imageURL = currencyDetails.getString("ImageUrl");
-                                    coinMetadataTable.put(symbol, new CoinMetadata(imageURL, fullName, symbol));
-                                } catch (JSONException e) {
-                                    continue;
-                                }
+                            baseImageURL = coinList.getBaseImageUrl();
+                            for(DataNode data : coinList.getData().getDataList()){
+                                coinMetadataTable.put(data.getSymbol(), new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
                             }
                             getCurrencyList();
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -214,7 +206,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                     }
                 })
                 .setAutomaticCacheRefresh(true);
-        restCall.execute();
+        restCall.execute(true);
     }
 
     public void getAllCoinsList() {
