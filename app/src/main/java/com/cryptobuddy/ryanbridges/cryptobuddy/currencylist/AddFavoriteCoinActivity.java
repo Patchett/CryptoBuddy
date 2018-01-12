@@ -18,17 +18,14 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinService;
-import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import org.springframework.http.HttpMethod;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity.ALL_COINS_LIST_URL;
 
 /**
  * Created by Ryan on 12/31/2017.

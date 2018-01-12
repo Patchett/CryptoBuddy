@@ -3,7 +3,6 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +30,8 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private String negativePercentStringResource;
     private String positivePercentStringResource;
     private String priceStringResource;
+    private String mktCapStringResource;
+    private String volumeStringResource;
     private int positiveGreenColor;
     private int negativeRedColor;
     private CustomItemClickListener listener;
@@ -39,36 +40,36 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private Hashtable<String, CurrencyListItem> currencyItemMap;
 
     public CurrencyListAdapter(List<CurrencyListItem> currencyList, Hashtable<String, CurrencyListItem> currencyItemMap,
-                               DatabaseHelperSingleton db, String negativePercentStringResource,
-                               String positivePercentStringResource, String priceStringResource, int positiveGreenColor,
-                               int negativeRedColor, AppCompatActivity context, CustomItemClickListener listener) {
+                               DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
-        this.negativePercentStringResource = negativePercentStringResource;
-        this.positivePercentStringResource = positivePercentStringResource;
-        this.priceStringResource = priceStringResource;
-        this.positiveGreenColor = positiveGreenColor;
-        this.negativeRedColor = negativeRedColor;
         this.contextRef = new WeakReference<>(context);
         this.listener = listener;
         this.dbRef = new WeakReference<>(db);
         this.currencyItemMap = currencyItemMap;
+        this.mktCapStringResource = this.contextRef.get().getString(R.string.mkt_cap_format);
+        this.volumeStringResource = this.contextRef.get().getString(R.string.volume_format);
+        this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_with_dollars_format);
+        this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_with_dollars_format);
+        this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
+        this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
+        this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
     }
 
     @Override
     public void onBindViewHolder(CurrencyListAdapter.ViewHolder holder, int position) {
         CurrencyListItem item = currencyList.get(position);
         if (item.change24hr < 0) {
-            holder.changeTextView.setText(String.format(negativePercentStringResource, item.changePCT24hr, item.change24hr));
-            holder.changeTextView.setTextColor(negativeRedColor);
+            holder.currencyListChangeTextView.setText(String.format(negativePercentStringResource, item.changePCT24hr, item.change24hr));
+            holder.currencyListChangeTextView.setTextColor(negativeRedColor);
         } else {
-            holder.changeTextView.setText(String.format(positivePercentStringResource, item.changePCT24hr, item.change24hr));
-            holder.changeTextView.setTextColor(positiveGreenColor);
+            holder.currencyListChangeTextView.setText(String.format(positivePercentStringResource, item.changePCT24hr, item.change24hr));
+            holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
         }
-        String[] namePieces = item.fullName.split("(?=\\()");
-        holder.fullNameTextView.setText(namePieces[0]);
-        holder.symbolNameTextView.setText(namePieces[1]);
-        holder.currPriceTextView.setText(String.format(priceStringResource, item.currPrice));
-        Picasso.with(contextRef.get()).load(CurrencyListActivity.baseImageURL + item.imageURL).into(holder.coinImageView);
+        holder.currencyListMarketcapTextView.setText(String.format(mktCapStringResource, item.mktCap));
+        holder.currencyListVolumeTextView.setText(String.format(volumeStringResource, item.totalVolume24H));
+        holder.currencyListfullNameTextView.setText(item.fullName);
+        holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, item.currPrice));
+        Picasso.with(contextRef.get()).load(CurrencyListActivity.baseImageURL + item.imageURL).into(holder.currencyListCoinImageView);
     }
 
     @Override
@@ -79,22 +80,24 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ItemTouchHelperViewHolder {
-        public TextView fullNameTextView;
-        public TextView changeTextView;
-        public TextView currPriceTextView;
-        public ImageView coinImageView;
-        public TextView symbolNameTextView;
+        public TextView currencyListfullNameTextView;
+        public TextView currencyListChangeTextView;
+        public TextView currencyListCurrPriceTextView;
+        public TextView currencyListVolumeTextView;
+        public TextView currencyListMarketcapTextView;
+        public ImageView currencyListCoinImageView;
         private CustomItemClickListener listener;
 
         public ViewHolder(View itemLayoutView, CustomItemClickListener listener)
         {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            fullNameTextView = (TextView) itemLayoutView.findViewById(R.id.fullName);
-            changeTextView = (TextView) itemLayoutView.findViewById(R.id.changeText);
-            currPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currPriceText);
-            coinImageView = (ImageView) itemLayoutView.findViewById(R.id.coinImage);
-            symbolNameTextView = (TextView) itemLayoutView.findViewById(R.id.symbolName);
+            currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
+            currencyListChangeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListChangeTextView);
+            currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
+            currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
+            currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
+            currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
             this.listener = listener;
         }
 
@@ -147,7 +150,6 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
             favs.favoriteList.add(currSymbol);
             favs.favoritesMap.put(currSymbol, currSymbol);
         }
-        Log.d("I", "favs.favoriteList: " + favs.favoriteList);
         this.dbRef.get().saveCoinFavorites(favs);
     }
 

@@ -80,9 +80,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         currencyItemList = new ArrayList<>();
         coinMetadataTable = new Hashtable<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, currencyItemMap, db, getString(R.string.negative_percent_change_format), getString(R.string.positive_percent_change_format),
-                getString(R.string.price_format), getResources().getColor(R.color.percentPositiveGreen),
-                getResources().getColor(R.color.percentNegativeRed), me, new CustomItemClickListener() {
+        adapter = new CurrencyListAdapter(currencyItemList, currencyItemMap, db, me, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
@@ -130,7 +128,10 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                                 Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
                                 Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
                                 Double currPrice = currencyDetails.getDouble("PRICE");
-                                CurrencyListItem newItem = new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr, coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName);
+                                Double mktCap = currencyDetails.getDouble("MKTCAP");
+                                Double totalvolume24H = currencyDetails.getDouble("TOTALVOLUME24H");
+                                CurrencyListItem newItem = new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr,
+                                        coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName, mktCap, totalvolume24H);
                                 currencyItemList.add(newItem);
                                 currencyItemMap.put(currency, newItem);
                             } catch (JSONException e) {

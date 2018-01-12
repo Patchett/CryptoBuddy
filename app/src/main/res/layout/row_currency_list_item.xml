@@ -3,75 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="60dp"
+    android:layout_height="108dp"
     android:focusable="true"
     android:background="?android:selectableItemBackground"
     android:clickable="true">
 
     <TextView
-        android:id="@+id/fullName"
+        android:id="@+id/currencyListfullNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
         android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/coinImage"
+        app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <TextView
-        android:id="@+id/symbolName"
+        android:id="@+id/currencyListCurrPriceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="0dp"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/coinImage"
-        app:layout_constraintTop_toBottomOf="@+id/fullName" />
-
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListfullNameTextView" />
 
     <TextView
-        android:id="@+id/currPriceText"
+        android:id="@+id/currencyListChangeTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_below="@+id/currencyListCurrPriceTextView"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/changeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/currPriceText"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:gravity="center_vertical"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currPriceText" />
+        app:layout_constraintStart_toEndOf="@+id/currencyListCurrPriceTextView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListfullNameTextView" />
 
     <ImageView
-        android:id="@+id/coinImage"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:id="@+id/currencyListCoinImageView"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -79,6 +51,24 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/currencyListVolumeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListMarketcapTextView" />
+
+    <TextView
+        android:id="@+id/currencyListMarketcapTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListCurrPriceTextView" />
 
 
 </android.support.constraint.ConstraintLayout>

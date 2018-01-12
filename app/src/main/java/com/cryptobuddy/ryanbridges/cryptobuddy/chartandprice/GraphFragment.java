@@ -119,7 +119,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             Log.d("I", "Ticker response: " + response);
                             JSONObject rawData = response.getJSONObject("RAW").getJSONObject(crypto).getJSONObject("USD");
                             float currPrice = Float.valueOf(rawData.getString("PRICE"));
-                            currentPrice.setText(String.format(getString(R.string.price_format), currPrice));
+                            currentPrice.setText(String.format(getString(R.string.price_format_no_word), currPrice));
                             currentPrice.setTextColor(Color.BLACK);
                             JsonObjectRequest chartDataRequest = getChartDataRequest(currPrice);
                             VolleySingleton.getInstance().addToRequestQueue(chartDataRequest) ;
@@ -161,9 +161,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         float difference = (currPrice - firstPrice);
                         float percentChange = (difference / currPrice) * 100;
                         if (percentChange < 0) {
-                            percentChangeText.setText(String.format(getString(R.string.negative_percent_change_format), percentChange, Math.abs(difference)));
+                            percentChangeText.setText(String.format(getString(R.string.negative_pct_change_with_dollars_format), percentChange, Math.abs(difference)));
                         } else {
-                            percentChangeText.setText(String.format(getString(R.string.positive_percent_change_format), percentChange, Math.abs(difference)));
+                            percentChangeText.setText(String.format(getString(R.string.positive_pct_change_with_dollars_format), percentChange, Math.abs(difference)));
                         }
                         setColors(percentChange);
                         percentChangeText.setTextColor(percentageColor);
