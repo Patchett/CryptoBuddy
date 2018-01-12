@@ -17,6 +17,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinService;
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
@@ -130,40 +131,30 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
 
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
-        GenericRestCall<String, CoinList, String> restCall = new GenericRestCall<>(String.class, CoinList.class, String.class)
-                .setUrl(ALL_COINS_LIST_URL)
-                .setContext(getApplicationContext())
-                .isCacheEnabled(true)
-                .setCacheTime(604800000L)
-                .setMethodToCall(HttpMethod.GET)
-                .setTaskCompletion(new afterTaskCompletion<CoinList>() {
-                    @Override
-                    public void onTaskCompleted(CoinList coinList) {
-
-                        try {
-                            CurrencyListActivity.baseImageURL = coinList.getBaseImageUrl();
-                            for(DataNode data : coinList.getData().getDataList()){
-                                allCoinList.add(new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        adapter.notifyDataSetChanged();
-                        Log.d("I", "coinListSize: " + allCoinList.size());
-                        coinRecyclerView.setAdapter(adapter);
-                        swipeRefreshLayout.setRefreshing(false);
+        CoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
+            @Override
+            public void onTaskCompleted(CoinList coinList) {
+                try {
+                    CurrencyListActivity.baseImageURL = coinList.getBaseImageUrl();
+                    for(DataNode data : coinList.getData().getDataList()){
+                        allCoinList.add(new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
                     }
-                })
-                .setTaskFailure(new afterTaskFailure() {
-                    @Override
-                    public void onTaskFailed(Object o, Exception e) {
-                        Log.e("ERROR", "Server Error: " + e.getMessage());
-                        Toast.makeText(AddFavoriteCoinActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                })
-                .setAutomaticCacheRefresh(true);
-        restCall.execute(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                adapter.notifyDataSetChanged();
+                Log.d("I", "coinListSize: " + allCoinList.size());
+                coinRecyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+                Toast.makeText(AddFavoriteCoinActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, true);
     }
 
     @Override
