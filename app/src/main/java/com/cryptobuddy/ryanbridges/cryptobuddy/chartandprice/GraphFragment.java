@@ -32,22 +32,27 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnChartValueSelectedListener {
 
     private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     private final static String CHART_URL_WEEK = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=168&aggregate=1";
@@ -119,6 +124,11 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         dataSet.setDrawCircleHole(false);
         dataSet.setDrawValues(false);
         dataSet.setCircleRadius(1);
+
+        dataSet.setHighlightEnabled(true);
+        dataSet.setDrawHighlightIndicators(true);
+        dataSet.setHighLightColor(chartBorderColor); // color for highlight indicator
+
         return dataSet;
     }
 
@@ -272,6 +282,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
@@ -353,4 +364,24 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onRefresh() {
         getTickerRequest();
     }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
+        TextView dateTextView = (TextView) rootView.findViewById(R.id.graphFragmentDateTextView);
+        currentPrice.setText(String.format(getString(R.string.price_format_no_word), e.getY()));
+        dateTextView.setText(getFormattedFullDate(e.getX()));
+    }
+
+    @Override
+    public void onNothingSelected() {
+
+    }
+
+    public String getFormattedFullDate(float unixSeconds) {
+        Date date = new Date((int)unixSeconds*1000L);
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+        return sdf.format(date);
+    }
+
 }

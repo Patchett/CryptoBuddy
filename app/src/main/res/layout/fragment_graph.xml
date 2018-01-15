@@ -5,143 +5,157 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
-    android:paddingRight="@dimen/graph_fragment_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_alignParentStart="true"
-    tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity$GraphFragment">
-
-    <TextView
-        android:id="@+id/current_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/percent_change"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/current_price" />
-
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart"
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginTop="8dp"
-        android:padding="0dp"
-        android:focusableInTouchMode="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/percent_change" />
-
-    <GridLayout
-        android:id="@+id/gridLayout"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chart">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
+        android:paddingRight="@dimen/graph_fragment_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity$GraphFragment">
 
-        <Button
-            android:id="@+id/monthButton"
+        <TextView
+            android:id="@+id/current_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:text="@string/Month"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:layout_column="3"
-            app:layout_constraintStart_toEndOf="@+id/weekButton"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-        <Button
-            android:id="@+id/threeMonthButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/threeMonth"
-            android:layout_column="4"
-            app:layout_constraintStart_toEndOf="@+id/monthButton"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-        <Button
-            android:id="@+id/oneYearButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/Year"
-            android:layout_column="5"
-            app:layout_constraintStart_toEndOf="@+id/threeMonthButton"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-        <Button
-            android:id="@+id/weekButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_column="2"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/Week"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/allTimeButton"
+        <TextView
+            android:id="@+id/percent_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/graphFragmentDateTextView" />
+
+        <TextView
+            android:id="@+id/graphFragmentDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/current_price" />
+
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:focusableInTouchMode="true"
+            android:padding="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/percent_change" />
+
+        <GridLayout
+            android:id="@+id/gridLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:layout_marginTop="2dp"
-            android:layout_column="6"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/All"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
+            app:layout_constraintTop_toBottomOf="@+id/chart">
 
-        <Button
-            android:id="@+id/oneDayButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_column="0"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/oneDay"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
+            <Button
+                android:id="@+id/monthButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/Month"
+                app:layout_constraintStart_toEndOf="@+id/weekButton"
+                app:layout_constraintTop_toBottomOf="@+id/chart" />
 
-    </GridLayout>
+            <Button
+                android:id="@+id/threeMonthButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="4"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/threeMonth"
+                app:layout_constraintStart_toEndOf="@+id/monthButton"
+                app:layout_constraintTop_toBottomOf="@+id/chart" />
 
-</android.support.constraint.ConstraintLayout>
+            <Button
+                android:id="@+id/oneYearButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="5"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/Year"
+                app:layout_constraintStart_toEndOf="@+id/threeMonthButton"
+                app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+            <Button
+                android:id="@+id/weekButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="2"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/Week"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+            <Button
+                android:id="@+id/allTimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="6"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/All"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+            <Button
+                android:id="@+id/oneDayButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="2dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:text="@string/oneDay"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        </GridLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
