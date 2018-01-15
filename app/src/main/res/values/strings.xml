@@ -16,6 +16,13 @@
     <string name="AddCurrency">Add Currency</string>
     <string name="Favorite">Favorite</string>
     <string name="Refresh">Refresh</string>
+    <string name="oneDay">24H</string>
+    <string name="threeDay">3D</string>
+    <string name="Week">7D</string>
+    <string name="Month">1M</string>
+    <string name="threeMonth">3M</string>
+    <string name="Year">1Y</string>
+    <string name="All">ALL</string>
 
 
 </resources>

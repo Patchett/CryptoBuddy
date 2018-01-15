@@ -62,6 +62,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private View rootView;
     private String TAG = CurrencyListActivity.class.getSimpleName();
     private CustomViewPager viewPager;
+    private String currentChartURL;
     /**
      * The fragment argument representing the section number for this
      * fragment.

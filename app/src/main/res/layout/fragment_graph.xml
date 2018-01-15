@@ -53,14 +53,108 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/percent_change" />
 
-    <Button
-        android:id="@+id/button"
+    <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chart" />
+        app:layout_constraintTop_toBottomOf="@+id/chart">
+
+        <Button
+            android:id="@+id/monthButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:text="@string/Month"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_column="3"
+            app:layout_constraintStart_toEndOf="@+id/weekButton"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        <Button
+            android:id="@+id/threeMonthButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="@string/threeMonth"
+            android:layout_column="4"
+            app:layout_constraintStart_toEndOf="@+id/monthButton"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        <Button
+            android:id="@+id/oneYearButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="@string/Year"
+            android:layout_column="5"
+            app:layout_constraintStart_toEndOf="@+id/threeMonthButton"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        <Button
+            android:id="@+id/weekButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_column="2"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="@string/Week"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        <Button
+            android:id="@+id/allTimeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_column="6"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="@string/All"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        <Button
+            android:id="@+id/threeDayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_column="1"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="@string/threeDay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+        <Button
+            android:id="@+id/oneDayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_column="0"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:text="@string/oneDay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart" />
+
+    </GridLayout>
 
 </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
