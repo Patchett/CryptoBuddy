@@ -132,39 +132,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return dataSet;
     }
 
-    public void getTickerRequest() {
-        final TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
-        swipeRefreshLayout.setRefreshing(true);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedTickerURL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Log.d("I", "Ticker response: " + response);
-                            JSONObject rawData = response.getJSONObject("RAW").getJSONObject(crypto).getJSONObject("USD");
-                            float currPrice = Float.valueOf(rawData.getString("PRICE"));
-                            currentPrice.setText(String.format(getString(R.string.price_format_no_word), currPrice));
-                            currentPrice.setTextColor(Color.BLACK);
-                            JsonObjectRequest chartDataRequest = getChartDataRequest(currPrice);
-                            VolleySingleton.getInstance().addToRequestQueue(chartDataRequest) ;
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError e) {
-                        Log.e(TAG, "Server Error: " + e.getMessage());
-                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-        VolleySingleton.getInstance().addToRequestQueue(request);
-        }
-
-    public JsonObjectRequest getChartDataRequest(final float currPrice) {
+    public void getChartDataRequest() {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-        return new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
+        JsonObjectRequest chartDataRequest = new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -181,6 +151,10 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
+                        float currPrice = closePrices.get(closePrices.size() - 1).getY();
+                        currentPriceTextView.setText(String.format(getString(R.string.price_format_no_word), currPrice));
+                        currentPriceTextView.setTextColor(Color.BLACK);
                         float firstPrice = closePrices.get(0).getY();
                         // Handle edge case where we dont have data for the interval on the chart. E.g. user selects
                         // 3 month window, but we only have data for last month
@@ -275,6 +249,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
+        VolleySingleton.getInstance().addToRequestQueue(chartDataRequest);
     }
 
     @Override
@@ -295,7 +270,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        getTickerRequest();
+                                        getChartDataRequest();
                                     }
                                 }
         );
@@ -369,7 +344,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
-        getTickerRequest();
+        getChartDataRequest();
     }
 
     @Override
