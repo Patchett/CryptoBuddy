@@ -77,6 +77,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public final IAxisValueFormatter monthSlashDayXAxisFormatter = new MonthSlashDayDateFormatter();
     public final TimeDateFormatter dayCommaTimeDateFormatter = new TimeDateFormatter();
     public final MonthSlashYearFormatter monthSlashYearFormatter = new MonthSlashYearFormatter();
+    private String currentTimeWindow = "";
 
 
     /**
@@ -124,11 +125,10 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         dataSet.setDrawCircleHole(false);
         dataSet.setDrawValues(false);
         dataSet.setCircleRadius(1);
-
+        dataSet.setHighlightLineWidth(2);
         dataSet.setHighlightEnabled(true);
         dataSet.setDrawHighlightIndicators(true);
         dataSet.setHighLightColor(chartBorderColor); // color for highlight indicator
-
         return dataSet;
     }
 
@@ -195,9 +195,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         float percentChange = (difference / firstPrice) * 100;
                         Log.d("I", "firstPrice: " + firstPrice + " difference: " + difference + " percentChange: " + percentChange);
                         if (percentChange < 0) {
-                            percentChangeText.setText(String.format(getString(R.string.negative_pct_change_with_dollars_format), percentChange, Math.abs(difference)));
+                            percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
                         } else {
-                            percentChangeText.setText(String.format(getString(R.string.positive_pct_change_with_dollars_format), percentChange, Math.abs(difference)));
+                            percentChangeText.setText(String.format(getString(R.string.positive_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
                         }
                         setColors(percentChange);
                         percentChangeText.setTextColor(percentageColor);
@@ -288,6 +288,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
         crypto = getArguments().getString(ARG_SYMBOL);
         currentChartURL = String.format(CHART_URL_WEEK, crypto);
+        currentTimeWindow = String.format(getString(R.string.Week));
         formattedTickerURL = String.format(TICKER_URL, crypto);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
@@ -311,6 +312,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View v) {
                 currentChartURL = String.format(CHART_URL_1_DAY, crypto);
+                currentTimeWindow = String.format(getString(R.string.oneDay));
                 XAxisFormatter = dayCommaTimeDateFormatter;
                 lineChart.getXAxis().setLabelCount(6);
                 onRefresh();
@@ -320,6 +322,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View v) {
                 currentChartURL = String.format(CHART_URL_WEEK, crypto);
+                currentTimeWindow = String.format(getString(R.string.Week));
                 XAxisFormatter = monthSlashDayXAxisFormatter;
                 onRefresh();
             }
@@ -328,6 +331,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View v) {
                 currentChartURL = String.format(CHART_URL_MONTH, crypto);
+                currentTimeWindow = String.format(getString(R.string.Month));
                 XAxisFormatter = monthSlashDayXAxisFormatter;
                 onRefresh();
             }
@@ -336,6 +340,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View v) {
                 currentChartURL = String.format(CHART_URL_3_MONTH, crypto);
+                currentTimeWindow = String.format(getString(R.string.threeMonth));
                 XAxisFormatter = monthSlashDayXAxisFormatter;
                 onRefresh();
             }
@@ -344,6 +349,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View v) {
                 currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
+                currentTimeWindow = String.format(getString(R.string.AllTime));
                 XAxisFormatter = monthSlashYearFormatter;
                 onRefresh();
             }
@@ -352,6 +358,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void onClick(View v) {
                 currentChartURL = String.format(CHART_URL_YEAR, crypto);
+                currentTimeWindow = String.format(getString(R.string.Year));
                 XAxisFormatter = monthSlashYearFormatter;
                 onRefresh();
             }
