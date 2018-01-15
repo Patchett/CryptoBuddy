@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 
@@ -49,10 +51,13 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     private final static String CHART_URL_WEEK = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=168&aggregate=1";
+    private final static String CHART_URL_ALL_DATA = "https://min-api.cryptocompare.com/data/histoday?fsym=%s&tsym=USD&allData=true";
+    private final static String CHART_URL_YEAR = "https://min-api.cryptocompare.com/data/histoday?fsym=%s&tsym=USD&limit=183&aggregate=2";
     private final static String CHART_URL_MONTH = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=240&aggregate=3";
+    private final static String CHART_URL_3_MONTH = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=240&aggregate=14";
+    private final static String CHART_URL_1_DAY = "https://min-api.cryptocompare.com/data/histominute?fsym=%s&tsym=USD&limit=144&aggregate=10";
     private final static String TICKER_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
     private String formattedTickerURL;
-    private String formattedChartURL;
     private int chartFillColor;
     private int chartBorderColor;
     private String crypto;
@@ -63,6 +68,12 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String TAG = CurrencyListActivity.class.getSimpleName();
     private CustomViewPager viewPager;
     private String currentChartURL;
+    private IAxisValueFormatter XAxisFormatter;
+    public final IAxisValueFormatter monthSlashDayXAxisFormatter = new MonthSlashDayDateFormatter();
+    public final TimeDateFormatter dayCommaTimeDateFormatter = new TimeDateFormatter();
+    public final MonthSlashYearFormatter monthSlashYearFormatter = new MonthSlashYearFormatter();
+
+
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -143,7 +154,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public JsonObjectRequest getChartDataRequest(final float currPrice) {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-        return new JsonObjectRequest(Request.Method.GET, formattedChartURL, null,
+        return new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -161,8 +172,18 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             e.printStackTrace();
                         }
                         float firstPrice = closePrices.get(0).getY();
+                        // Handle edge case where we dont have data for the interval on the chart. E.g. user selects
+                        // 3 month window, but we only have data for last month
+                        for (Entry e: closePrices) {
+                            if (firstPrice != 0) {
+                                break;
+                            } else {
+                                firstPrice = e.getY();
+                            }
+                        }
                         float difference = (currPrice - firstPrice);
-                        float percentChange = (difference / currPrice) * 100;
+                        float percentChange = (difference / firstPrice) * 100;
+                        Log.d("I", "firstPrice: " + firstPrice + " difference: " + difference + " percentChange: " + percentChange);
                         if (percentChange < 0) {
                             percentChangeText.setText(String.format(getString(R.string.negative_pct_change_with_dollars_format), percentChange, Math.abs(difference)));
                         } else {
@@ -222,9 +243,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
                             }
                         });
-//                        lineChart.setBorderWidth(3);
-//                        lineChart.setBorderColor(chartBorderColor);
-//                        lineChart.setDrawBorders(true);
                         lineChart.getLegend().setEnabled(false);
                         XAxis xAxis = lineChart.getXAxis();
                         xAxis.setAvoidFirstLastClipping(true);
@@ -234,7 +252,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
                         lineChart.getAxisRight().setEnabled(false);
                         xAxis.setDrawAxisLine(true);
-                        xAxis.setValueFormatter(new XAxisDateFormatter());
+                        xAxis.setValueFormatter(XAxisFormatter);
                         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
                         lineChart.invalidate();
                         swipeRefreshLayout.setRefreshing(false);
@@ -258,9 +276,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
         crypto = getArguments().getString(ARG_SYMBOL);
-        formattedChartURL = String.format(CHART_URL_WEEK, crypto);
+        currentChartURL = String.format(CHART_URL_WEEK, crypto);
         formattedTickerURL = String.format(TICKER_URL, crypto);
-        Log.d(TAG, formattedChartURL);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
@@ -270,6 +287,65 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                     }
                                 }
         );
+        currentChartURL = String.format(CHART_URL_WEEK, crypto);
+        XAxisFormatter = monthSlashDayXAxisFormatter;
+        Button oneMonthButton = (Button) rootView.findViewById(R.id.monthButton);
+        Button threeMonthButton = (Button) rootView.findViewById(R.id.threeMonthButton);
+        Button oneWeekButton = (Button) rootView.findViewById(R.id.weekButton);
+        Button oneDayButton = (Button) rootView.findViewById(R.id.oneDayButton);
+        Button yearButton = (Button) rootView.findViewById(R.id.oneYearButton);
+        Button allTimeButton = (Button) rootView.findViewById(R.id.allTimeButton);
+
+        oneDayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentChartURL = String.format(CHART_URL_1_DAY, crypto);
+                XAxisFormatter = dayCommaTimeDateFormatter;
+                lineChart.getXAxis().setLabelCount(6);
+                onRefresh();
+            }
+        });
+        oneWeekButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentChartURL = String.format(CHART_URL_WEEK, crypto);
+                XAxisFormatter = monthSlashDayXAxisFormatter;
+                onRefresh();
+            }
+        });
+        oneMonthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentChartURL = String.format(CHART_URL_MONTH, crypto);
+                XAxisFormatter = monthSlashDayXAxisFormatter;
+                onRefresh();
+            }
+        });
+        threeMonthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentChartURL = String.format(CHART_URL_3_MONTH, crypto);
+                XAxisFormatter = monthSlashDayXAxisFormatter;
+                onRefresh();
+            }
+        });
+        allTimeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
+                XAxisFormatter = monthSlashYearFormatter;
+                onRefresh();
+            }
+        });
+        yearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentChartURL = String.format(CHART_URL_YEAR, crypto);
+                XAxisFormatter = monthSlashYearFormatter;
+                onRefresh();
+            }
+        });
+
         return rootView;
     }
 

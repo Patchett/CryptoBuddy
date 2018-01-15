@@ -129,19 +129,6 @@
             app:layout_constraintTop_toBottomOf="@+id/chart" />
 
         <Button
-            android:id="@+id/threeDayButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_column="1"
-            android:minHeight="0dp"
-            android:minWidth="0dp"
-            android:text="@string/threeDay"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-        <Button
             android:id="@+id/oneDayButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
