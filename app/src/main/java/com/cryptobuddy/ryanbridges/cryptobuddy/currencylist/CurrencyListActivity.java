@@ -57,7 +57,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
-    public static final String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
     private ItemTouchHelper mItemTouchHelper;
 
 

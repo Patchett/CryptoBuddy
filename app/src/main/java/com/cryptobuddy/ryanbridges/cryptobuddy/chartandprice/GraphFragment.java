@@ -11,6 +11,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,14 +21,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.CustomViewPager;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +39,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
@@ -45,7 +48,8 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
-    private final static String CHART_URL_5_DAYS = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=30&aggregate=4";
+    private final static String CHART_URL_WEEK = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=168&aggregate=1";
+    private final static String CHART_URL_MONTH = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=240&aggregate=3";
     private final static String TICKER_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
     private String formattedTickerURL;
     private String formattedChartURL;
@@ -57,11 +61,12 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private LineChart lineChart;
     private View rootView;
     private String TAG = CurrencyListActivity.class.getSimpleName();
+    private CustomViewPager viewPager;
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
-    private static final String ARG_SECTION_NAME = "section_name";
+    private static final String ARG_SYMBOL = "symbol";
 
     public GraphFragment() {
     }
@@ -73,14 +78,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public static GraphFragment newInstance(String symbol) {
         GraphFragment fragment = new GraphFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_SECTION_NAME, symbol);
+        args.putString(ARG_SYMBOL, symbol);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public String getCurrencyPair() {
-//        return "USDT_BTC";
-        return String.format(Locale.ENGLISH, "USDT_%s", getArguments().getString(ARG_SECTION_NAME));
     }
 
     public void setColors(float percentChange) {
@@ -98,13 +98,15 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public LineDataSet setUpLineDataSet(List<Entry> entries) {
         LineDataSet dataSet = new LineDataSet(entries, "Price");
-        dataSet.setColor(Color.BLACK);
+        dataSet.setColor(chartBorderColor);
         dataSet.setFillColor(chartFillColor);
-        dataSet.setDrawHighlightIndicators(false);
-//        dataSet.setHighLightColor(ResourcesCompat.getColor(getActivity().getResources(), R.color.materialLightPurple, null));
+        dataSet.setDrawHighlightIndicators(true);
         dataSet.setDrawFilled(true);
-        dataSet.setDrawCircles(false);
+        dataSet.setDrawCircles(true);
+        dataSet.setCircleColor(chartBorderColor);
+        dataSet.setDrawCircleHole(false);
         dataSet.setDrawValues(false);
+        dataSet.setCircleRadius(1);
         return dataSet;
     }
 
@@ -167,7 +169,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         }
                         setColors(percentChange);
                         percentChangeText.setTextColor(percentageColor);
-
                         LineDataSet dataSet = setUpLineDataSet(closePrices);
                         LineData lineData = new LineData(dataSet);
                         lineChart.setDoubleTapToZoomEnabled(false);
@@ -176,18 +177,64 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         lineChart.setData(lineData);
                         lineChart.setNoDataText("Pulling price data...");
                         lineChart.setContentDescription("");
-                        lineChart.setBorderWidth(3);
-                        lineChart.setBorderColor(chartBorderColor);
-                        lineChart.setDrawBorders(true);
+                        lineChart.animateX(1000);
+                        lineChart.setOnChartGestureListener(new OnChartGestureListener() {
+                            @Override
+                            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                                viewPager.setPagingEnabled(false);
+                                swipeRefreshLayout.setEnabled(false);
+                            }
+
+                            @Override
+                            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                                viewPager.setPagingEnabled(true);
+                                swipeRefreshLayout.setEnabled(true);
+                            }
+
+                            @Override
+                            public void onChartLongPressed(MotionEvent me) {
+
+                            }
+
+                            @Override
+                            public void onChartDoubleTapped(MotionEvent me) {
+
+                            }
+
+                            @Override
+                            public void onChartSingleTapped(MotionEvent me) {
+
+                            }
+
+                            @Override
+                            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+                            }
+
+                            @Override
+                            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+                            }
+
+                            @Override
+                            public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+                            }
+                        });
+//                        lineChart.setBorderWidth(3);
+//                        lineChart.setBorderColor(chartBorderColor);
+//                        lineChart.setDrawBorders(true);
                         lineChart.getLegend().setEnabled(false);
                         XAxis xAxis = lineChart.getXAxis();
                         xAxis.setAvoidFirstLastClipping(true);
-                        lineChart.getAxisRight().setEnabled(true);
-                        lineChart.getAxisRight().setValueFormatter(new YAxisPriceFormatter());
-                        lineChart.getAxisLeft().setEnabled(false);
-                        xAxis.setDrawAxisLine(false);
+                        lineChart.getAxisLeft().setEnabled(true);
+                        lineChart.getAxisLeft().setDrawGridLines(false);
+                        lineChart.getXAxis().setDrawGridLines(false);
+                        lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
+                        lineChart.getAxisRight().setEnabled(false);
+                        xAxis.setDrawAxisLine(true);
                         xAxis.setValueFormatter(new XAxisDateFormatter());
-                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
                         lineChart.invalidate();
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -206,10 +253,11 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        viewPager = (CustomViewPager) container;
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        crypto = getArguments().getString(ARG_SECTION_NAME);
-        formattedChartURL = String.format(CHART_URL_5_DAYS, crypto);
+        crypto = getArguments().getString(ARG_SYMBOL);
+        formattedChartURL = String.format(CHART_URL_WEEK, crypto);
         formattedTickerURL = String.format(TICKER_URL, crypto);
         Log.d(TAG, formattedChartURL);
         swipeRefreshLayout.setOnRefreshListener(this);
