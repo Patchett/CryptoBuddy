@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.CustomViewPager;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;

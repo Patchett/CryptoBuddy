@@ -18,7 +18,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.VolleySingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;

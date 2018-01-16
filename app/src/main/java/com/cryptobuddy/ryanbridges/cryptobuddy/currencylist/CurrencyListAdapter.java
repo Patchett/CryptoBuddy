@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.CoinFavoritesStructures;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
-import com.cryptobuddy.ryanbridges.cryptobuddy.DatabaseHelperSingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.squareup.picasso.Picasso;
 
