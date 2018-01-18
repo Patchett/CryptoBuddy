@@ -18,7 +18,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
-import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinService;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CryptoCompareCoinService;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -129,7 +129,7 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
 
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
-        CoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
+        CryptoCompareCoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
             @Override
             public void onTaskCompleted(CoinList coinList) {
                 try {

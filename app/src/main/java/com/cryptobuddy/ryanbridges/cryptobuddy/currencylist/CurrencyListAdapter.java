@@ -69,7 +69,8 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         holder.currencyListVolumeTextView.setText(String.format(volumeStringResource, item.totalVolume24H));
         holder.currencyListfullNameTextView.setText(item.fullName);
         holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, item.currPrice));
-        Picasso.with(contextRef.get()).load(CurrencyListActivity.baseImageURL + item.imageURL).into(holder.currencyListCoinImageView);
+        String[] namePieces = item.fullName.split("(?=\\()");
+        Picasso.with(contextRef.get()).load(String.format(CurrencyListActivity.IMAGE_URL_FORMAT, namePieces[0].trim().toLowerCase())).into(holder.currencyListCoinImageView);
     }
 
     @Override
