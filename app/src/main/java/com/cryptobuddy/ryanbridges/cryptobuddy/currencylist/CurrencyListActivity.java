@@ -2,7 +2,6 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,32 +14,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
-import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.coinfavorites.AddFavoriteCoinActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.coinfavorites.CoinMetadata;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
-import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinService;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CryptoCompareCoinService;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -60,6 +51,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
     private ItemTouchHelper mItemTouchHelper;
+    public final static String IMAGE_URL_FORMAT = "https://files.coinmarketcap.com/static/img/coins/64x64/%s.png";
 
 
     @Override
@@ -109,59 +101,85 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     public void getCurrencyList() {
         swipeRefreshLayout.setRefreshing(true);
-        CoinFavoritesStructures coinFavs = db.getFavorites();
-        formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
-        Log.d("I", "formattedCurrencyListURL: %s" + formattedCurrencyListURL);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedCurrencyListURL, null,
-            new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Parcelable recyclerViewState;
-                    recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
-                    currencyItemList.clear();
-                    currencyItemMap.clear();
-                    try {
-                        JSONObject rawResponse = response.getJSONObject("RAW");
-                        for(Iterator<String> iter = rawResponse.keys();iter.hasNext();) {
-                            String currency = iter.next();
-                            try {
-                                JSONObject currencyDetails = rawResponse.getJSONObject(currency).getJSONObject("USD");
-                                Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
-                                Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
-                                Double currPrice = currencyDetails.getDouble("PRICE");
-                                Double mktCap = currencyDetails.getDouble("MKTCAP");
-                                Double totalvolume24H = currencyDetails.getDouble("TOTALVOLUME24H");
-                                CurrencyListItem newItem = new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr,
-                                        coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName, mktCap, totalvolume24H);
-                                currencyItemList.add(newItem);
-                                currencyItemMap.put(currency, newItem);
-                            } catch (JSONException e) {
-                                continue;
-                            }
-                        }
-                        adapter.setCurrencyList(currencyItemList);
-                        adapter.notifyDataSetChanged();
-                        currencyRecyclerView.setAdapter(adapter);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    swipeRefreshLayout.setRefreshing(false);
-                    currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-                }
-    }, new Response.ErrorListener() {
+        CoinMarketCapService.getAllCoins(this, new afterTaskCompletion<CMCCoin[]>() {
             @Override
-            public void onErrorResponse(VolleyError e) {
+            public void onTaskCompleted(CMCCoin[] cmcCoinList) {
+                try {
+                    for (CMCCoin coin : cmcCoinList) {
+                        Log.d("I", coin.getSymbol());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
                 Log.e("ERROR", "Server Error: " + e.getMessage());
                 Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
-        });
-        VolleySingleton.getInstance().addToRequestQueue(request);
+        }, true);
     }
+
+
+
+
+//    public void getCurrencyList() {
+//        swipeRefreshLayout.setRefreshing(true);
+//        CoinFavoritesStructures coinFavs = db.getFavorites();
+//        formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
+//        Log.d("I", "formattedCurrencyListURL: %s" + formattedCurrencyListURL);
+//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedCurrencyListURL, null,
+//            new Response.Listener<JSONObject>() {
+//                @Override
+//                public void onResponse(JSONObject response) {
+//                    Parcelable recyclerViewState;
+//                    recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
+//                    currencyItemList.clear();
+//                    currencyItemMap.clear();
+//                    try {
+//                        JSONObject rawResponse = response.getJSONObject("RAW");
+//                        for(Iterator<String> iter = rawResponse.keys();iter.hasNext();) {
+//                            String currency = iter.next();
+//                            try {
+//                                JSONObject currencyDetails = rawResponse.getJSONObject(currency).getJSONObject("USD");
+//                                Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
+//                                Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
+//                                Double currPrice = currencyDetails.getDouble("PRICE");
+//                                Double mktCap = currencyDetails.getDouble("MKTCAP");
+//                                Double totalvolume24H = currencyDetails.getDouble("TOTALVOLUME24H");
+//                                CurrencyListItem newItem = new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr,
+//                                        coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName, mktCap, totalvolume24H);
+//                                currencyItemList.add(newItem);
+//                                currencyItemMap.put(currency, newItem);
+//                            } catch (JSONException e) {
+//                                continue;
+//                            }
+//                        }
+//                        adapter.setCurrencyList(currencyItemList);
+//                        adapter.notifyDataSetChanged();
+//                        currencyRecyclerView.setAdapter(adapter);
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                    swipeRefreshLayout.setRefreshing(false);
+//                    currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+//                }
+//    }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError e) {
+//                Log.e("ERROR", "Server Error: " + e.getMessage());
+//                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
+//        VolleySingleton.getInstance().addToRequestQueue(request);
+//    }
 
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
-        CoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
+        CryptoCompareCoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
             @Override
             public void onTaskCompleted(CoinList coinList) {
 
