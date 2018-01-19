@@ -2,6 +2,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,8 +46,8 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
     private CurrencyListAdapter adapter;
-    private List<CurrencyListItem> currencyItemList;
-    private Hashtable<String, CurrencyListItem> currencyItemMap;
+    private List<CMCCoin> currencyItemList;
+    private Hashtable<String, CMCCoin> currencyItemMap;
     private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
@@ -77,9 +78,8 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
-                intent.putExtra(SYMBOL, currencyItemList.get(position).symbol);
+                intent.putExtra(SYMBOL, currencyItemList.get(position).getSymbol());
                 startActivity(intent);
-                Toast.makeText(CurrencyListActivity.this, "You selected: " + currencyItemList.get(position).symbol, Toast.LENGTH_LONG).show();
             }
         });
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
@@ -104,13 +104,25 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         CoinMarketCapService.getAllCoins(this, new afterTaskCompletion<CMCCoin[]>() {
             @Override
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
+                Parcelable recyclerViewState;
+                recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
+                currencyItemList.clear();
+                currencyItemMap.clear();
                 try {
                     for (CMCCoin coin : cmcCoinList) {
                         Log.d("I", coin.getSymbol());
+                        currencyItemList.add(coin);
+                        currencyItemMap.put(coin.getSymbol(), coin);
                     }
+                        adapter.setCurrencyList(currencyItemList);
+                        adapter.notifyDataSetChanged();
+                        currencyRecyclerView.setAdapter(adapter);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                swipeRefreshLayout.setRefreshing(false);
+                currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+
             }
         }, new afterTaskFailure() {
             @Override
@@ -121,62 +133,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             }
         }, true);
     }
-
-
-
-
-//    public void getCurrencyList() {
-//        swipeRefreshLayout.setRefreshing(true);
-//        CoinFavoritesStructures coinFavs = db.getFavorites();
-//        formattedCurrencyListURL = String.format(HOME_CURRENCY_LIST_URL, android.text.TextUtils.join(",", coinFavs.favoriteList));
-//        Log.d("I", "formattedCurrencyListURL: %s" + formattedCurrencyListURL);
-//        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, formattedCurrencyListURL, null,
-//            new Response.Listener<JSONObject>() {
-//                @Override
-//                public void onResponse(JSONObject response) {
-//                    Parcelable recyclerViewState;
-//                    recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
-//                    currencyItemList.clear();
-//                    currencyItemMap.clear();
-//                    try {
-//                        JSONObject rawResponse = response.getJSONObject("RAW");
-//                        for(Iterator<String> iter = rawResponse.keys();iter.hasNext();) {
-//                            String currency = iter.next();
-//                            try {
-//                                JSONObject currencyDetails = rawResponse.getJSONObject(currency).getJSONObject("USD");
-//                                Double changePCT24hr = currencyDetails.getDouble("CHANGEPCT24HOUR");
-//                                Double change24hr = currencyDetails.getDouble("CHANGE24HOUR");
-//                                Double currPrice = currencyDetails.getDouble("PRICE");
-//                                Double mktCap = currencyDetails.getDouble("MKTCAP");
-//                                Double totalvolume24H = currencyDetails.getDouble("TOTALVOLUME24H");
-//                                CurrencyListItem newItem = new CurrencyListItem(currency, currPrice, change24hr, changePCT24hr,
-//                                        coinMetadataTable.get(currency).imageURL, coinMetadataTable.get(currency).fullName, mktCap, totalvolume24H);
-//                                currencyItemList.add(newItem);
-//                                currencyItemMap.put(currency, newItem);
-//                            } catch (JSONException e) {
-//                                continue;
-//                            }
-//                        }
-//                        adapter.setCurrencyList(currencyItemList);
-//                        adapter.notifyDataSetChanged();
-//                        currencyRecyclerView.setAdapter(adapter);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                    swipeRefreshLayout.setRefreshing(false);
-//                    currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-//                }
-//    }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError e) {
-//                Log.e("ERROR", "Server Error: " + e.getMessage());
-//                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-//                swipeRefreshLayout.setRefreshing(false);
-//            }
-//        });
-//        VolleySingleton.getInstance().addToRequestQueue(request);
-//    }
-
+    
     public void getAllCoinsList() {
         swipeRefreshLayout.setRefreshing(true);
         CryptoCompareCoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {

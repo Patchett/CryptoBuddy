@@ -8,21 +8,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CMCCoin {
 
-//    public static class CMCData {
-//
-//        private List<CMCCoin> cmcCoinList;
-//
-//        public List<CMCCoin> getDataList() {
-//            return cmcCoinList;
-//        }
-//
-//        @JsonAnySetter
-//        public void setDataList(String key, CMCCoin dataNode) {
-//            if(cmcCoinList == null) cmcCoinList = new ArrayList<>();
-//            cmcCoinList.add(dataNode);
-//        }
-//    }
-
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")
