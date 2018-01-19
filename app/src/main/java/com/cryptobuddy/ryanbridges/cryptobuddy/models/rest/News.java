@@ -54,114 +54,103 @@ public class News {
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("id")
     public String getId() {
         return id;
     }
 
-    @JsonProperty("id")
-    public void setId(String id) {
+    public News setId(String id) {
         this.id = id;
+        return this;
     }
 
-    @JsonProperty("guid")
     public String getGuid() {
         return guid;
     }
 
-    @JsonProperty("guid")
-    public void setGuid(String guid) {
+    public News setGuid(String guid) {
         this.guid = guid;
+        return this;
     }
 
-    @JsonProperty("published_on")
     public Integer getPublishedOn() {
         return publishedOn;
     }
 
-    @JsonProperty("published_on")
-    public void setPublishedOn(Integer publishedOn) {
+    public News setPublishedOn(Integer publishedOn) {
         this.publishedOn = publishedOn;
+        return this;
     }
 
-    @JsonProperty("imageurl")
     public String getImageurl() {
         return imageurl;
     }
 
-    @JsonProperty("imageurl")
-    public void setImageurl(String imageurl) {
+    public News setImageurl(String imageurl) {
         this.imageurl = imageurl;
+        return this;
     }
 
-    @JsonProperty("title")
     public String getTitle() {
         return title;
     }
 
-    @JsonProperty("title")
-    public void setTitle(String title) {
+    public News setTitle(String title) {
         this.title = title;
+        return this;
     }
 
-    @JsonProperty("url")
     public String getUrl() {
         return url;
     }
 
-    @JsonProperty("url")
-    public void setUrl(String url) {
+    public News setUrl(String url) {
         this.url = url;
+        return this;
     }
 
-    @JsonProperty("source")
     public String getSource() {
         return source;
     }
 
-    @JsonProperty("source")
-    public void setSource(String source) {
+    public News setSource(String source) {
         this.source = source;
+        return this;
     }
 
-    @JsonProperty("body")
     public String getBody() {
         return body;
     }
 
-    @JsonProperty("body")
-    public void setBody(String body) {
+    public News setBody(String body) {
         this.body = body;
+        return this;
     }
 
-    @JsonProperty("tags")
     public String getTags() {
         return tags;
     }
 
-    @JsonProperty("tags")
-    public void setTags(String tags) {
+    public News setTags(String tags) {
         this.tags = tags;
+        return this;
     }
 
-    @JsonProperty("lang")
     public String getLang() {
         return lang;
     }
 
-    @JsonProperty("lang")
-    public void setLang(String lang) {
+    public News setLang(String lang) {
         this.lang = lang;
+        return this;
     }
 
-    @JsonProperty("source_info")
     public SourceInfo getSourceInfo() {
         return sourceInfo;
     }
 
-    @JsonProperty("source_info")
-    public void setSourceInfo(SourceInfo sourceInfo) {
+    public News setSourceInfo(SourceInfo sourceInfo) {
         this.sourceInfo = sourceInfo;
+        return this;
     }
 
     @JsonAnyGetter
@@ -170,7 +159,8 @@ public class News {
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
+    public News setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+        return this;
     }
 }

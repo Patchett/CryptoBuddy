@@ -3,6 +3,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.MainThread;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +28,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
@@ -37,7 +40,6 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
 public class NewsListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    public final static String BTC_NEWS_URL = "https://min-api.cryptocompare.com/data/news/";
     private NewsListAdapter adapter;
     private List<NewsItem> newsItemList;
     private RecyclerView recyclerView;
@@ -79,26 +81,95 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         });
     }
     
-    public void getNewsObservable(){
-        NewsService.getObservableNews(this, true, new Action1<RestResults<News[]>>() {
+    public void getNewsObservable(int whatToDo){
+
+        //Example of framework isolation by using observables
+        //An standard Rx Action, or single use subscriber.
+        Action1<News[]> subscriber = new Action1<News[]>() {
             @Override
-            public void call(RestResults<News[]> newsRestResults) {
-                Parcelable recyclerViewState;
-                recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-                if(newsRestResults.isSuccessful()){
-                    for(News news: newsRestResults.getResultEntity()){
+            public void call(News[] newsRestResults) {
+                if(newsRestResults!=null){
+                    Parcelable recyclerViewState;
+                    recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                    for(News news: newsRestResults){
                         newsItemList.add(new NewsItem(news.getTitle(),
                                 news.getUrl(), news.getBody(),
                                 news.getImageurl(), news.getSource(),
                                 news.getPublishedOn()));
                     }
+                    adapter.notifyDataSetChanged();
+                    recyclerView.setAdapter(adapter);
+                    swipeRefreshLayout.setRefreshing(false);
+                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 }
-                adapter.notifyDataSetChanged();
-                recyclerView.setAdapter(adapter);
-                swipeRefreshLayout.setRefreshing(false);
-                recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                else{
+                    swipeRefreshLayout.setRefreshing(false);
+                }
             }
-        });
+        };
+
+        switch (whatToDo){
+            case 1:
+                //Wrapped observable call
+                NewsService.getObservableNews(this, true, new Action1<RestResults<News[]>>() {
+                    @Override
+                    public void call(RestResults<News[]> newsRestResults) {
+                        Parcelable recyclerViewState;
+                        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                        if(newsRestResults.isSuccessful()){
+                            for(News news: newsRestResults.getResultEntity()){
+                                newsItemList.add(new NewsItem(news.getTitle(),
+                                        news.getUrl(), news.getBody(),
+                                        news.getImageurl(), news.getSource(),
+                                        news.getPublishedOn()));
+                            }
+                            adapter.notifyDataSetChanged();
+                            recyclerView.setAdapter(adapter);
+                            swipeRefreshLayout.setRefreshing(false);
+                            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                        }else{
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
+                    }
+                });
+                break;
+            case 2:
+                //Observable instance from EasyRest
+                NewsService.getPlainObservableNews(this).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+                break;
+
+            case 3:
+
+                //Wrapped Observable call using volley
+                NewsService.getNewsVolleyObservable(subscriber);
+                break;
+
+                default:
+                    //Wrapped observable call
+                    NewsService.getObservableNews(this, true, new Action1<RestResults<News[]>>() {
+                        @Override
+                        public void call(RestResults<News[]> newsRestResults) {
+                            Parcelable recyclerViewState;
+                            recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                            if(newsRestResults.isSuccessful()){
+                                for(News news: newsRestResults.getResultEntity()){
+                                    newsItemList.add(new NewsItem(news.getTitle(),
+                                            news.getUrl(), news.getBody(),
+                                            news.getImageurl(), news.getSource(),
+                                            news.getPublishedOn()));
+                                }
+                                adapter.notifyDataSetChanged();
+                                recyclerView.setAdapter(adapter);
+                                swipeRefreshLayout.setRefreshing(false);
+                                recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                            }else{
+                                swipeRefreshLayout.setRefreshing(false);
+                            }
+                        }
+                    });
+        }
+
     }
 
     @Override
@@ -133,7 +204,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
                                         //getNewsRequest();
-                                        getNewsObservable();
+                                        getNewsObservable(2);
                                     }
                                 }
         );
@@ -142,7 +213,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     @Override
     public void onRefresh() {
         //getNewsRequest();
-        getNewsObservable();
+        getNewsObservable(1);
 
     }
 
