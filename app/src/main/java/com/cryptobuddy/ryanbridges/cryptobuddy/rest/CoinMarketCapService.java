@@ -18,7 +18,7 @@ public class CoinMarketCapService {
     public static final String COIN_MARKET_CAP_ALL_COINS_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
 
     public static void getAllCoins(Context context, afterTaskCompletion<CMCCoin[]> taskCompletion, afterTaskFailure failure, boolean async) {
-        new GenericRestCall<>(String.class, CMCCoin[].class, String.class)
+        new GenericRestCall<>(Void.class, CMCCoin[].class, String.class)
                 .setUrl(COIN_MARKET_CAP_ALL_COINS_URL)
                 .setContext(context.getApplicationContext())
                 .isCacheEnabled(true)

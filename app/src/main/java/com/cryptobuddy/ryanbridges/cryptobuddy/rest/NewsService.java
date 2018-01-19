@@ -8,7 +8,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
-import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsItem;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.RestResults;
@@ -20,10 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpMethod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -140,7 +136,7 @@ public class NewsService {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        News[] newsList;
+                        News[] newsList = null;
                         try {
                             newsList = new News[response.length()+1];
                             for (int i = 0; i < response.length(); i++) {
@@ -156,17 +152,18 @@ public class NewsService {
                                         .setUrl(articleURL).setSource(sourceName).setPublishedOn((int) publishedOn);
 
                             }
-                            Observable.just(newsList).subscribe(action1);
                         }
                         catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        Observable.just(newsList).subscribe(action1);
                         Log.e("VolleyCall", "done:"+ Calendar.getInstance().getTime());
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError e) {
                 e.printStackTrace();
+                Observable.just(new News[0]).subscribe(action1);
             }
         });
         VolleySingleton.getInstance().addToRequestQueue(request);
