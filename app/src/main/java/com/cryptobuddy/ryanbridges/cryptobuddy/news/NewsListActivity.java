@@ -11,14 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.NewsService;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
+import com.grizzly.rest.Model.RestResults;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;
@@ -27,6 +26,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.functions.Action1;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 
@@ -46,41 +47,58 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
 
     public void getNewsRequest() {
         swipeRefreshLayout.setRefreshing(true);
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BTC_NEWS_URL, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Parcelable recyclerViewState;
-                        recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject row = response.getJSONObject(i);
-                                final String articleURL = row.getString("url");
-                                String articleTitle = row.getString("title");
-                                String articleBody = row.getString("body");
-                                String imageURL = row.getString("imageurl");
-                                String sourceName = row.getJSONObject("source_info").getString("name");
-                                long publishedOn = row.getLong("published_on");
-                                newsItemList.add(new NewsItem(articleTitle, articleURL, articleBody, imageURL, sourceName, publishedOn));
-                            }
-                            adapter.notifyDataSetChanged();
-                            recyclerView.setAdapter(adapter);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        swipeRefreshLayout.setRefreshing(false);
-                        recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-                    }
-                }, new Response.ErrorListener() {
+        NewsService.getNewsVolley(new VolleySingleton.OnVolleyRequest() {
             @Override
-            public void onErrorResponse(VolleyError e) {
-                e.printStackTrace();
-//                Log.e("ERROR", "Server Error: " + e.getMessage());
-//                Toast.makeText(mActivity, e.getMessage(), Toast.LENGTH_LONG).show();
+            public void parse(JSONArray jsonArray) {
+                Parcelable recyclerViewState;
+                recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                try {
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject row = jsonArray.getJSONObject(i);
+                        final String articleURL = row.getString("url");
+                        String articleTitle = row.getString("title");
+                        String articleBody = row.getString("body");
+                        String imageURL = row.getString("imageurl");
+                        String sourceName = row.getJSONObject("source_info").getString("name");
+                        long publishedOn = row.getLong("published_on");
+                        newsItemList.add(new NewsItem(articleTitle, articleURL, articleBody, imageURL, sourceName, publishedOn));
+                    }
+                    adapter.notifyDataSetChanged();
+                    recyclerView.setAdapter(adapter);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                swipeRefreshLayout.setRefreshing(false);
+                recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            }
+
+            @Override
+            public void onParseError() {
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
-        VolleySingleton.getInstance().addToRequestQueue(request);
+    }
+    
+    public void getNewsObservable(){
+        NewsService.getObservableNews(this, true, new Action1<RestResults<News[]>>() {
+            @Override
+            public void call(RestResults<News[]> newsRestResults) {
+                Parcelable recyclerViewState;
+                recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                if(newsRestResults.isSuccessful()){
+                    for(News news: newsRestResults.getResultEntity()){
+                        newsItemList.add(new NewsItem(news.getTitle(),
+                                news.getUrl(), news.getBody(),
+                                news.getImageurl(), news.getSource(),
+                                news.getPublishedOn()));
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                recyclerView.setAdapter(adapter);
+                swipeRefreshLayout.setRefreshing(false);
+                recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+            }
+        });
     }
 
     @Override
@@ -114,7 +132,8 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        getNewsRequest();
+                                        //getNewsRequest();
+                                        getNewsObservable();
                                     }
                                 }
         );
@@ -122,7 +141,9 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
-        getNewsRequest();
+        //getNewsRequest();
+        getNewsObservable();
+
     }
 
     @Override

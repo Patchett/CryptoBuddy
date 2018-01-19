@@ -7,11 +7,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+
 /**
  * Created by Ryan on 8/19/2017.
  */
 
 public class VolleySingleton extends Application {
+
+    public interface OnVolleyRequest{
+        void parse(JSONArray jsonArray);
+        void onParseError();
+    }
 
     public static final String TAG = VolleySingleton.class
             .getSimpleName();
