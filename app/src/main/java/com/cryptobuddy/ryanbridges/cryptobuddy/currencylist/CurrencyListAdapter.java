@@ -9,10 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
-import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 
 public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapter.ViewHolder> implements ItemTouchHelperAdapter {
-    private List<CurrencyListItem> currencyList;
+    private List<CMCCoin> currencyList;
     private CurrencyListAdapter.ViewHolder viewHolder;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
@@ -37,9 +38,9 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private CustomItemClickListener listener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
-    private Hashtable<String, CurrencyListItem> currencyItemMap;
+    private Hashtable<String, CMCCoin> currencyItemMap;
 
-    public CurrencyListAdapter(List<CurrencyListItem> currencyList, Hashtable<String, CurrencyListItem> currencyItemMap,
+    public CurrencyListAdapter(List<CMCCoin> currencyList, Hashtable<String, CMCCoin> currencyItemMap,
                                DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
@@ -48,8 +49,8 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         this.currencyItemMap = currencyItemMap;
         this.mktCapStringResource = this.contextRef.get().getString(R.string.mkt_cap_format);
         this.volumeStringResource = this.contextRef.get().getString(R.string.volume_format);
-        this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_with_dollars_format);
-        this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_with_dollars_format);
+        this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_format);
+        this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_format);
         this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
@@ -57,20 +58,37 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
 
     @Override
     public void onBindViewHolder(CurrencyListAdapter.ViewHolder holder, int position) {
-        CurrencyListItem item = currencyList.get(position);
-        if (item.change24hr < 0) {
-            holder.currencyListChangeTextView.setText(String.format(negativePercentStringResource, item.changePCT24hr, item.change24hr));
-            holder.currencyListChangeTextView.setTextColor(negativeRedColor);
-        } else {
-            holder.currencyListChangeTextView.setText(String.format(positivePercentStringResource, item.changePCT24hr, item.change24hr));
+        CMCCoin item = currencyList.get(position);
+        if (item.getPercent_change_24h() == null) {
+            holder.currencyListChangeTextView.setText("N/A");
             holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
+        } else {
+            double dayChange = Double.parseDouble(item.getPercent_change_24h());
+            if (dayChange < 0) {
+                holder.currencyListChangeTextView.setText(String.format(negativePercentStringResource, dayChange));
+                holder.currencyListChangeTextView.setTextColor(negativeRedColor);
+            } else {
+                holder.currencyListChangeTextView.setText(String.format(positivePercentStringResource, dayChange));
+                holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
+            }
         }
-        holder.currencyListMarketcapTextView.setText(String.format(mktCapStringResource, item.mktCap));
-        holder.currencyListVolumeTextView.setText(String.format(volumeStringResource, item.totalVolume24H));
-        holder.currencyListfullNameTextView.setText(item.fullName);
-        holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, item.currPrice));
-        String[] namePieces = item.fullName.split("(?=\\()");
-        Picasso.with(contextRef.get()).load(String.format(CurrencyListActivity.IMAGE_URL_FORMAT, namePieces[0].trim().toLowerCase())).into(holder.currencyListCoinImageView);
+        if (item.getMarket_cap_usd() == null) {
+            holder.currencyListMarketcapTextView.setText("N/A");
+        } else {
+            holder.currencyListMarketcapTextView.setText(String.format(mktCapStringResource, Double.parseDouble(item.getMarket_cap_usd())));
+        }
+        if (item.getVolume_usd_24h() == null) {
+            holder.currencyListVolumeTextView.setText("N/A");
+        } else {
+            holder.currencyListVolumeTextView.setText(String.format(volumeStringResource, Double.parseDouble(item.getVolume_usd_24h())));
+        }
+        if (item.getPrice_usd() == null) {
+            holder.currencyListCurrPriceTextView.setText("N/A");
+        } else {
+            holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, Double.parseDouble(item.getPrice_usd())));
+        }
+        holder.currencyListfullNameTextView.setText(item.getSymbol());
+        Picasso.with(contextRef.get()).load(String.format(CurrencyListActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
     }
 
     @Override
@@ -120,7 +138,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
 
     @Override
     public void onItemDismiss(int position) {
-        this.currencyItemMap.remove(this.currencyList.get(position).symbol);
+        this.currencyItemMap.remove(this.currencyList.get(position).getSymbol());
         this.currencyList.remove(position);
         notifyItemRemoved(position);
     }
@@ -147,7 +165,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         favs.favoriteList.clear();
         favs.favoritesMap.clear();
         for (int i = 0; i < currencyList.size(); i++) {
-            String currSymbol = currencyList.get(i).symbol;
+            String currSymbol = currencyList.get(i).getSymbol();
             favs.favoriteList.add(currSymbol);
             favs.favoritesMap.put(currSymbol, currSymbol);
         }
@@ -158,7 +176,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         return currencyList.size();
     }
 
-    public void setCurrencyList(List<CurrencyListItem> newCurrencyList) {
+    public void setCurrencyList(List<CMCCoin> newCurrencyList) {
         this.currencyList = newCurrencyList;
     }
 
