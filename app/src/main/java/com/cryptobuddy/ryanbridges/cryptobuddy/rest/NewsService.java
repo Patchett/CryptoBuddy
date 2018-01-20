@@ -125,48 +125,4 @@ public class NewsService {
         });
         VolleySingleton.getInstance().addToRequestQueue(request);
     }
-
-    /**
-     * Calls the volley singleton using an RxAndroid Action instead of a listener.
-     * @param action1 an action receiving a News[] object
-     */
-    public static void getNewsVolleyObservable(final Action1<News[]> action1){
-        Log.e("VolleyCall", "start:"+ Calendar.getInstance().getTime());
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BTC_NEWS_URL, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        News[] newsList = null;
-                        try {
-                            newsList = new News[response.length()+1];
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject row = response.getJSONObject(i);
-                                final String articleURL = row.getString("url");
-                                String articleTitle = row.getString("title");
-                                String articleBody = row.getString("body");
-                                String imageURL = row.getString("imageurl");
-                                String sourceName = row.getJSONObject("source_info").getString("name");
-                                long publishedOn = row.getLong("published_on");
-                                newsList[i] =
-                                 new News().setTitle(articleTitle).setBody(articleBody).setImageurl(imageURL)
-                                        .setUrl(articleURL).setSource(sourceName).setPublishedOn((int) publishedOn);
-
-                            }
-                        }
-                        catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        Observable.just(newsList).subscribe(action1);
-                        Log.e("VolleyCall", "done:"+ Calendar.getInstance().getTime());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError e) {
-                e.printStackTrace();
-                Observable.just(new News[0]).subscribe(action1);
-            }
-        });
-        VolleySingleton.getInstance().addToRequestQueue(request);
-    }
-
 }

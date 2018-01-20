@@ -84,11 +84,11 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     public void getNewsObservable(int whatToDo){
 
         //Example of framework isolation by using observables
-        //An standard Rx Action, or single use subscriber.
+        //An standard Rx Action.
         Action1<News[]> subscriber = new Action1<News[]>() {
             @Override
             public void call(News[] newsRestResults) {
-                if(newsRestResults!=null){
+                if(newsRestResults!=null && newsRestResults.length>0){
                     Parcelable recyclerViewState;
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                     for(News news: newsRestResults){
@@ -137,12 +137,6 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                 //Observable instance from EasyRest
                 NewsService.getPlainObservableNews(this).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
-                break;
-
-            case 3:
-
-                //Wrapped Observable call using volley
-                NewsService.getNewsVolleyObservable(subscriber);
                 break;
 
                 default:
