@@ -3,7 +3,6 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.MainThread;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -83,6 +82,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     
     public void getNewsObservable(int whatToDo){
 
+        swipeRefreshLayout.setRefreshing(true);
         //Example of framework isolation by using observables
         //An standard Rx Action.
         Action1<News[]> subscriber = new Action1<News[]>() {
@@ -225,7 +225,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                 finish();
                 return true;
             case R.id.news_refresh_button:
-                onRefresh();
+                getNewsObservable(1);
                 return true;
         }
         finish();
