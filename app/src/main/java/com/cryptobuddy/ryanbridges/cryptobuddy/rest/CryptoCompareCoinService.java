@@ -19,7 +19,7 @@ public class CryptoCompareCoinService {
     public static final String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
 
     public static void getAllCoins(Context context, afterTaskCompletion<CoinList> taskCompletion, afterTaskFailure failure, boolean async) {
-        new GenericRestCall<>(String.class, CoinList.class, String.class)
+        new GenericRestCall<>(Void.class, CoinList.class, String.class)
                 .setUrl(ALL_COINS_LIST_URL)
                 .setContext(context.getApplicationContext())
                 .isCacheEnabled(true)
