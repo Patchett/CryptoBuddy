@@ -16,13 +16,8 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.NewsService;
-import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
 import com.grizzly.rest.Model.RestResults;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,41 +39,6 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     private RecyclerView recyclerView;
     private AppCompatActivity mActivity;
     private SwipeRefreshLayout swipeRefreshLayout;
-
-
-    public void getNewsRequest() {
-        swipeRefreshLayout.setRefreshing(true);
-        NewsService.getNewsVolley(new VolleySingleton.OnVolleyRequest() {
-            @Override
-            public void parse(JSONArray jsonArray) {
-                Parcelable recyclerViewState;
-                recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-                try {
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject row = jsonArray.getJSONObject(i);
-                        final String articleURL = row.getString("url");
-                        String articleTitle = row.getString("title");
-                        String articleBody = row.getString("body");
-                        String imageURL = row.getString("imageurl");
-                        String sourceName = row.getJSONObject("source_info").getString("name");
-                        long publishedOn = row.getLong("published_on");
-                        newsItemList.add(new NewsItem(articleTitle, articleURL, articleBody, imageURL, sourceName, publishedOn));
-                    }
-                    adapter.notifyDataSetChanged();
-                    recyclerView.setAdapter(adapter);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                swipeRefreshLayout.setRefreshing(false);
-                recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-            }
-
-            @Override
-            public void onParseError() {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-    }
     
     public void getNewsObservable(int whatToDo){
 
