@@ -67,7 +67,7 @@
             app:layout_constraintTop_toBottomOf="@+id/percent_change" />
 
         <GridLayout
-            android:id="@+id/gridLayout"
+            android:id="@+id/gridLayoutChartButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
@@ -155,6 +155,23 @@
                 app:layout_constraintTop_toBottomOf="@+id/chart" />
 
         </GridLayout>
+
+        <!--TODO: Convert text to string-->
+        <TextView
+            android:id="@+id/noChartDataText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="No chart data :("
+            android:textSize="36sp"
+            android:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </android.support.constraint.ConstraintLayout>

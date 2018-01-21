@@ -15,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -133,13 +134,30 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void getChartDataRequest() {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
+        final TextView noChartText = (TextView) rootView.findViewById(R.id.noChartDataText);
+        final GridLayout gridLayoutChartButtons = (GridLayout) rootView.findViewById(R.id.gridLayoutChartButtons);
+        noChartText.setEnabled(false);
+        gridLayoutChartButtons.setEnabled(true);
+        lineChart.setEnabled(true);
+        noChartText.setText("");
         JsonObjectRequest chartDataRequest = new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+
                         List<Entry> closePrices = new ArrayList<Entry>();
                         try {
                             JSONArray rawData = response.getJSONArray("Data");
+                            if (rawData.length() == 0) { // Prevents a crash if we get an empty resposne
+                                swipeRefreshLayout.setRefreshing(false);
+                                noChartText.setEnabled(true);
+                                lineChart.setData(null);
+                                noChartText.setText("No Chart Data :(");
+                                lineChart.setEnabled(false);
+                                lineChart.invalidate();
+                                gridLayoutChartButtons.setEnabled(false);
+                                return;
+                            }
                             Log.d("I", "rawData: " + rawData);
                             for (int i = 0; i < rawData.length(); i++) {
                                 JSONObject row = rawData.getJSONObject(i);
@@ -149,6 +167,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            return;
                         }
                         TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
                         float currPrice = closePrices.get(closePrices.size() - 1).getY();
@@ -180,7 +199,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         lineChart.setScaleEnabled(false);
                         lineChart.getDescription().setEnabled(false);
                         lineChart.setData(lineData);
-                        lineChart.setNoDataText("Pulling price data...");
                         lineChart.setContentDescription("");
                         lineChart.animateX(1000);
                         lineChart.setOnChartGestureListener(new OnChartGestureListener() {
