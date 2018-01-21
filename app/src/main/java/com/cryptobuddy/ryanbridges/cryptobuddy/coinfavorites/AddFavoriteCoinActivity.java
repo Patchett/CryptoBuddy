@@ -124,7 +124,6 @@ public class AddFavoriteCoinActivity extends AppCompatActivity implements SwipeR
             }
         });
         searchView.setIconified(false);
-
     }
 
     public void getAllCoinsList() {

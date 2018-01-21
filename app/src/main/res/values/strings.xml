@@ -30,6 +30,8 @@
     <string name="Year">1Y</string>
     <string name="All">ALL</string>
     <string name="AllTime">All Time</string>
+    <string name="action_search">Search</string>
+
 
 
 </resources>

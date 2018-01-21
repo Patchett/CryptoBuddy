@@ -48,7 +48,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         Action1<News[]> subscriber = new Action1<News[]>() {
             @Override
             public void call(News[] newsRestResults) {
-                if(newsRestResults!=null && newsRestResults.length>0){
+                if(newsRestResults != null && newsRestResults.length > 0){
                     Parcelable recyclerViewState;
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                     for(News news: newsRestResults){

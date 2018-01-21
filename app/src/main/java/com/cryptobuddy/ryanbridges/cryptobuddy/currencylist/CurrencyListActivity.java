@@ -3,10 +3,12 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
@@ -18,14 +20,10 @@ import android.widget.Toast;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyTabsActivity;
-import com.cryptobuddy.ryanbridges.cryptobuddy.coinfavorites.AddFavoriteCoinActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.coinfavorites.CoinMetadata;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
-import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
-import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.DataNode;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
-import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CryptoCompareCoinService;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
@@ -37,7 +35,7 @@ import java.util.List;
 
 
 
-public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
     private String formattedCurrencyListURL;
@@ -52,6 +50,8 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
     private ItemTouchHelper mItemTouchHelper;
+    private MenuItem searchItem;
+    private SearchView searchView;
     public final static String IMAGE_URL_FORMAT = "https://files.coinmarketcap.com/static/img/coins/64x64/%s.png";
 
 
@@ -94,7 +94,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(true);
-                getAllCoinsList();
+                getCurrencyList();
             }
         });
     }
@@ -114,9 +114,9 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                         currencyItemList.add(coin);
                         currencyItemMap.put(coin.getSymbol(), coin);
                     }
-                        adapter.setCurrencyList(currencyItemList);
-                        adapter.notifyDataSetChanged();
-                        currencyRecyclerView.setAdapter(adapter);
+                    adapter.setCurrencyList(currencyItemList);
+                    adapter.notifyDataSetChanged();
+                    currencyRecyclerView.setAdapter(adapter);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -133,55 +133,69 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             }
         }, true);
     }
-    
-    public void getAllCoinsList() {
-        swipeRefreshLayout.setRefreshing(true);
-        CryptoCompareCoinService.getAllCoins(this, new afterTaskCompletion<CoinList>() {
-            @Override
-            public void onTaskCompleted(CoinList coinList) {
-
-                try {
-                    baseImageURL = coinList.getBaseImageUrl();
-                    for(DataNode data : coinList.getData().getDataList()){
-                        coinMetadataTable.put(data.getSymbol(), new CoinMetadata(data.getImageUrl(), data.getFullName(), data.getSymbol()));
-                    }
-                    getCurrencyList();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new afterTaskFailure() {
-            @Override
-            public void onTaskFailed(Object o, Exception e) {
-                Log.e("ERROR", "Server Error: " + e.getMessage());
-                Toast.makeText(CurrencyListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        }, true);
-    }
 
     @Override
     public void onResume(){
         super.onResume();
-        this.onRefresh();
+//        this.onRefresh();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        final MenuItem newsButton = menu.findItem(R.id.news_button);
+        final MenuItem refreshButton = menu.findItem(R.id.currency_refresh_button);
+        searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    newsButton.setVisible(false);
+                    refreshButton.setVisible(false);
+                    getSupportActionBar().setTitle("");
+                } else {
+                    invalidateOptionsMenu();
+                    getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+                }
+            }
+        });
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onQueryTextChange(String query) {
+        query = query.toLowerCase();
+        final List<CMCCoin> filteredList = new ArrayList<>();
+        for (CMCCoin coin : currencyItemList) {
+            if (coin.getSymbol().toLowerCase().contains(query) || coin.getName().toLowerCase().contains(query)) {
+                filteredList.add(coin);
+            }
+        }
+        adapter = new CurrencyListAdapter(filteredList, currencyItemMap, db, me, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Intent intent = new Intent(me, CurrencyTabsActivity.class);
+                intent.putExtra(SYMBOL, filteredList.get(position).getSymbol());
+                startActivity(intent);
+            }
+        });
+        currencyRecyclerView.setAdapter(adapter);
         return true;
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.news_button:
                 startActivity(new Intent(this, NewsListActivity.class));
-                return true;
-            case R.id.add_currency_button:
-                startActivity(new Intent(this, AddFavoriteCoinActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 return true;
             case R.id.currency_refresh_button:
                 onRefresh();
@@ -192,6 +206,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
 
     @Override
     public void onRefresh() {
-        getAllCoinsList();
+        getCurrencyList();
     }
 }
