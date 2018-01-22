@@ -15,7 +15,7 @@
         android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
         android:paddingRight="@dimen/graph_fragment_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity$GraphFragment">
+        tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity">
 
         <TextView
             android:id="@+id/current_price"

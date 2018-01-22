@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
  * Created by Ryan on 1/21/2018.
  */
 
+// Thanks to this stackoverflow post: https://stackoverflow.com/questions/39711666/activity-navigation-custom-animation-with-popenter-and-popexit-like-fragments/41025993#41025993
+
 public class BaseAnimationActivity extends AppCompatActivity {
     @Override
     public void finish() {

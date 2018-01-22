@@ -14,7 +14,7 @@ import android.view.View;
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.NewsService;
 import com.grizzly.rest.Model.RestResults;
@@ -182,7 +182,7 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.home_button:
-                startActivity(new Intent(this, CurrencyListActivity.class));
+                startActivity(new Intent(this, CurrencyListTabsActivity.class));
                 finish();
                 return true;
             case R.id.news_refresh_button:

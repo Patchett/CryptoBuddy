@@ -3,15 +3,15 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 
-public class WebViewActivity extends AppCompatActivity implements CustomWebChromeClient.ProgressListener {
+public class WebViewActivity extends BaseAnimationActivity implements CustomWebChromeClient.ProgressListener {
 
     private WebView mWebView;
     private ProgressBar mProgressBar;

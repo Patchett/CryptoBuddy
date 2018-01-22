@@ -23,7 +23,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashDayDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashYearFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
@@ -73,7 +72,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
     private View rootView;
-    private String TAG = CurrencyListActivity.class.getSimpleName();
     private CustomViewPager viewPager;
     private String currentChartURL;
     private IAxisValueFormatter XAxisFormatter;
@@ -265,7 +263,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.e(TAG, "Server Error: " + e.getMessage());
+                Log.e("I", "Server Error: " + e.getMessage());
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
