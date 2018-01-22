@@ -70,5 +70,25 @@
         app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
         app:layout_constraintTop_toBottomOf="@+id/currencyListCurrPriceTextView" />
 
+    <ImageView
+        android:id="@+id/currencyListFavStar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/ic_star_border_black_24dp"
+        android:contentDescription="@string/Favorite"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textOff=""
+        android:textOn=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
 
 </android.support.constraint.ConstraintLayout>

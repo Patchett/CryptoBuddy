@@ -15,7 +15,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -134,10 +133,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void getChartDataRequest() {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
+        final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
         final TextView noChartText = (TextView) rootView.findViewById(R.id.noChartDataText);
-        final GridLayout gridLayoutChartButtons = (GridLayout) rootView.findViewById(R.id.gridLayoutChartButtons);
         noChartText.setEnabled(false);
-        gridLayoutChartButtons.setEnabled(true);
         lineChart.setEnabled(true);
         noChartText.setText("");
         JsonObjectRequest chartDataRequest = new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
@@ -153,10 +151,12 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 swipeRefreshLayout.setRefreshing(false);
                                 noChartText.setEnabled(true);
                                 lineChart.setData(null);
+                                lineChart.setNoDataText("");
                                 noChartText.setText("No Chart Data :(");
                                 lineChart.setEnabled(false);
                                 lineChart.invalidate();
-                                gridLayoutChartButtons.setEnabled(false);
+                                percentChangeText.setText("");
+                                currPriceText.setText("");
                                 return;
                             }
                             Log.d("I", "rawData: " + rawData);
