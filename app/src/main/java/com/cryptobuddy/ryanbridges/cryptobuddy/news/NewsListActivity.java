@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
@@ -32,7 +33,7 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
  * Created by Ryan on 12/28/2017.
  */
 
-public class NewsListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class NewsListActivity extends BaseAnimationActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private NewsListAdapter adapter;
     private List<NewsItem> newsItemList;

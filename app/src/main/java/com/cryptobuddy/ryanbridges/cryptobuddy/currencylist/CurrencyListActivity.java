@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyTabsActivity;
@@ -34,7 +35,7 @@ import java.util.List;
 
 
 
-public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class CurrencyListActivity extends BaseAnimationActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
     public final static String SYMBOL = "SYMBOL";
     public static String baseImageURL;
@@ -171,6 +172,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
                 intent.putExtra(SYMBOL, filteredList.get(position).getSymbol());
+                overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
                 startActivity(intent);
             }
         });
@@ -195,6 +197,11 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onLeaveThisActivity() {
+        // Don't use an exit animation when leaving home screen
     }
 
     @Override
