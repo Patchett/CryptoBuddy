@@ -148,6 +148,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         List<Entry> closePrices = new ArrayList<Entry>();
                         try {
                             JSONArray rawData = response.getJSONArray("Data");
+                            Log.d("I", "rawData: " + rawData);
                             if (rawData.length() == 0) { // Prevents a crash if we get an empty resposne
                                 swipeRefreshLayout.setRefreshing(false);
                                 noChartText.setEnabled(true);
@@ -185,7 +186,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         }
                         float difference = (currPrice - firstPrice);
                         float percentChange = (difference / firstPrice) * 100;
-                        Log.d("I", "firstPrice: " + firstPrice + " difference: " + difference + " percentChange: " + percentChange);
                         if (percentChange < 0) {
                             percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
                         } else {
@@ -279,9 +279,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
         crypto = getArguments().getString(ARG_SYMBOL);
-        currentChartURL = String.format(CHART_URL_WEEK, crypto);
-        currentTimeWindow = String.format(getString(R.string.Week));
+        currentTimeWindow = String.format(getString(R.string.AllTime));
         formattedTickerURL = String.format(TICKER_URL, crypto);
+        currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
@@ -291,7 +291,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                     }
                                 }
         );
-        currentChartURL = String.format(CHART_URL_WEEK, crypto);
         XAxisFormatter = monthSlashDayXAxisFormatter;
         Button oneMonthButton = (Button) rootView.findViewById(R.id.monthButton);
         Button threeMonthButton = (Button) rootView.findViewById(R.id.threeMonthButton);
