@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -45,6 +47,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     private RecyclerView recyclerView;
     private AppCompatActivity mActivity;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Observable newsObservable;
 
 
     public void getNewsRequest() {
@@ -101,9 +104,11 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                     recyclerView.setAdapter(adapter);
                     swipeRefreshLayout.setRefreshing(false);
                     recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                    Log.e("News", "call successful");
                 }
                 else{
                     swipeRefreshLayout.setRefreshing(false);
+                    Log.e("News", "call failed");
                 }
             }
         };
@@ -135,8 +140,11 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                 break;
             case 2:
                 //Observable instance from EasyRest
-                NewsService.getPlainObservableNews(this).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+                if(newsObservable == null) {
+                    newsObservable = NewsService.getPlainObservableNews(this).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread());
+                }
+                newsObservable.subscribe(subscriber);
                 break;
 
                 default:
@@ -197,7 +205,6 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
-                                        //getNewsRequest();
                                         getNewsObservable(2);
                                     }
                                 }
@@ -206,8 +213,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
 
     @Override
     public void onRefresh() {
-        //getNewsRequest();
-        getNewsObservable(1);
+        getNewsObservable(2);
 
     }
 
@@ -230,5 +236,28 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         }
         finish();
         return true;
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        if(newsObservable!=null) newsObservable.unsubscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if(swipeRefreshLayout!=null){
+            swipeRefreshLayout.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            swipeRefreshLayout.setRefreshing(true);
+                                            getNewsObservable(2);
+                                        }
+                                    }
+            );
+        }else {
+            onRefresh();
+        }
     }
 }
