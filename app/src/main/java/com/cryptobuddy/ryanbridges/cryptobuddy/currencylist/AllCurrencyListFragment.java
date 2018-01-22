@@ -73,7 +73,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 currencyItemMap.clear();
                 try {
                     for (CMCCoin coin : cmcCoinList) {
-                        Log.d("I", coin.getSymbol());
                         currencyItemList.add(coin);
                         currencyItemMap.put(coin.getSymbol(), coin);
                     }
