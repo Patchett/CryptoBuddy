@@ -20,12 +20,12 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * Created by Ryan on 12/9/2017.
+ * Created by Ryan on 1/22/2018.
  */
 
-public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapter.ViewHolder> {
+public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAdapterBase.ViewHolder> {
     private List<CMCCoin> currencyList;
-    private CurrencyListAdapter.ViewHolder viewHolder;
+    private CurrencyListAdapterBase.ViewHolder viewHolder;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
     private String priceStringResource;
@@ -39,7 +39,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public CurrencyListAdapter(List<CMCCoin> currencyList,
+    public CurrencyListAdapterBase(List<CMCCoin> currencyList,
                                DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
@@ -54,11 +54,34 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
         this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
+    }
 
+    public void setFavoriteButtonClickListener(final CurrencyListAdapterBase.ViewHolder holder, final int position) {
+        holder.starButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.starButton.getBackground() == starDisabled) {
+                    holder.starButton.setBackground(starEnabled);
+                }
+                else {
+                    holder.starButton.setBackground(starDisabled);
+                }
+                CoinFavoritesStructures favs = dbRef.get().getFavorites();
+                CMCCoin item = currencyList.get(position);
+                if (favs.favoritesMap.get(item.getSymbol()) == null) { // Coin is not a favorite yet. Add it.
+                    favs.favoritesMap.put(item.getSymbol(), item.getSymbol());
+                    favs.favoriteList.add(item.getSymbol());
+                } else { // Coin is already a favorite, remove it
+                    favs.favoritesMap.remove(item.getSymbol());
+                    favs.favoriteList.remove(item.getSymbol());
+                }
+                dbRef.get().saveCoinFavorites(favs);
+            }
+        });
     }
 
     @Override
-    public void onBindViewHolder(final CurrencyListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final CurrencyListAdapterBase.ViewHolder holder, final int position) {
         CMCCoin item = currencyList.get(position);
         if (item.getPercent_change_24h() == null) {
             holder.currencyListChangeTextView.setText("N/A");
@@ -96,33 +119,13 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         } else {
             holder.starButton.setBackground(starDisabled);
         }
-        holder.starButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.starButton.getBackground() == starDisabled) {
-                    holder.starButton.setBackground(starEnabled);
-                }
-                else {
-                    holder.starButton.setBackground(starDisabled);
-                }
-                CoinFavoritesStructures favs = dbRef.get().getFavorites();
-                CMCCoin item = currencyList.get(position);
-                if (favs.favoritesMap.get(item.getSymbol()) == null) { // Coin is not a favorite yet. Add it.
-                    favs.favoritesMap.put(item.getSymbol(), item.getSymbol());
-                    favs.favoriteList.add(item.getSymbol());
-                } else { // Coin is already a favorite, remove it
-                    favs.favoritesMap.remove(item.getSymbol());
-                    favs.favoriteList.remove(item.getSymbol());
-                }
-                dbRef.get().saveCoinFavorites(favs);
-            }
-        });
+        setFavoriteButtonClickListener(holder, position);
     }
 
     @Override
-    public CurrencyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CurrencyListAdapterBase.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_currency_list_item, parent, false);
-        viewHolder = new CurrencyListAdapter.ViewHolder(itemLayoutView, rowListener);
+        viewHolder = new CurrencyListAdapterBase.ViewHolder(itemLayoutView, rowListener);
         return viewHolder;
     }
 
@@ -133,7 +136,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         private TextView currencyListVolumeTextView;
         private TextView currencyListMarketcapTextView;
         private ImageView currencyListCoinImageView;
-        private ImageView starButton;
+        protected ImageView starButton;
         private CustomItemClickListener listener;
 
         private ViewHolder(View itemLayoutView, CustomItemClickListener listener)

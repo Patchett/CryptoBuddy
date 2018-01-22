@@ -41,7 +41,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
-    private CurrencyListAdapter adapter;
+    private CurrencyListAdapterBase adapter;
     private List<CMCCoin> currencyItemList;
     private Hashtable<String, CMCCoin> currencyItemMap;
     private DatabaseHelperSingleton db;
@@ -112,7 +112,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        adapter = new CurrencyListAdapterBase(currencyItemList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
@@ -162,7 +162,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        adapter = new CurrencyListAdapter(filteredList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        adapter = new CurrencyListAdapterBase(filteredList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);

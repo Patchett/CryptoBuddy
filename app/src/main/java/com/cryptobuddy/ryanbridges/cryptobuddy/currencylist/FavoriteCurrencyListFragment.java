@@ -38,7 +38,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private SwipeRefreshLayout swipeRefreshLayout;
     private DatabaseHelperSingleton db;
     private RecyclerView currencyRecyclerView;
-    private CurrencyListAdapter adapter;
+    private FavsCurrencyListAdapter adapter;
     private List<CMCCoin> currencyItemList;
     private Hashtable<String, CMCCoin> currencyItemMap;
 
@@ -79,7 +79,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 }
                 swipeRefreshLayout.setRefreshing(false);
                 currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-
             }
         }, new afterTaskFailure() {
             @Override
@@ -105,7 +104,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        adapter = new FavsCurrencyListAdapter(currencyItemList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
