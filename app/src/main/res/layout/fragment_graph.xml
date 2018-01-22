@@ -156,7 +156,6 @@
 
         </GridLayout>
 
-        <!--TODO: Convert text to string-->
         <TextView
             android:id="@+id/noChartDataText"
             android:layout_width="wrap_content"
@@ -166,7 +165,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:enabled="false"
-            android:text="No chart data :("
+            android:text="@string/noChartDataString"
             android:textSize="36sp"
             app:layout_constraintBottom_toTopOf="@+id/gridLayoutChartButtons"
             app:layout_constraintEnd_toEndOf="parent"

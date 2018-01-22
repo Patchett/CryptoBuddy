@@ -152,7 +152,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 noChartText.setEnabled(true);
                                 lineChart.setData(null);
                                 lineChart.setNoDataText("");
-                                noChartText.setText("No Chart Data :(");
+                                noChartText.setText(getResources().getString(R.string.noChartDataString));
                                 lineChart.setEnabled(false);
                                 lineChart.invalidate();
                                 percentChangeText.setText("");

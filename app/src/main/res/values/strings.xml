@@ -31,7 +31,7 @@
     <string name="All">ALL</string>
     <string name="AllTime">All Time</string>
     <string name="action_search">Search</string>
-
+    <string name="noChartDataString">No Chart Data :(</string>
 
 
 </resources>
