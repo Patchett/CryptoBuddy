@@ -17,7 +17,6 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleto
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -37,17 +36,15 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private CustomItemClickListener rowListener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
-    private Hashtable<String, CMCCoin> currencyItemMap;
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public CurrencyListAdapter(List<CMCCoin> currencyList, Hashtable<String, CMCCoin> currencyItemMap,
+    public CurrencyListAdapter(List<CMCCoin> currencyList,
                                DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
         this.rowListener = listener;
         this.dbRef = new WeakReference<>(db);
-        this.currencyItemMap = currencyItemMap;
         this.mktCapStringResource = this.contextRef.get().getString(R.string.mkt_cap_format);
         this.volumeStringResource = this.contextRef.get().getString(R.string.volume_format);
         this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_format);

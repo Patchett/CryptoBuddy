@@ -70,7 +70,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
         currencyItemList = new ArrayList<>();
         coinMetadataTable = new Hashtable<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapter(currencyItemList, currencyItemMap, db, me, new CustomItemClickListener() {
+        adapter = new CurrencyListAdapter(currencyItemList, db, me, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
@@ -166,7 +166,7 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                 filteredList.add(coin);
             }
         }
-        adapter = new CurrencyListAdapter(filteredList, currencyItemMap, db, me, new CustomItemClickListener() {
+        adapter = new CurrencyListAdapter(filteredList, db, me, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(me, CurrencyTabsActivity.class);
