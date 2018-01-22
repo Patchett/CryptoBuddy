@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,8 +36,6 @@ import java.util.List;
 
 public class CurrencyListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
 
-    private String HOME_CURRENCY_LIST_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
-    private String formattedCurrencyListURL;
     public final static String SYMBOL = "SYMBOL";
     public static String baseImageURL;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -49,7 +46,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
     private Hashtable<String, CoinMetadata> coinMetadataTable;
     private AppCompatActivity me;
     private DatabaseHelperSingleton db;
-    private ItemTouchHelper mItemTouchHelper;
     private MenuItem searchItem;
     private SearchView searchView;
     public final static String IMAGE_URL_FORMAT = "https://files.coinmarketcap.com/static/img/coins/64x64/%s.png";
@@ -82,9 +78,6 @@ public class CurrencyListActivity extends AppCompatActivity implements SwipeRefr
                 startActivity(intent);
             }
         });
-        ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(currencyRecyclerView);
 
         // Setup swipe refresh layout
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.currency_list_swipe_refresh);
