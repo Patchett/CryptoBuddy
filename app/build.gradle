@@ -52,5 +52,6 @@ dependencies {
     compile ('com.github.fcopardo:easyrest:v1.4.2@aar'){
         transitive = true
     }
+//    compile 'com.github.wrdlbrnft:sorted-list-adapter:0.3.0.27'
     testCompile 'junit:junit:4.12'
 }

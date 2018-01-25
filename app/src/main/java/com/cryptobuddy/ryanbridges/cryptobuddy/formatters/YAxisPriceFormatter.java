@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.formatters;
 
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;

@@ -4,29 +4,29 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 
 /**
  * Created by Ryan on 12/17/2017.
  */
 
-public class CurrencyTabsActivity extends AppCompatActivity {
-    private SectionsPagerAdapter mSectionsPagerAdapter;
+public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
+    private SectionsPagerAdapterGraphs mSectionsPagerAdapter;
     public CustomViewPager mViewPager;
+    public final static String SYMBOL = "SYMBOL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_currency_tabs);
-        String symbol = getIntent().getStringExtra(CurrencyListActivity.SYMBOL);
+        setContentView(R.layout.activity_currency_details_tabs);
+        String symbol = getIntent().getStringExtra(SYMBOL);
         mViewPager = (CustomViewPager) findViewById(R.id.currencyTabsViewPager);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), symbol);
+        mSectionsPagerAdapter = new SectionsPagerAdapterGraphs(getSupportFragmentManager(), symbol);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

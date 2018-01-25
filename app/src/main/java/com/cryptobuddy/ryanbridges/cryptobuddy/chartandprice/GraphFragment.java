@@ -23,8 +23,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashDayDateFormatter;
+import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashYearFormatter;
+import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
+import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.YAxisPriceFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -69,7 +72,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
     private View rootView;
-    private String TAG = CurrencyListActivity.class.getSimpleName();
     private CustomViewPager viewPager;
     private String currentChartURL;
     private IAxisValueFormatter XAxisFormatter;
@@ -133,13 +135,32 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void getChartDataRequest() {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
+        final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
+        final TextView noChartText = (TextView) rootView.findViewById(R.id.noChartDataText);
+        noChartText.setEnabled(false);
+        lineChart.setEnabled(true);
+        noChartText.setText("");
         JsonObjectRequest chartDataRequest = new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+
                         List<Entry> closePrices = new ArrayList<Entry>();
                         try {
                             JSONArray rawData = response.getJSONArray("Data");
+                            Log.d("I", "rawData: " + rawData);
+                            if (rawData.length() == 0) { // Prevents a crash if we get an empty resposne
+                                swipeRefreshLayout.setRefreshing(false);
+                                noChartText.setEnabled(true);
+                                lineChart.setData(null);
+                                lineChart.setNoDataText("");
+                                noChartText.setText(getResources().getString(R.string.noChartDataString));
+                                lineChart.setEnabled(false);
+                                lineChart.invalidate();
+                                percentChangeText.setText("");
+                                currPriceText.setText("");
+                                return;
+                            }
                             Log.d("I", "rawData: " + rawData);
                             for (int i = 0; i < rawData.length(); i++) {
                                 JSONObject row = rawData.getJSONObject(i);
@@ -149,6 +170,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            return;
                         }
                         TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
                         float currPrice = closePrices.get(closePrices.size() - 1).getY();
@@ -166,7 +188,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         }
                         float difference = (currPrice - firstPrice);
                         float percentChange = (difference / firstPrice) * 100;
-                        Log.d("I", "firstPrice: " + firstPrice + " difference: " + difference + " percentChange: " + percentChange);
                         if (percentChange < 0) {
                             percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
                         } else {
@@ -180,7 +201,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         lineChart.setScaleEnabled(false);
                         lineChart.getDescription().setEnabled(false);
                         lineChart.setData(lineData);
-                        lineChart.setNoDataText("Pulling price data...");
                         lineChart.setContentDescription("");
                         lineChart.animateX(1000);
                         lineChart.setOnChartGestureListener(new OnChartGestureListener() {
@@ -243,7 +263,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError e) {
-                Log.e(TAG, "Server Error: " + e.getMessage());
+                Log.e("I", "Server Error: " + e.getMessage());
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -261,9 +281,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
         crypto = getArguments().getString(ARG_SYMBOL);
-        currentChartURL = String.format(CHART_URL_WEEK, crypto);
-        currentTimeWindow = String.format(getString(R.string.Week));
+        currentTimeWindow = String.format(getString(R.string.AllTime));
         formattedTickerURL = String.format(TICKER_URL, crypto);
+        currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {
                                     @Override
@@ -273,7 +293,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                     }
                                 }
         );
-        currentChartURL = String.format(CHART_URL_WEEK, crypto);
         XAxisFormatter = monthSlashDayXAxisFormatter;
         Button oneMonthButton = (Button) rootView.findViewById(R.id.monthButton);
         Button threeMonthButton = (Button) rootView.findViewById(R.id.threeMonthButton);
