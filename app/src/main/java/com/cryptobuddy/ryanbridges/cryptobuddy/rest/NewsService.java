@@ -35,6 +35,8 @@ public class NewsService {
 
     public final static String BTC_NEWS_URL = "https://min-api.cryptocompare.com/data/news/";
 
+    private static rx.Observable<RestResults<News[]>> myObservable;
+
     public static void getNews(Context context, afterTaskCompletion<News> taskCompletion, afterTaskFailure failure, boolean async) {
         new GenericRestCall<>(Void.class, News.class, String.class)
                 .setUrl(BTC_NEWS_URL)
@@ -54,7 +56,7 @@ public class NewsService {
      * @param myAction a single use subscriber or Action
      */
     public static void getObservableNews(Context context, boolean async, Action1<RestResults<News[]>> myAction) {
-               rx.Observable<RestResults<News[]>> myObservable = getObservableNews(context);
+               if(myObservable == null) myObservable = getObservableNews(context);
                if(async){
                    myObservable.subscribeOn(Schedulers.io())
                            .observeOn(AndroidSchedulers.mainThread())

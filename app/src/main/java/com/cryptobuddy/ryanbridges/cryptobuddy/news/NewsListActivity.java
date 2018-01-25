@@ -201,14 +201,14 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
             }
         });
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.post(new Runnable() {
+        /*swipeRefreshLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         swipeRefreshLayout.setRefreshing(true);
                                         getNewsObservable(2);
                                     }
                                 }
-        );
+        );*/
     }
 
     @Override
