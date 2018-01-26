@@ -46,7 +46,8 @@ public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
                 return "Chart";
             case 1:
                 return "Technicals";
+            default:
+                return null;
         }
-        return null;
     }
 }

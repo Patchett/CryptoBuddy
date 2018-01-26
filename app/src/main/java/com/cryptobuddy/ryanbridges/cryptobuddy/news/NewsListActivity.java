@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
     private List<NewsItem> newsItemList;
     private RecyclerView recyclerView;
     private AppCompatActivity mActivity;
+    private Toolbar mToolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
     
     public void getNewsObservable(int whatToDo){
@@ -130,7 +132,9 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_news_list);
+        setContentView(R.layout.activity_news_list);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_news_list);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.News));

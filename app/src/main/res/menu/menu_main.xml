@@ -18,5 +18,5 @@
         android:id="@+id/news_button"
         android:title="@string/News"
         android:icon="@drawable/ic_library_books_white_24dp"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>
