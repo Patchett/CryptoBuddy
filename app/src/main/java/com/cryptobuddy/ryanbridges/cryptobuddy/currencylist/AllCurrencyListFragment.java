@@ -1,5 +1,6 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -48,7 +50,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private MenuItem searchItem;
     private SearchView searchView;
     private View rootView;
-
+    private boolean searchViewFocus = false;
+    private Context mContext;
 
     public AllCurrencyListFragment() {
     }
@@ -64,7 +67,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     public void getCurrencyList() {
         swipeRefreshLayout.setRefreshing(true);
-        CoinMarketCapService.getAllCoins(getActivity(), new afterTaskCompletion<CMCCoin[]>() {
+        CoinMarketCapService.getAllCoins(mContext, new afterTaskCompletion<CMCCoin[]>() {
             @Override
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
                 Parcelable recyclerViewState;
@@ -102,22 +105,22 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 //        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
 //        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setHasOptionsMenu(true);
-        this.db = DatabaseHelperSingleton.getInstance(getActivity());
+        this.db = DatabaseHelperSingleton.getInstance(mContext);
         // Setup currency list
         currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_list_recycler_view);
-        HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(getActivity()).build();
+        HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(mContext).build();
         currencyRecyclerView.addItemDecoration(divider);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        LinearLayoutManager llm = new LinearLayoutManager(mContext);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapterBase(currencyItemList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        adapter = new CurrencyListAdapterBase(currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
+                Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
                 intent.putExtra(CurrencyListTabsActivity.SYMBOL, currencyItemList.get(position).getSymbol());
-                getActivity().startActivity(intent);
+                mContext.startActivity(intent);
             }
         });
 
@@ -139,13 +142,15 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.news_button:
-                getActivity().startActivity(new Intent(getActivity(), NewsListActivity.class));
+                mContext.startActivity(new Intent(mContext, NewsListActivity.class));
                 return true;
             case R.id.currency_refresh_button:
                 onRefresh();
                 return true;
+            default:
+                Log.d("I", "Inside of default onOptionsItemSelected");
+                return super.onOptionsItemSelected(item);
         }
-        return true;
     }
 
     @Override
@@ -162,39 +167,95 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        adapter = new CurrencyListAdapterBase(filteredList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        adapter = new CurrencyListAdapterBase(filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
+                Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
                 intent.putExtra(CurrencyListTabsActivity.SYMBOL, filteredList.get(position).getSymbol());
-                getActivity().startActivity(intent);
+                mContext.startActivity(intent);
             }
         });
         currencyRecyclerView.setAdapter(adapter);
         return true;
     }
 
+    private void showInputMethod(View view) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(view, 0);
+        }
+    }
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("I", "Inside of onPrepareOptionsMenu");
+
+        if (searchView != null && !searchView.isIconified()) {
+            Log.d("I", "Inside of onPrepareOptionsMenu if statement");
+            searchView.requestFocus();
+            showInputMethod(rootView);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.mContext = context;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
         final MenuItem newsButton = menu.findItem(R.id.news_button);
         final MenuItem refreshButton = menu.findItem(R.id.currency_refresh_button);
+        Log.d("I", "Inside of onCreateOptionsMenu");
         searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+//         Detect SearchView icon clicks
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    newsButton.setVisible(false);
-                    refreshButton.setVisible(false);
-                    ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("");
-                } else {
-                    getActivity().invalidateOptionsMenu();
-                    ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-                }
+            public void onClick(View v) {
+                setItemsVisibility(menu, searchItem, false);
             }
         });
+        // Detect SearchView close
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                getActivity().invalidateOptionsMenu();
+                ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+                return false;
+            }
+        });
+//        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    newsButton.setVisible(false);
+//                    refreshButton.setVisible(false);
+//                    showInputMethod(rootView.findFocus());
+//                    ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
+//                } else {
+//                    getActivity().invalidateOptionsMenu();
+//                    ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+//                }
+//            }
+//        });
         super.onCreateOptionsMenu(menu, inflater);
     }
+
+    private void setItemsVisibility(Menu menu, MenuItem exception, boolean visible) {
+        for (int i = 0; i < menu.size(); ++i) {
+            MenuItem item = menu.getItem(i);
+            if (item != exception) item.setVisible(visible);
+        }
+        if (visible == false) {
+            ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
+        } else {
+            ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        }
+    }
+
+
 }

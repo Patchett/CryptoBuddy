@@ -3,6 +3,10 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -10,16 +14,37 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SectionsPagerAdapterCurrencyList extends FragmentPagerAdapter {
 
-    private String symbol;
+    private Map<Integer, String> mFragmentTags;
+    private FragmentManager mFragmentManager;
 
     public SectionsPagerAdapterCurrencyList(FragmentManager fm) {
         super(fm);
+        mFragmentManager = fm;
+        mFragmentTags = new HashMap<Integer, String>();
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Object object = super.instantiateItem(container, position);
+        if (object instanceof Fragment) {
+            Fragment fragment = (Fragment) object;
+            String tag = fragment.getTag();
+            mFragmentTags.put(position, tag);
+        }
+        return object;
+    }
+
+    public Fragment getFragment(int position) {
+        Fragment fragment = null;
+        String tag = mFragmentTags.get(position);
+        if (tag != null) {
+            fragment = mFragmentManager.findFragmentByTag(tag);
+        }
+        return fragment;
     }
 
     @Override
     public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a GraphFragment (defined as a static inner class below).
         switch (position) {
             case 0:
                 return AllCurrencyListFragment.newInstance();
@@ -42,7 +67,8 @@ public class SectionsPagerAdapterCurrencyList extends FragmentPagerAdapter {
                 return "All Coins";
             case 1:
                 return "Favorites";
+            default:
+                return null;
         }
-        return null;
     }
 }
