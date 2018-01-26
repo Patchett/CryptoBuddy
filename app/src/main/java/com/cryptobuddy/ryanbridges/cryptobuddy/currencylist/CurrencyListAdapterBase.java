@@ -24,6 +24,7 @@ import java.util.List;
  */
 
 public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAdapterBase.ViewHolder> {
+
     private List<CMCCoin> currencyList;
     private CurrencyListAdapterBase.ViewHolder viewHolder;
     private String negativePercentStringResource;
@@ -165,6 +166,10 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
 
     public void setCurrencyList(List<CMCCoin> newCurrencyList) {
         this.currencyList = newCurrencyList;
+    }
+
+    public List<CMCCoin> getCurrencyList() {
+        return currencyList;
     }
 
 }

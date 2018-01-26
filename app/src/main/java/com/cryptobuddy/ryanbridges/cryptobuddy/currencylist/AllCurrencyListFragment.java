@@ -32,6 +32,7 @@ import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -45,6 +46,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private RecyclerView currencyRecyclerView;
     private CurrencyListAdapterBase adapter;
     private List<CMCCoin> currencyItemList;
+    private List<CMCCoin> filteredList = new ArrayList<>();
     private Hashtable<String, CMCCoin> currencyItemMap;
     private DatabaseHelperSingleton db;
     private MenuItem searchItem;
@@ -52,6 +54,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private View rootView;
     private Context mContext;
     public static String currQuery = "";
+    private HashMap<String, String> searchedSymbols = new HashMap<>();
     public static boolean searchViewFocused = false;
 
     public AllCurrencyListFragment() {
@@ -73,14 +76,33 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
                 Parcelable recyclerViewState;
                 recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
-                currencyItemList.clear();
-                currencyItemMap.clear();
-                try {
-                    for (CMCCoin coin : cmcCoinList) {
-                        currencyItemList.add(coin);
-                        currencyItemMap.put(coin.getSymbol(), coin);
+//                boolean refreshOnlySearchedCoins = (searchView != null && searchViewFocused);
+                Log.d("I", "refreshOnlySearchedCoins: " + searchViewFocused);
+                searchedSymbols.clear();
+                if (searchViewFocused) {
+                    for (CMCCoin coin : filteredList) {
+                        searchedSymbols.put(coin.getSymbol(), coin.getSymbol());
                     }
-                    adapter.setCurrencyList(currencyItemList);
+                } else {
+                    currencyItemList.clear();
+                    currencyItemMap.clear();
+                }
+                try {
+                    if (searchViewFocused) { // Copy some code here to make the checks faster
+                        List<CMCCoin> tempList = new ArrayList<>();
+                        for (CMCCoin coin : cmcCoinList) {
+                            if (searchedSymbols.get(coin.getSymbol()) != null) {
+                                tempList.add(coin);
+                            }
+                        }
+                        adapter.setCurrencyList(tempList);
+                    } else {
+                        for (CMCCoin coin : cmcCoinList) {
+                            currencyItemList.add(coin);
+                            currencyItemMap.put(coin.getSymbol(), coin);
+                        }
+                        adapter.setCurrencyList(currencyItemList);
+                    }
                     adapter.notifyDataSetChanged();
                     currencyRecyclerView.setAdapter(adapter);
                 } catch (Exception e) {
@@ -161,7 +183,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public boolean onQueryTextChange(String query) {
         currQuery = query;
         query = query.toLowerCase();
-        final List<CMCCoin> filteredList = new ArrayList<>();
+        filteredList.clear();
         for (CMCCoin coin : currencyItemList) {
             if (coin.getSymbol().toLowerCase().contains(query) || coin.getName().toLowerCase().contains(query)) {
                 filteredList.add(coin);
