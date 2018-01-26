@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,11 +25,13 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
+
 
 /**
  * Created by Ryan on 12/28/2017.
@@ -42,16 +45,19 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
     private AppCompatActivity mActivity;
     private Toolbar mToolbar;
     private SwipeRefreshLayout swipeRefreshLayout;
-    
-    public void getNewsObservable(int whatToDo){
+    private Observable newsObservable;
 
-        swipeRefreshLayout.setRefreshing(true);
+    
+    public void getNewsObservable(int whatToDo, boolean cache){
+
         //Example of framework isolation by using observables
         //An standard Rx Action.
         Action1<News[]> subscriber = new Action1<News[]>() {
             @Override
             public void call(News[] newsRestResults) {
+
                 if(newsRestResults != null && newsRestResults.length > 0){
+
                     Parcelable recyclerViewState;
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                     for(News news: newsRestResults){
@@ -64,9 +70,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                     recyclerView.setAdapter(adapter);
                     swipeRefreshLayout.setRefreshing(false);
                     recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                    Log.e("News", "call successful");
                 }
                 else{
                     swipeRefreshLayout.setRefreshing(false);
+                    Log.e("News", "call failed");
                 }
             }
         };
@@ -98,8 +106,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                 break;
             case 2:
                 //Observable instance from EasyRest
-                NewsService.getPlainObservableNews(this).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber);
+                if(newsObservable == null) {
+                    newsObservable = NewsService.getPlainObservableNews(this, cache).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread());
+                }
+                newsObservable.subscribe(subscriber);
                 break;
 
                 default:
@@ -158,22 +169,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
             }
         });
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipeRefreshLayout.setRefreshing(true);
-                                        //getNewsRequest();
-                                        getNewsObservable(2);
-                                    }
-                                }
-        );
     }
 
     @Override
     public void onRefresh() {
-        //getNewsRequest();
-        getNewsObservable(1);
-
+        getNewsObservable(2, false);
     }
 
     @Override
@@ -190,10 +190,40 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                 finish();
                 return true;
             case R.id.news_refresh_button:
-                getNewsObservable(1);
+                getNewsObservable(2, false);
                 return true;
         }
         finish();
         return true;
+    }
+
+    //TODO: An advantage about using observables is how easily they allow to avoid lifecycle crashes.
+    //If we were using a listener, there's a chance the callback runs at a moment when accesing some
+    // elements (like widgets) is illegal/impossible. While we can void listeners to avoid that,
+    // depending on the framework, that may not be possible. Also, Rx observers aren't part of a
+    // particular library, so they allow for greater isolation between your app's layers.
+    @Override
+    public void onPause(){
+        super.onPause();
+        //Here, we essentially tell RX to ignore any subscriptions done in the UI thread
+        if(newsObservable!=null) newsObservable.unsubscribeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //Here, we make the activity call the news service everytime it cames back from being paused
+        if(swipeRefreshLayout!=null){
+            swipeRefreshLayout.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            swipeRefreshLayout.setRefreshing(true);
+                                            getNewsObservable(2, true);
+                                        }
+                                    }
+            );
+        }else {
+            onRefresh();
+        }
     }
 }

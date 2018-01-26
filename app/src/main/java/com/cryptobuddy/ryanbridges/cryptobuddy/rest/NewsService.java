@@ -34,6 +34,7 @@ import rx.schedulers.Schedulers;
 public class NewsService {
 
     public final static String BTC_NEWS_URL = "https://min-api.cryptocompare.com/data/news/";
+    private static rx.Observable<RestResults<News[]>> myObservable;
 
     public static void getNews(Context context, afterTaskCompletion<News> taskCompletion, afterTaskFailure failure, boolean async) {
         new GenericRestCall<>(Void.class, News.class, String.class)
@@ -54,7 +55,7 @@ public class NewsService {
      * @param myAction a single use subscriber or Action
      */
     public static void getObservableNews(Context context, boolean async, Action1<RestResults<News[]>> myAction) {
-               rx.Observable<RestResults<News[]>> myObservable = getObservableNews(context);
+               if(myObservable == null) myObservable = getObservableNews(context);
                if(async){
                    myObservable.subscribeOn(Schedulers.io())
                            .observeOn(AndroidSchedulers.mainThread())
@@ -92,11 +93,16 @@ public class NewsService {
      * @return an observable returning a News[] object
      */
     public static rx.Observable<News[]> getPlainObservableNews(Context context) {
+        return getPlainObservableNews(context, false);
+    }
+
+    public static rx.Observable<News[]> getPlainObservableNews(Context context, boolean cache) {
+        long cachingTime = cache ? 30000L : 0L;
         return new GenericRestCall<>(Void.class, News[].class, String.class)
                 .setUrl(BTC_NEWS_URL)
                 .setContext(context.getApplicationContext())
                 .isCacheEnabled(true)
-                .setCacheTime(30000L)
+                .setCacheTime(cachingTime)
                 .setMethodToCall(HttpMethod.GET)
                 .setAutomaticCacheRefresh(true)
                 .setReprocessWhenRefreshing(true)
