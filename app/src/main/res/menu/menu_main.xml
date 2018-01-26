@@ -12,11 +12,11 @@
         android:id="@+id/currency_refresh_button"
         android:title="@string/Refresh"
         android:icon="@drawable/ic_refresh_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/news_button"
         android:title="@string/News"
         android:icon="@drawable/ic_library_books_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

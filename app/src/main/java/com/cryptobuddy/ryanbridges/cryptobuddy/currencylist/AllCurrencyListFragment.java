@@ -50,8 +50,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private MenuItem searchItem;
     private SearchView searchView;
     private View rootView;
-    private boolean searchViewFocus = false;
     private Context mContext;
+    public static String currQuery = "";
+    public static boolean searchViewFocused = false;
 
     public AllCurrencyListFragment() {
     }
@@ -102,8 +103,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
-//        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-//        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setHasOptionsMenu(true);
         this.db = DatabaseHelperSingleton.getInstance(mContext);
         // Setup currency list
@@ -160,6 +159,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public boolean onQueryTextChange(String query) {
+        currQuery = query;
         query = query.toLowerCase();
         final List<CMCCoin> filteredList = new ArrayList<>();
         for (CMCCoin coin : currencyItemList) {
@@ -190,9 +190,11 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public void onPrepareOptionsMenu(Menu menu) {
         Log.d("I", "Inside of onPrepareOptionsMenu");
 
-        if (searchView != null && !searchView.isIconified()) {
-            Log.d("I", "Inside of onPrepareOptionsMenu if statement");
-            searchView.requestFocus();
+        if (searchView != null && searchViewFocused) {
+            searchView.requestFocusFromTouch();
+            searchView.setIconified(false);
+            searchView.setIconified(false);
+            searchView.setQuery(currQuery, false);
             showInputMethod(rootView);
         }
     }
@@ -206,16 +208,15 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
-        final MenuItem newsButton = menu.findItem(R.id.news_button);
-        final MenuItem refreshButton = menu.findItem(R.id.currency_refresh_button);
         Log.d("I", "Inside of onCreateOptionsMenu");
         searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-//         Detect SearchView icon clicks
+        // Detect SearchView icon clicks
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchViewFocused = true;
                 setItemsVisibility(menu, searchItem, false);
             }
         });
@@ -223,25 +224,11 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                getActivity().invalidateOptionsMenu();
-                ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+                searchViewFocused = false;
+                setItemsVisibility(menu, searchItem, true);
                 return false;
             }
         });
-//        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    newsButton.setVisible(false);
-//                    refreshButton.setVisible(false);
-//                    showInputMethod(rootView.findFocus());
-//                    ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
-//                } else {
-//                    getActivity().invalidateOptionsMenu();
-//                    ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-//                }
-//            }
-//        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -250,7 +237,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             MenuItem item = menu.getItem(i);
             if (item != exception) item.setVisible(visible);
         }
-        if (visible == false) {
+        if (!visible) {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
         } else {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
