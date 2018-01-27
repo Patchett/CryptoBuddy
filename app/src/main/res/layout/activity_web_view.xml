@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListActivity">
+    tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBarLayoutCurrencyTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_currency_list"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_scrollFlags="scroll|enterAlways|snap"/>
+        
+    </android.support.design.widget.AppBarLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -16,6 +33,5 @@
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/webView"
-        android:layout_below="@+id/progressBar" />
-</RelativeLayout>
+        android:id="@+id/webView" />
+</LinearLayout>
