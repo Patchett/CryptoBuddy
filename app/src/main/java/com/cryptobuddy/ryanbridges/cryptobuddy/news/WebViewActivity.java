@@ -3,12 +3,12 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.support.v7.widget.Toolbar;
-
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -27,6 +27,7 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
         setSupportActionBar(mToolbar);
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
+        getSupportActionBar().setTitle(getResources().getString(R.string.News));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -55,7 +56,7 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
             }
         });
 
-        mWebView.getSettings().setJavaScriptEnabled(true);
+//        mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(url);
         mProgressBar.setProgress(0);
     }
@@ -67,4 +68,11 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
             mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
+
 }
