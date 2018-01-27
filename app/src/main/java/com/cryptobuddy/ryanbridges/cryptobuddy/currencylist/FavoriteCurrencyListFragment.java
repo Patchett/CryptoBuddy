@@ -138,6 +138,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         }
+        getCurrencyList();
     }
 
     @Override

@@ -45,8 +45,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
     private CurrencyListAdapterBase adapter;
-    private List<CMCCoin> currencyItemList;
-    private List<CMCCoin> filteredList = new ArrayList<>();
+    private ArrayList<CMCCoin> currencyItemList;
+    private ArrayList<CMCCoin> filteredList = new ArrayList<>();
     private Hashtable<String, CMCCoin> currencyItemMap;
     private DatabaseHelperSingleton db;
     private MenuItem searchItem;
@@ -77,7 +77,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 Parcelable recyclerViewState;
                 recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
 //                boolean refreshOnlySearchedCoins = (searchView != null && searchViewFocused);
-                Log.d("I", "refreshOnlySearchedCoins: " + searchViewFocused);
                 searchedSymbols.clear();
                 if (searchViewFocused) {
                     for (CMCCoin coin : filteredList) {
@@ -264,6 +263,19 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         } else {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getCurrencyList();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        searchViewFocused = false;
+        getCurrencyList();
     }
 
 
