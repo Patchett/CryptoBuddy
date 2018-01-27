@@ -3,10 +3,8 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.SparseArray;
 import android.view.ViewGroup;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -14,13 +12,13 @@ import java.util.Map;
  */
 public class SectionsPagerAdapterCurrencyList extends FragmentPagerAdapter {
 
-    private Map<Integer, String> mFragmentTags;
+    private SparseArray<String> mFragmentTags;
     private FragmentManager mFragmentManager;
 
     public SectionsPagerAdapterCurrencyList(FragmentManager fm) {
         super(fm);
         mFragmentManager = fm;
-        mFragmentTags = new HashMap<Integer, String>();
+        mFragmentTags = new SparseArray<>();
     }
 
     @Override

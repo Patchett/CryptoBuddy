@@ -17,7 +17,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleto
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Ryan on 1/22/2018.
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAdapterBase.ViewHolder> {
 
-    private List<CMCCoin> currencyList;
+    private ArrayList<CMCCoin> currencyList;
     private CurrencyListAdapterBase.ViewHolder viewHolder;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
@@ -40,7 +40,7 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public CurrencyListAdapterBase(List<CMCCoin> currencyList,
+    public CurrencyListAdapterBase(ArrayList<CMCCoin> currencyList,
                                DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
@@ -164,11 +164,11 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
         return currencyList.size();
     }
 
-    public void setCurrencyList(List<CMCCoin> newCurrencyList) {
+    public void setCurrencyList(ArrayList<CMCCoin> newCurrencyList) {
         this.currencyList = newCurrencyList;
     }
 
-    public List<CMCCoin> getCurrencyList() {
+    public ArrayList<CMCCoin> getCurrencyList() {
         return currencyList;
     }
 

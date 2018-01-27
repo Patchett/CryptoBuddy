@@ -28,7 +28,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
+import java.util.Iterator;
 
 /**
  * Created by Ryan on 1/21/2018.
@@ -41,8 +41,10 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private DatabaseHelperSingleton db;
     private RecyclerView currencyRecyclerView;
     private FavsCurrencyListAdapter adapter;
-    private List<CMCCoin> currencyItemList;
-    private Hashtable<String, CMCCoin> currencyItemMap;
+    private ArrayList<CMCCoin> currencyItemFavsList = new ArrayList<>();
+    private ArrayList<CMCCoin> allCoinsList = new ArrayList<>();
+    private Hashtable<String, CMCCoin> allCoinsMap = new Hashtable<>();
+    private Hashtable<String, CMCCoin> currencyItemMap = new Hashtable<>();
 
 
     public FavoriteCurrencyListFragment() {
@@ -63,17 +65,21 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
                 Parcelable recyclerViewState;
                 recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
-                currencyItemList.clear();
+                currencyItemFavsList.clear();
                 currencyItemMap.clear();
+                allCoinsList.clear();
+                allCoinsMap.clear();
                 CoinFavoritesStructures favs = db.getFavorites();
                 try {
                     for (CMCCoin coin : cmcCoinList) {
+                        allCoinsList.add(coin);
+                        allCoinsMap.put(coin.getSymbol(), coin);
                         if (favs.favoritesMap.get(coin.getSymbol()) != null) {
-                            currencyItemList.add(coin);
+                            currencyItemFavsList.add(coin);
                             currencyItemMap.put(coin.getSymbol(), coin);
                         }
                     }
-                    adapter.setCurrencyList(currencyItemList);
+                    adapter.setCurrencyList(currencyItemFavsList);
                     adapter.notifyDataSetChanged();
                     currencyRecyclerView.setAdapter(adapter);
                 } catch (Exception e) {
@@ -104,13 +110,15 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         currencyRecyclerView.setLayoutManager(llm);
-        currencyItemList = new ArrayList<>();
+        currencyItemFavsList = new ArrayList<>();
+        allCoinsList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new FavsCurrencyListAdapter(currencyItemList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        allCoinsMap = new Hashtable<>();
+        adapter = new FavsCurrencyListAdapter(currencyItemFavsList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
-                intent.putExtra(CurrencyListTabsActivity.SYMBOL, currencyItemList.get(position).getSymbol());
+                intent.putExtra(CurrencyListTabsActivity.SYMBOL, currencyItemFavsList.get(position).getSymbol());
                 getActivity().startActivity(intent);
             }
         });
@@ -125,10 +133,33 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 getCurrencyList();
             }
         });
-
-
-
         return rootView;
+    }
+
+    public void updateFavs() {
+        CoinFavoritesStructures dbFavs = db.getFavorites();
+        ArrayList<CMCCoin> currentFavs = adapter.getCurrencyList();
+        // Remove stale favs
+        Iterator<CMCCoin> currFavsIterator = currentFavs.iterator();
+        while (currFavsIterator.hasNext()) {
+            CMCCoin currCoin = currFavsIterator.next();
+            if (dbFavs.favoritesMap.get(currCoin.getSymbol()) == null) { // Check if the fav is already not in the list
+                // Remove the fav
+                currencyItemMap.remove(currCoin.getSymbol());
+                currFavsIterator.remove();
+            }
+        }
+        // Add new favorites
+        Iterator<String> dbIterator = dbFavs.favoriteList.iterator();
+        while(dbIterator.hasNext()) {
+            String currSymbol = dbIterator.next();
+            if (currencyItemMap.get(currSymbol) == null) {
+                CMCCoin newCoin = allCoinsMap.get(currSymbol);
+                currencyItemMap.put(currSymbol, newCoin);
+                currentFavs.add(0, newCoin);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -138,7 +169,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         }
-        getCurrencyList();
+        updateFavs();
     }
 
     @Override

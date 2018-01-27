@@ -11,14 +11,14 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructur
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by Ryan on 12/9/2017.
  */
 
 public class FavsCurrencyListAdapter extends CurrencyListAdapterBase {
-    private List<CMCCoin> currencyList;
+    private ArrayList<CMCCoin> currencyList;
     private FavsCurrencyListAdapter.ViewHolder viewHolder;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
@@ -33,7 +33,7 @@ public class FavsCurrencyListAdapter extends CurrencyListAdapterBase {
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public FavsCurrencyListAdapter(List<CMCCoin> currencyList, DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
+    public FavsCurrencyListAdapter(ArrayList<CMCCoin> currencyList, DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         super(currencyList, db, context, listener);
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);

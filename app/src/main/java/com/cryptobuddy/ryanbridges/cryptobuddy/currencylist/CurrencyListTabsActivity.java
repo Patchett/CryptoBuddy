@@ -83,7 +83,7 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
 
             @Override
             public void run() {
-                doubleBackToExitPressedOnce=false;
+                doubleBackToExitPressedOnce = false;
             }
         }, 2000);
     }

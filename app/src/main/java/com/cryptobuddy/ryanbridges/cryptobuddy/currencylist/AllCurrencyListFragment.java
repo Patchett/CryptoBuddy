@@ -34,7 +34,6 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Created by Ryan on 1/21/2018.
@@ -76,7 +75,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
                 Parcelable recyclerViewState;
                 recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
-//                boolean refreshOnlySearchedCoins = (searchView != null && searchViewFocused);
                 searchedSymbols.clear();
                 if (searchViewFocused) {
                     for (CMCCoin coin : filteredList) {
@@ -88,7 +86,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 }
                 try {
                     if (searchViewFocused) { // Copy some code here to make the checks faster
-                        List<CMCCoin> tempList = new ArrayList<>();
+                        ArrayList<CMCCoin> tempList = new ArrayList<>();
                         for (CMCCoin coin : cmcCoinList) {
                             if (searchedSymbols.get(coin.getSymbol()) != null) {
                                 tempList.add(coin);
@@ -268,7 +266,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onResume() {
         super.onResume();
-        getCurrencyList();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -277,6 +275,4 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         searchViewFocused = false;
         getCurrencyList();
     }
-
-
 }
