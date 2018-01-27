@@ -14,21 +14,22 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_currency_list"
+        android:id="@+id/toolbar_webview"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_scrollFlags="scroll|enterAlways|snap"/>
-        
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="3dp"
+            android:progressDrawable="@drawable/custom_progress" />
+
+
     </android.support.design.widget.AppBarLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="3dp"
-        android:progressDrawable="@drawable/custom_progress" />
 
     <WebView
         android:layout_width="match_parent"
