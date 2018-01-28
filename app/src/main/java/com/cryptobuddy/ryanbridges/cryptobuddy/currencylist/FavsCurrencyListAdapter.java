@@ -2,13 +2,19 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
+import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -17,7 +23,7 @@ import java.util.ArrayList;
  * Created by Ryan on 12/9/2017.
  */
 
-public class FavsCurrencyListAdapter extends CurrencyListAdapterBase {
+public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyListAdapter.ViewHolder> {
     private ArrayList<CMCCoin> currencyList;
     private FavsCurrencyListAdapter.ViewHolder viewHolder;
     private String negativePercentStringResource;
@@ -33,8 +39,8 @@ public class FavsCurrencyListAdapter extends CurrencyListAdapterBase {
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public FavsCurrencyListAdapter(ArrayList<CMCCoin> currencyList, DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
-        super(currencyList, db, context, listener);
+    public FavsCurrencyListAdapter(ArrayList<CMCCoin> currencyList,
+                                   DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
         this.rowListener = listener;
@@ -63,5 +69,96 @@ public class FavsCurrencyListAdapter extends CurrencyListAdapterBase {
                 notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    public void onBindViewHolder(final FavsCurrencyListAdapter.ViewHolder holder, final int position) {
+        CMCCoin item = currencyList.get(position);
+        if (item.getPercent_change_24h() == null) {
+            holder.currencyListChangeTextView.setText("N/A");
+            holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
+        } else {
+            double dayChange = Double.parseDouble(item.getPercent_change_24h());
+            if (dayChange < 0) {
+                holder.currencyListChangeTextView.setText(String.format(negativePercentStringResource, dayChange));
+                holder.currencyListChangeTextView.setTextColor(negativeRedColor);
+            } else {
+                holder.currencyListChangeTextView.setText(String.format(positivePercentStringResource, dayChange));
+                holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
+            }
+        }
+        if (item.getMarket_cap_usd() == null) {
+            holder.currencyListMarketcapTextView.setText("N/A");
+        } else {
+            holder.currencyListMarketcapTextView.setText(String.format(mktCapStringResource, Double.parseDouble(item.getMarket_cap_usd())));
+        }
+        if (item.getVolume_usd_24h() == null) {
+            holder.currencyListVolumeTextView.setText("N/A");
+        } else {
+            holder.currencyListVolumeTextView.setText(String.format(volumeStringResource, Double.parseDouble(item.getVolume_usd_24h())));
+        }
+        if (item.getPrice_usd() == null) {
+            holder.currencyListCurrPriceTextView.setText("N/A");
+        } else {
+            holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, Double.parseDouble(item.getPrice_usd())));
+        }
+        holder.currencyListfullNameTextView.setText(item.getSymbol());
+        Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
+        CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
+        if (favs.favoritesMap.get(item.getSymbol()) != null) {
+            holder.starButton.setBackground(starEnabled);
+        } else {
+            holder.starButton.setBackground(starDisabled);
+        }
+        setFavoriteButtonClickListener(holder, position);
+    }
+
+    @Override
+    public FavsCurrencyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_currency_list_item, parent, false);
+        viewHolder = new FavsCurrencyListAdapter.ViewHolder(itemLayoutView, rowListener);
+        return viewHolder;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView currencyListfullNameTextView;
+        private TextView currencyListChangeTextView;
+        private TextView currencyListCurrPriceTextView;
+        private TextView currencyListVolumeTextView;
+        private TextView currencyListMarketcapTextView;
+        private ImageView currencyListCoinImageView;
+        protected ImageView starButton;
+        private CustomItemClickListener listener;
+
+        private ViewHolder(View itemLayoutView, CustomItemClickListener listener)
+        {
+            super(itemLayoutView);
+            itemLayoutView.setOnClickListener(this);
+            currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
+            currencyListChangeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListChangeTextView);
+            currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
+            currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
+            currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
+            currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
+            starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavStar);
+            this.listener = listener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onItemClick(getAdapterPosition(), v);
+        }
+    }
+
+    public int getItemCount() {
+        return currencyList.size();
+    }
+
+    public void setCurrencyList(ArrayList<CMCCoin> newCurrencyList) {
+        this.currencyList = newCurrencyList;
+    }
+
+    public ArrayList<CMCCoin> getCurrencyList() {
+        return currencyList;
     }
 }

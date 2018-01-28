@@ -1,7 +1,9 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -45,7 +47,12 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private ArrayList<CMCCoin> allCoinsList = new ArrayList<>();
     private Hashtable<String, CMCCoin> allCoinsMap = new Hashtable<>();
     private Hashtable<String, CMCCoin> currencyItemMap = new Hashtable<>();
+    private AllCoinsListUpdater favsUpdateCallback;
 
+    public interface AllCoinsListUpdater {
+        public void allCoinsRemoveFavorite(CMCCoin coin);
+        public void allCoinsAddFavorite(CMCCoin coin);
+    }
 
     public FavoriteCurrencyListFragment() {
     }
@@ -97,6 +104,11 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         }, true);
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        favsUpdateCallback = (AllCoinsListUpdater) activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -169,12 +181,67 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         }
-        updateFavs();
+        new UpdateFavoritesTask(adapter, currencyItemMap).execute();
     }
 
     @Override
     public void onRefresh() {
         getCurrencyList();
+    }
+
+
+    class UpdateFavoritesTask extends AsyncTask<Void, Void, Void> {
+
+        private CoinFavoritesStructures dbFavs;
+        private ArrayList<CMCCoin> currentFavs;
+        FavsCurrencyListAdapter adapter;
+        Hashtable<String, CMCCoin> currencyItemMap;
+
+        public UpdateFavoritesTask(FavsCurrencyListAdapter adapter, Hashtable<String, CMCCoin> currencyItemMap) {
+            this.adapter = adapter;
+            this.currencyItemMap = currencyItemMap;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            this.dbFavs = db.getFavorites();
+            this.currentFavs = adapter.getCurrencyList();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            this.adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            Iterator<CMCCoin> currFavsIterator = currentFavs.iterator();
+            while (currFavsIterator.hasNext()) {
+                CMCCoin currCoin = currFavsIterator.next();
+                if (dbFavs.favoritesMap.get(currCoin.getSymbol()) == null) { // Check if the fav is already not in the list
+                    // Remove the fav
+                    this.currencyItemMap.remove(currCoin.getSymbol());
+                    currFavsIterator.remove();
+                }
+            }
+            // Add new favorites
+//            Iterator<String> dbIterator = dbFavs.favoriteList.iterator();
+//            while(dbIterator.hasNext()) {
+//                String currSymbol = dbIterator.next();
+//                if (this.currencyItemMap.get(currSymbol) == null) {
+//                    CMCCoin newCoin = allCoinsMap.get(currSymbol);
+//                    this.currencyItemMap.put(currSymbol, newCoin);
+//                    currentFavs.add(0, newCoin);
+//                }
+//            }
+            return null;
+        }
+    }
+
+    public FavsCurrencyListAdapter getAdapter() {
+        return this.adapter;
     }
 }
 

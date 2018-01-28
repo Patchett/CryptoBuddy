@@ -39,11 +39,12 @@ import java.util.Hashtable;
  * Created by Ryan on 1/21/2018.
  */
 
-public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        SearchView.OnQueryTextListener {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
-    private CurrencyListAdapterBase adapter;
+    private AllCurrencyListAdapter adapter;
     private ArrayList<CMCCoin> currencyItemList;
     private ArrayList<CMCCoin> filteredList = new ArrayList<>();
     private Hashtable<String, CMCCoin> currencyItemMap;
@@ -55,6 +56,12 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public static String currQuery = "";
     private HashMap<String, String> searchedSymbols = new HashMap<>();
     public static boolean searchViewFocused = false;
+    private FavoritesListUpdater favsUpdateCallback;
+
+    public interface FavoritesListUpdater {
+        public void removeFavorite(CMCCoin coin);
+        public void addFavorite(CMCCoin coin);
+    }
 
     public AllCurrencyListFragment() {
     }
@@ -133,7 +140,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapterBase(currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+        adapter = new AllCurrencyListAdapter(currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
@@ -186,7 +193,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        adapter = new CurrencyListAdapterBase(filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+        adapter = new AllCurrencyListAdapter(filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
@@ -207,8 +214,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.d("I", "Inside of onPrepareOptionsMenu");
-
         if (searchView != null && searchViewFocused) {
             searchView.requestFocusFromTouch();
             searchView.setIconified(false);
@@ -274,5 +279,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         super.onActivityCreated(savedInstanceState);
         searchViewFocused = false;
         getCurrencyList();
+    }
+
+    public AllCurrencyListAdapter getAdapter() {
+        return this.adapter;
     }
 }

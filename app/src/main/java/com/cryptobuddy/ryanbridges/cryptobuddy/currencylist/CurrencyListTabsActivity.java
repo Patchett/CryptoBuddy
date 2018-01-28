@@ -11,12 +11,14 @@ import android.widget.Toast;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 
 /**
  * Created by Ryan on 1/21/2018.
  */
 
-public class CurrencyListTabsActivity extends BaseAnimationActivity implements ViewPager.OnPageChangeListener {
+public class CurrencyListTabsActivity extends BaseAnimationActivity implements ViewPager.OnPageChangeListener,
+        FavoriteCurrencyListFragment.AllCoinsListUpdater {
 
     private SectionsPagerAdapterCurrencyList mSectionsPagerAdapter;
     public ViewPager mViewPager;
@@ -86,5 +88,20 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
                 doubleBackToExitPressedOnce = false;
             }
         }, 2000);
+    }
+
+    public void allCoinsRemoveFavorite(CMCCoin coin) {
+        AllCurrencyListFragment allCurrencyListFragment = (AllCurrencyListFragment) mSectionsPagerAdapter.getItem(0);
+        if (allCurrencyListFragment != null) {
+
+            allCurrencyListFragment.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    public void allCoinsAddFavorite(CMCCoin coin) {
+        AllCurrencyListFragment allCurrencyListFragment = (AllCurrencyListFragment) mSectionsPagerAdapter.getItem(0);
+        if (allCurrencyListFragment != null) {
+            allCurrencyListFragment.onRefresh();
+        }
     }
 }

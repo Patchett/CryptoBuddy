@@ -23,10 +23,10 @@ import java.util.ArrayList;
  * Created by Ryan on 1/22/2018.
  */
 
-public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAdapterBase.ViewHolder> {
+public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyListAdapter.ViewHolder> {
 
     private ArrayList<CMCCoin> currencyList;
-    private CurrencyListAdapterBase.ViewHolder viewHolder;
+    private AllCurrencyListAdapter.ViewHolder viewHolder;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
     private String priceStringResource;
@@ -40,8 +40,8 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public CurrencyListAdapterBase(ArrayList<CMCCoin> currencyList,
-                               DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
+    public AllCurrencyListAdapter(ArrayList<CMCCoin> currencyList,
+                                  DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
         this.rowListener = listener;
@@ -57,7 +57,7 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
         this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
     }
 
-    public void setFavoriteButtonClickListener(final CurrencyListAdapterBase.ViewHolder holder, final int position) {
+    public void setFavoriteButtonClickListener(final AllCurrencyListAdapter.ViewHolder holder, final int position) {
         holder.starButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +82,7 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
     }
 
     @Override
-    public void onBindViewHolder(final CurrencyListAdapterBase.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final AllCurrencyListAdapter.ViewHolder holder, final int position) {
         CMCCoin item = currencyList.get(position);
         if (item.getPercent_change_24h() == null) {
             holder.currencyListChangeTextView.setText("N/A");
@@ -124,9 +124,9 @@ public class CurrencyListAdapterBase extends RecyclerView.Adapter<CurrencyListAd
     }
 
     @Override
-    public CurrencyListAdapterBase.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AllCurrencyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_currency_list_item, parent, false);
-        viewHolder = new CurrencyListAdapterBase.ViewHolder(itemLayoutView, rowListener);
+        viewHolder = new AllCurrencyListAdapter.ViewHolder(itemLayoutView, rowListener);
         return viewHolder;
     }
 
