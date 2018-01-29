@@ -18,7 +18,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
  */
 
 public class CurrencyListTabsActivity extends BaseAnimationActivity implements ViewPager.OnPageChangeListener,
-        FavoriteCurrencyListFragment.AllCoinsListUpdater {
+        FavoriteCurrencyListFragment.AllCoinsListUpdater, AllCurrencyListFragment.FavoritesListUpdater {
 
     private SectionsPagerAdapterCurrencyList mSectionsPagerAdapter;
     public ViewPager mViewPager;
@@ -90,18 +90,24 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
         }, 2000);
     }
 
-    public void allCoinsRemoveFavorite(CMCCoin coin) {
-        AllCurrencyListFragment allCurrencyListFragment = (AllCurrencyListFragment) mSectionsPagerAdapter.getItem(0);
-        if (allCurrencyListFragment != null) {
-
-            allCurrencyListFragment.getAdapter().notifyDataSetChanged();
+    public void removeFavorite(CMCCoin coin) {
+        FavoriteCurrencyListFragment frag = (FavoriteCurrencyListFragment) mSectionsPagerAdapter.getFragment(1);
+        if (frag != null) {
+            frag.removeFavorite(coin);
         }
     }
 
-    public void allCoinsAddFavorite(CMCCoin coin) {
-        AllCurrencyListFragment allCurrencyListFragment = (AllCurrencyListFragment) mSectionsPagerAdapter.getItem(0);
-        if (allCurrencyListFragment != null) {
-            allCurrencyListFragment.onRefresh();
+    public void addFavorite(CMCCoin coin) {
+        FavoriteCurrencyListFragment frag = (FavoriteCurrencyListFragment) mSectionsPagerAdapter.getFragment(1);
+        if (frag != null) {
+            frag.addFavorite(coin);
+        }
+    }
+
+    public void allCoinsModifyFavorites(CMCCoin coin) {
+        AllCurrencyListFragment frag = (AllCurrencyListFragment) mSectionsPagerAdapter.getFragment(0);
+        if (frag != null) {
+            frag.getAdapter().notifyDataSetChanged();
         }
     }
 }

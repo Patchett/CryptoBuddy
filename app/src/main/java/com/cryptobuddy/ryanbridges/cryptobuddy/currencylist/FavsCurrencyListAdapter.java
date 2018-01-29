@@ -36,10 +36,12 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
     private CustomItemClickListener rowListener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
+    private WeakReference<FavoriteCurrencyListFragment.AllCoinsListUpdater> favsUpdateCallbackRef;
     private Drawable starDisabled;
     private Drawable starEnabled;
+    private FavsCurrencyListAdapter me;
 
-    public FavsCurrencyListAdapter(ArrayList<CMCCoin> currencyList,
+    public FavsCurrencyListAdapter(FavoriteCurrencyListFragment.AllCoinsListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
                                    DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
@@ -54,6 +56,8 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
         this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
+        this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
+        this.me = this;
     }
 
     public void setFavoriteButtonClickListener(final FavsCurrencyListAdapter.ViewHolder holder, final int position) {
@@ -67,6 +71,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
                 dbRef.get().saveCoinFavorites(favs);
                 currencyList.remove(position);
                 notifyDataSetChanged();
+                favsUpdateCallbackRef.get().allCoinsModifyFavorites(item);
             }
         });
     }

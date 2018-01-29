@@ -37,10 +37,11 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     private CustomItemClickListener rowListener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
+    private WeakReference<AllCurrencyListFragment.FavoritesListUpdater> favsUpdateCallbackRef;
     private Drawable starDisabled;
     private Drawable starEnabled;
 
-    public AllCurrencyListAdapter(ArrayList<CMCCoin> currencyList,
+    public AllCurrencyListAdapter(AllCurrencyListFragment.FavoritesListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
                                   DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
@@ -55,6 +56,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
         this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
+        this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
     }
 
     public void setFavoriteButtonClickListener(final AllCurrencyListAdapter.ViewHolder holder, final int position) {
@@ -72,9 +74,11 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
                 if (favs.favoritesMap.get(item.getSymbol()) == null) { // Coin is not a favorite yet. Add it.
                     favs.favoritesMap.put(item.getSymbol(), item.getSymbol());
                     favs.favoriteList.add(item.getSymbol());
+                    favsUpdateCallbackRef.get().addFavorite(item);
                 } else { // Coin is already a favorite, remove it
                     favs.favoritesMap.remove(item.getSymbol());
                     favs.favoriteList.remove(item.getSymbol());
+                    favsUpdateCallbackRef.get().removeFavorite(item);
                 }
                 dbRef.get().saveCoinFavorites(favs);
             }

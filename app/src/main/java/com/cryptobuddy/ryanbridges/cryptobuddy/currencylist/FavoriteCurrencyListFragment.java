@@ -3,7 +3,6 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -50,8 +49,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private AllCoinsListUpdater favsUpdateCallback;
 
     public interface AllCoinsListUpdater {
-        public void allCoinsRemoveFavorite(CMCCoin coin);
-        public void allCoinsAddFavorite(CMCCoin coin);
+        void allCoinsModifyFavorites(CMCCoin coin);
     }
 
     public FavoriteCurrencyListFragment() {
@@ -126,7 +124,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         allCoinsList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
         allCoinsMap = new Hashtable<>();
-        adapter = new FavsCurrencyListAdapter(currencyItemFavsList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
+        adapter = new FavsCurrencyListAdapter(favsUpdateCallback, currencyItemFavsList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
@@ -148,32 +146,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         return rootView;
     }
 
-    public void updateFavs() {
-        CoinFavoritesStructures dbFavs = db.getFavorites();
-        ArrayList<CMCCoin> currentFavs = adapter.getCurrencyList();
-        // Remove stale favs
-        Iterator<CMCCoin> currFavsIterator = currentFavs.iterator();
-        while (currFavsIterator.hasNext()) {
-            CMCCoin currCoin = currFavsIterator.next();
-            if (dbFavs.favoritesMap.get(currCoin.getSymbol()) == null) { // Check if the fav is already not in the list
-                // Remove the fav
-                currencyItemMap.remove(currCoin.getSymbol());
-                currFavsIterator.remove();
-            }
-        }
-        // Add new favorites
-        Iterator<String> dbIterator = dbFavs.favoriteList.iterator();
-        while(dbIterator.hasNext()) {
-            String currSymbol = dbIterator.next();
-            if (currencyItemMap.get(currSymbol) == null) {
-                CMCCoin newCoin = allCoinsMap.get(currSymbol);
-                currencyItemMap.put(currSymbol, newCoin);
-                currentFavs.add(0, newCoin);
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -181,7 +153,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
         }
-        new UpdateFavoritesTask(adapter, currencyItemMap).execute();
     }
 
     @Override
@@ -189,59 +160,29 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         getCurrencyList();
     }
 
-
-    class UpdateFavoritesTask extends AsyncTask<Void, Void, Void> {
-
-        private CoinFavoritesStructures dbFavs;
-        private ArrayList<CMCCoin> currentFavs;
-        FavsCurrencyListAdapter adapter;
-        Hashtable<String, CMCCoin> currencyItemMap;
-
-        public UpdateFavoritesTask(FavsCurrencyListAdapter adapter, Hashtable<String, CMCCoin> currencyItemMap) {
-            this.adapter = adapter;
-            this.currencyItemMap = currencyItemMap;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            this.dbFavs = db.getFavorites();
-            this.currentFavs = adapter.getCurrencyList();
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            this.adapter.notifyDataSetChanged();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            Iterator<CMCCoin> currFavsIterator = currentFavs.iterator();
-            while (currFavsIterator.hasNext()) {
-                CMCCoin currCoin = currFavsIterator.next();
-                if (dbFavs.favoritesMap.get(currCoin.getSymbol()) == null) { // Check if the fav is already not in the list
-                    // Remove the fav
-                    this.currencyItemMap.remove(currCoin.getSymbol());
-                    currFavsIterator.remove();
-                }
-            }
-            // Add new favorites
-//            Iterator<String> dbIterator = dbFavs.favoriteList.iterator();
-//            while(dbIterator.hasNext()) {
-//                String currSymbol = dbIterator.next();
-//                if (this.currencyItemMap.get(currSymbol) == null) {
-//                    CMCCoin newCoin = allCoinsMap.get(currSymbol);
-//                    this.currencyItemMap.put(currSymbol, newCoin);
-//                    currentFavs.add(0, newCoin);
-//                }
-//            }
-            return null;
-        }
-    }
-
     public FavsCurrencyListAdapter getAdapter() {
         return this.adapter;
     }
+
+    public void removeFavorite(CMCCoin coin) {
+        ArrayList<CMCCoin> currentFavs = adapter.getCurrencyList();
+        Iterator<CMCCoin> currFavsIterator = currentFavs.iterator();
+        while (currFavsIterator.hasNext()) {
+            CMCCoin currCoin = currFavsIterator.next();
+            if (currCoin.getId().equals(coin.getId())) {
+                currencyItemMap.remove(currCoin.getSymbol());
+                currFavsIterator.remove();
+                adapter.notifyDataSetChanged();
+                return;
+            }
+        }
+    }
+
+    public void addFavorite(CMCCoin coin) {
+        currencyItemFavsList.add(0, coin);
+        currencyItemMap.put(coin.getSymbol(), coin);
+        adapter.notifyDataSetChanged();
+    }
+
 }
 
