@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="108dp"
+    android:layout_height="144dp"
     android:focusable="true"
     android:background="?android:selectableItemBackground"
     android:clickable="true">
@@ -26,18 +26,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
         app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
-        app:layout_constraintTop_toBottomOf="@+id/currencyListfullNameTextView" />
-
-    <TextView
-        android:id="@+id/currencyListChangeTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/currencyListCurrPriceTextView"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:gravity="center_vertical"
-        app:layout_constraintStart_toEndOf="@+id/currencyListCurrPriceTextView"
         app:layout_constraintTop_toBottomOf="@+id/currencyListfullNameTextView" />
 
     <ImageView
@@ -89,6 +77,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/oneHourChangeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListVolumeTextView" />
+
+    <TextView
+        android:id="@+id/dayChangeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/oneHourChangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListVolumeTextView" />
+
+    <TextView
+        android:id="@+id/weekChangeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toEndOf="@+id/dayChangeTextView"
+        app:layout_constraintTop_toBottomOf="@+id/currencyListVolumeTextView" />
 
 
 </android.support.constraint.ConstraintLayout>

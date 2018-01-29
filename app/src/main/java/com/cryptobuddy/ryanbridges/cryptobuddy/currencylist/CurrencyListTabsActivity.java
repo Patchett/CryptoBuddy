@@ -27,6 +27,10 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
     private Toolbar mToolbar;
     boolean doubleBackToExitPressedOnce = false;
     public static String IMAGE_URL_FORMAT = "https://files.coinmarketcap.com/static/img/coins/64x64/%s.png";
+    public final static String DAY = "24h";
+    public final static String WEEK = "7d";
+    public final static String HOUR = "1h";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -27,11 +27,12 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
 
     private ArrayList<CMCCoin> currencyList;
     private AllCurrencyListAdapter.ViewHolder viewHolder;
-    private String negativePercentStringResource;
-    private String positivePercentStringResource;
     private String priceStringResource;
     private String mktCapStringResource;
     private String volumeStringResource;
+    private String pctChangeNotAvailableStringResource;
+    private String negativePercentStringResource;
+    private String positivePercentStringResource;
     private int positiveGreenColor;
     private int negativeRedColor;
     private CustomItemClickListener rowListener;
@@ -52,6 +53,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_format);
         this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_format);
         this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
+        this.pctChangeNotAvailableStringResource = this.contextRef.get().getString(R.string.not_available_pct_change_text_with_time);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
@@ -88,19 +90,12 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     @Override
     public void onBindViewHolder(final AllCurrencyListAdapter.ViewHolder holder, final int position) {
         CMCCoin item = currencyList.get(position);
-        if (item.getPercent_change_24h() == null) {
-            holder.currencyListChangeTextView.setText("N/A");
-            holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
-        } else {
-            double dayChange = Double.parseDouble(item.getPercent_change_24h());
-            if (dayChange < 0) {
-                holder.currencyListChangeTextView.setText(String.format(negativePercentStringResource, dayChange));
-                holder.currencyListChangeTextView.setTextColor(negativeRedColor);
-            } else {
-                holder.currencyListChangeTextView.setText(String.format(positivePercentStringResource, dayChange));
-                holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
-            }
-        }
+        CurrencyListAdapterUtils.setPercentChangeTextView(holder.oneHourChangeTextView, item.getPercent_change_1h(),
+                CurrencyListTabsActivity.HOUR, negativePercentStringResource, positivePercentStringResource, negativeRedColor, positiveGreenColor, pctChangeNotAvailableStringResource);
+        CurrencyListAdapterUtils.setPercentChangeTextView(holder.dayChangeTextView, item.getPercent_change_24h(),
+                CurrencyListTabsActivity.DAY, negativePercentStringResource, positivePercentStringResource, negativeRedColor, positiveGreenColor, pctChangeNotAvailableStringResource);
+        CurrencyListAdapterUtils.setPercentChangeTextView(holder.weekChangeTextView, item.getPercent_change_7d(),
+                CurrencyListTabsActivity.WEEK, negativePercentStringResource, positivePercentStringResource, negativeRedColor, positiveGreenColor, pctChangeNotAvailableStringResource);
         if (item.getMarket_cap_usd() == null) {
             holder.currencyListMarketcapTextView.setText("N/A");
         } else {
@@ -136,12 +131,14 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView currencyListfullNameTextView;
-        private TextView currencyListChangeTextView;
+        private TextView oneHourChangeTextView;
+        private TextView dayChangeTextView;
+        private TextView weekChangeTextView;
         private TextView currencyListCurrPriceTextView;
         private TextView currencyListVolumeTextView;
         private TextView currencyListMarketcapTextView;
         private ImageView currencyListCoinImageView;
-        protected ImageView starButton;
+        private ImageView starButton;
         private CustomItemClickListener listener;
 
         private ViewHolder(View itemLayoutView, CustomItemClickListener listener)
@@ -149,12 +146,14 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
             currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
-            currencyListChangeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListChangeTextView);
             currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
             currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
             currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
             starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavButton);
+            oneHourChangeTextView = (TextView) itemLayoutView.findViewById(R.id.oneHourChangeTextView);
+            dayChangeTextView = (TextView) itemLayoutView.findViewById(R.id.dayChangeTextView);
+            weekChangeTextView = (TextView) itemLayoutView.findViewById(R.id.weekChangeTextView);
             this.listener = listener;
         }
 
