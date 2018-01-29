@@ -1,6 +1,8 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,16 +62,23 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
 
     public void setFavoriteButtonClickListener(final FavsCurrencyListAdapter.ViewHolder holder, final int position) {
         holder.trashButton.setOnClickListener(new View.OnClickListener() {
+            CMCCoin item = currencyList.get(position);
             @Override
             public void onClick(View v) {
-                CoinFavoritesStructures favs = dbRef.get().getFavorites();
-                CMCCoin item = currencyList.get(position);
-                favs.favoritesMap.remove(item.getSymbol());
-                favs.favoriteList.remove(item.getSymbol());
-                dbRef.get().saveCoinFavorites(favs);
-                currencyList.remove(position);
-                notifyDataSetChanged();
-                favsUpdateCallbackRef.get().allCoinsModifyFavorites(item);
+                new AlertDialog.Builder(contextRef.get())
+                        .setMessage("Unfavorite " + item.getSymbol() + "?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                CoinFavoritesStructures favs = dbRef.get().getFavorites();
+                                favs.favoritesMap.remove(item.getSymbol());
+                                favs.favoriteList.remove(item.getSymbol());
+                                dbRef.get().saveCoinFavorites(favs);
+                                currencyList.remove(position);
+                                notifyDataSetChanged();
+                                favsUpdateCallbackRef.get().allCoinsModifyFavorites(item);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
             }
         });
     }
