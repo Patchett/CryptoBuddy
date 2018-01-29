@@ -4,8 +4,14 @@
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity">
 
     <item
-        android:id="@+id/news_refresh_button"
+        android:id="@+id/currency_refresh_button_favs_list"
         android:title="@string/Refresh"
         android:icon="@drawable/ic_refresh_white_24dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/news_button_favs_list"
+        android:title="@string/News"
+        android:icon="@drawable/ic_library_books_white_24dp"
+        app:showAsAction="always" />
 </menu>

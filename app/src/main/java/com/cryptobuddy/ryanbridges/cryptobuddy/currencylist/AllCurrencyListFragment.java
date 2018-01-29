@@ -59,8 +59,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private FavoritesListUpdater favsUpdateCallback;
 
     public interface FavoritesListUpdater {
-        public void removeFavorite(CMCCoin coin);
-        public void addFavorite(CMCCoin coin);
+        void removeFavorite(CMCCoin coin);
+        void addFavorite(CMCCoin coin);
     }
 
     public AllCurrencyListFragment() {
@@ -140,7 +140,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new AllCurrencyListAdapter(currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+        adapter = new AllCurrencyListAdapter(favsUpdateCallback, currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
@@ -193,7 +193,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        adapter = new AllCurrencyListAdapter(filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+        adapter = new AllCurrencyListAdapter(favsUpdateCallback, filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
@@ -227,11 +227,12 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public void onAttach(Context context) {
         super.onAttach(context);
         this.mContext = context;
+        this.favsUpdateCallback = (FavoritesListUpdater) context;
     }
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
+        getActivity().getMenuInflater().inflate(R.menu.all_currency_list_tab_menu, menu);
         Log.d("I", "Inside of onCreateOptionsMenu");
         searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
@@ -266,12 +267,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         } else {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.notifyDataSetChanged();
     }
 
     @Override

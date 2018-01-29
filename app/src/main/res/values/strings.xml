@@ -10,8 +10,9 @@
     <string name="negative_variable_pct_change_with_dollars_format">%1$s Change: %2$.2f%% &#40;&#45;&#36;%3$.2f&#41;</string>
     <string name="positive_variable_pct_change_with_dollars_format">%1$s Change: &#43;%2$.2f%% &#40;&#43;&#36;%3$.2f&#41;</string>
 
-    <string name="negative_pct_change_format">%1$.2f%%</string>
-    <string name="positive_pct_change_format">&#43;%1$.2f%%</string>
+    <string name="negative_pct_change_format">%1$s: %2$.2f%%</string>
+    <string name="positive_pct_change_format">%1$s: &#43;%2$.2f%%</string>
+    <string name="not_available_pct_change_text_with_time">%1$s: N/A</string>
 
     <string name="negative_pct_change_with_dollars_format">%1$.2f%% &#40;&#45;&#36;%2$.2f&#41;</string>
     <string name="positive_pct_change_with_dollars_format">&#43;%1$.2f%% &#40;&#43;&#36;%2$.2f&#41;</string>

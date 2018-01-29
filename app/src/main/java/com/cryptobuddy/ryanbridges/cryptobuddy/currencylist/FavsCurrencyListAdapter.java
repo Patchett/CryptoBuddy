@@ -1,6 +1,8 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyListAdapter.ViewHolder> {
     private ArrayList<CMCCoin> currencyList;
     private FavsCurrencyListAdapter.ViewHolder viewHolder;
+    private String pctChangeNotAvailableStringResource;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
     private String priceStringResource;
@@ -36,10 +39,11 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
     private CustomItemClickListener rowListener;
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
-    private Drawable starDisabled;
-    private Drawable starEnabled;
+    private WeakReference<FavoriteCurrencyListFragment.AllCoinsListUpdater> favsUpdateCallbackRef;
+    private Drawable trashButtonImage;
+    private FavsCurrencyListAdapter me;
 
-    public FavsCurrencyListAdapter(ArrayList<CMCCoin> currencyList,
+    public FavsCurrencyListAdapter(FavoriteCurrencyListFragment.AllCoinsListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
                                    DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
         this.contextRef = new WeakReference<>(context);
@@ -50,23 +54,33 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_format);
         this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_format);
         this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
+        this.pctChangeNotAvailableStringResource = this.contextRef.get().getString(R.string.not_available_pct_change_text_with_time);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
-        this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
-        this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
+        this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
+        this.trashButtonImage = contextRef.get().getResources().getDrawable(R.drawable.ic_delete_black_24dp);
+        this.me = this;
     }
 
     public void setFavoriteButtonClickListener(final FavsCurrencyListAdapter.ViewHolder holder, final int position) {
-        holder.starButton.setOnClickListener(new View.OnClickListener() {
+        holder.trashButton.setOnClickListener(new View.OnClickListener() {
+            CMCCoin item = currencyList.get(position);
             @Override
             public void onClick(View v) {
-                CoinFavoritesStructures favs = dbRef.get().getFavorites();
-                CMCCoin item = currencyList.get(position);
-                favs.favoritesMap.remove(item.getSymbol());
-                favs.favoriteList.remove(item.getSymbol());
-                dbRef.get().saveCoinFavorites(favs);
-                currencyList.remove(position);
-                notifyDataSetChanged();
+                new AlertDialog.Builder(contextRef.get())
+                        .setMessage("Unfavorite " + item.getSymbol() + "?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                CoinFavoritesStructures favs = dbRef.get().getFavorites();
+                                favs.favoritesMap.remove(item.getSymbol());
+                                favs.favoriteList.remove(item.getSymbol());
+                                dbRef.get().saveCoinFavorites(favs);
+                                currencyList.remove(position);
+                                notifyDataSetChanged();
+                                favsUpdateCallbackRef.get().allCoinsModifyFavorites(item);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
             }
         });
     }
@@ -74,19 +88,12 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
     @Override
     public void onBindViewHolder(final FavsCurrencyListAdapter.ViewHolder holder, final int position) {
         CMCCoin item = currencyList.get(position);
-        if (item.getPercent_change_24h() == null) {
-            holder.currencyListChangeTextView.setText("N/A");
-            holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
-        } else {
-            double dayChange = Double.parseDouble(item.getPercent_change_24h());
-            if (dayChange < 0) {
-                holder.currencyListChangeTextView.setText(String.format(negativePercentStringResource, dayChange));
-                holder.currencyListChangeTextView.setTextColor(negativeRedColor);
-            } else {
-                holder.currencyListChangeTextView.setText(String.format(positivePercentStringResource, dayChange));
-                holder.currencyListChangeTextView.setTextColor(positiveGreenColor);
-            }
-        }
+        CurrencyListAdapterUtils.setPercentChangeTextView(holder.oneHourChangeTextView, item.getPercent_change_1h(),
+                CurrencyListTabsActivity.HOUR, negativePercentStringResource, positivePercentStringResource, negativeRedColor, positiveGreenColor, pctChangeNotAvailableStringResource);
+        CurrencyListAdapterUtils.setPercentChangeTextView(holder.dayChangeTextView, item.getPercent_change_24h(),
+                CurrencyListTabsActivity.DAY, negativePercentStringResource, positivePercentStringResource, negativeRedColor, positiveGreenColor, pctChangeNotAvailableStringResource);
+        CurrencyListAdapterUtils.setPercentChangeTextView(holder.weekChangeTextView, item.getPercent_change_7d(),
+                CurrencyListTabsActivity.WEEK, negativePercentStringResource, positivePercentStringResource, negativeRedColor, positiveGreenColor, pctChangeNotAvailableStringResource);
         if (item.getMarket_cap_usd() == null) {
             holder.currencyListMarketcapTextView.setText("N/A");
         } else {
@@ -105,11 +112,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         holder.currencyListfullNameTextView.setText(item.getSymbol());
         Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
         CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
-        if (favs.favoritesMap.get(item.getSymbol()) != null) {
-            holder.starButton.setBackground(starEnabled);
-        } else {
-            holder.starButton.setBackground(starDisabled);
-        }
+        holder.trashButton.setBackground(trashButtonImage);
         setFavoriteButtonClickListener(holder, position);
     }
 
@@ -122,12 +125,14 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView currencyListfullNameTextView;
-        private TextView currencyListChangeTextView;
+        private TextView oneHourChangeTextView;
+        private TextView dayChangeTextView;
+        private TextView weekChangeTextView;
         private TextView currencyListCurrPriceTextView;
         private TextView currencyListVolumeTextView;
         private TextView currencyListMarketcapTextView;
         private ImageView currencyListCoinImageView;
-        protected ImageView starButton;
+        protected ImageView trashButton;
         private CustomItemClickListener listener;
 
         private ViewHolder(View itemLayoutView, CustomItemClickListener listener)
@@ -135,12 +140,14 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
             currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
-            currencyListChangeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListChangeTextView);
             currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
             currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
             currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
-            starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavStar);
+            trashButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavButton);
+            oneHourChangeTextView = (TextView) itemLayoutView.findViewById(R.id.oneHourChangeTextView);
+            dayChangeTextView = (TextView) itemLayoutView.findViewById(R.id.dayChangeTextView);
+            weekChangeTextView = (TextView) itemLayoutView.findViewById(R.id.weekChangeTextView);
             this.listener = listener;
         }
 
