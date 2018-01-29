@@ -7,8 +7,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +16,6 @@ import android.view.View;
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.NewsService;
 import com.grizzly.rest.Model.RestResults;
@@ -185,16 +184,13 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.home_button:
-                startActivity(new Intent(this, CurrencyListTabsActivity.class));
-                finish();
-                return true;
             case R.id.news_refresh_button:
                 getNewsObservable(2, false);
                 return true;
+            default:
+                finish();
+                return true;
         }
-        finish();
-        return true;
     }
 
     //TODO: An advantage about using observables is how easily they allow to avoid lifecycle crashes.
