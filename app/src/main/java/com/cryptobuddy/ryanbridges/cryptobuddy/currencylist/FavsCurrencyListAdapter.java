@@ -37,8 +37,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
     private WeakReference<FavoriteCurrencyListFragment.AllCoinsListUpdater> favsUpdateCallbackRef;
-    private Drawable starDisabled;
-    private Drawable starEnabled;
+    private Drawable trashButtonImage;
     private FavsCurrencyListAdapter me;
 
     public FavsCurrencyListAdapter(FavoriteCurrencyListFragment.AllCoinsListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
@@ -54,14 +53,13 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
-        this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
-        this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
         this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
+        this.trashButtonImage = contextRef.get().getResources().getDrawable(R.drawable.ic_delete_black_24dp);
         this.me = this;
     }
 
     public void setFavoriteButtonClickListener(final FavsCurrencyListAdapter.ViewHolder holder, final int position) {
-        holder.starButton.setOnClickListener(new View.OnClickListener() {
+        holder.trashButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 CoinFavoritesStructures favs = dbRef.get().getFavorites();
@@ -110,11 +108,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         holder.currencyListfullNameTextView.setText(item.getSymbol());
         Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
         CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
-        if (favs.favoritesMap.get(item.getSymbol()) != null) {
-            holder.starButton.setBackground(starEnabled);
-        } else {
-            holder.starButton.setBackground(starDisabled);
-        }
+        holder.trashButton.setBackground(trashButtonImage);
         setFavoriteButtonClickListener(holder, position);
     }
 
@@ -132,7 +126,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         private TextView currencyListVolumeTextView;
         private TextView currencyListMarketcapTextView;
         private ImageView currencyListCoinImageView;
-        protected ImageView starButton;
+        protected ImageView trashButton;
         private CustomItemClickListener listener;
 
         private ViewHolder(View itemLayoutView, CustomItemClickListener listener)
@@ -145,7 +139,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
             currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
             currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
-            starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavStar);
+            trashButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavButton);
             this.listener = listener;
         }
 

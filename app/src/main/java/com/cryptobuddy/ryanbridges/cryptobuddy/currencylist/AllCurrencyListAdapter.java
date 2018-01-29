@@ -154,7 +154,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
             currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
             currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
-            starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavStar);
+            starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavButton);
             this.listener = listener;
         }
 
