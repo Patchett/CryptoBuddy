@@ -61,10 +61,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                     Parcelable recyclerViewState;
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                     for(News news: newsRestResults){
-                        newsItemList.add(new NewsItem(news.getTitle(),
+                        NewsItem newsItem = new NewsItem(news.getTitle(),
                                 news.getUrl(), news.getBody(),
                                 news.getImageurl(), news.getSource(),
-                                news.getPublishedOn()));
+                                news.getPublishedOn());
+                        if(!newsItemList.contains(newsItem)) newsItemList.add(newsItem);
                     }
                     adapter.notifyDataSetChanged();
                     recyclerView.setAdapter(adapter);
@@ -89,10 +90,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                         if(newsRestResults.isSuccessful()){
                             for(News news: newsRestResults.getResultEntity()){
-                                newsItemList.add(new NewsItem(news.getTitle(),
+                                NewsItem newsItem = new NewsItem(news.getTitle(),
                                         news.getUrl(), news.getBody(),
                                         news.getImageurl(), news.getSource(),
-                                        news.getPublishedOn()));
+                                        news.getPublishedOn());
+                                if(!newsItemList.contains(newsItem)) newsItemList.add(newsItem);
                             }
                             adapter.notifyDataSetChanged();
                             recyclerView.setAdapter(adapter);
@@ -122,10 +124,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                             recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                             if(newsRestResults.isSuccessful()){
                                 for(News news: newsRestResults.getResultEntity()){
-                                    newsItemList.add(new NewsItem(news.getTitle(),
+                                    NewsItem newsItem = new NewsItem(news.getTitle(),
                                             news.getUrl(), news.getBody(),
                                             news.getImageurl(), news.getSource(),
-                                            news.getPublishedOn()));
+                                            news.getPublishedOn());
+                                    if(!newsItemList.contains(newsItem)) newsItemList.add(newsItem);
                                 }
                                 adapter.notifyDataSetChanged();
                                 recyclerView.setAdapter(adapter);

@@ -35,6 +35,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.ViewHo
         this.listener = listener;
     }
 
+    public NewsListAdapter setData(List<NewsItem> newsList){
+        this.newsList = newsList;
+        this.notifyDataSetChanged();
+        return this;
+    }
+
     @Override
     public void onBindViewHolder(NewsListAdapter.ViewHolder holder, int position) {
         NewsItem currNewsItem = newsList.get(position);
