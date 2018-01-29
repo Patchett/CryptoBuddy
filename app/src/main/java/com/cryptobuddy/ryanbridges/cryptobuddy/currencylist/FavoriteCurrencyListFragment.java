@@ -12,6 +12,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +24,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
+import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.grizzly.rest.Model.afterTaskCompletion;
@@ -47,6 +51,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private Hashtable<String, CMCCoin> allCoinsMap = new Hashtable<>();
     private Hashtable<String, CMCCoin> currencyItemMap = new Hashtable<>();
     private AllCoinsListUpdater favsUpdateCallback;
+    private AppCompatActivity mContext;
 
     public interface AllCoinsListUpdater {
         void allCoinsModifyFavorites(CMCCoin coin);
@@ -106,6 +111,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         favsUpdateCallback = (AllCoinsListUpdater) activity;
+        mContext = (AppCompatActivity) activity;
     }
 
     @Override
@@ -152,6 +158,26 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         if (rootView != null) { // Hide keyboard when we enter this tab
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.favorite_currency_list_tab_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.news_button_favs_list:
+                mContext.startActivity(new Intent(mContext, NewsListActivity.class));
+                return true;
+            case R.id.currency_refresh_button_favs_list:
+                onRefresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
