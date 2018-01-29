@@ -32,26 +32,36 @@ import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 
 /**
  * Created by Ryan on 1/21/2018.
  */
 
-public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, SearchView.OnQueryTextListener {
+public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
+        SearchView.OnQueryTextListener {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView currencyRecyclerView;
-    private CurrencyListAdapterBase adapter;
-    private List<CMCCoin> currencyItemList;
+    private AllCurrencyListAdapter adapter;
+    private ArrayList<CMCCoin> currencyItemList;
+    private ArrayList<CMCCoin> filteredList = new ArrayList<>();
     private Hashtable<String, CMCCoin> currencyItemMap;
     private DatabaseHelperSingleton db;
     private MenuItem searchItem;
     private SearchView searchView;
     private View rootView;
-    private boolean searchViewFocus = false;
     private Context mContext;
+    public static String currQuery = "";
+    private HashMap<String, String> searchedSymbols = new HashMap<>();
+    public static boolean searchViewFocused = false;
+    private FavoritesListUpdater favsUpdateCallback;
+
+    public interface FavoritesListUpdater {
+        public void removeFavorite(CMCCoin coin);
+        public void addFavorite(CMCCoin coin);
+    }
 
     public AllCurrencyListFragment() {
     }
@@ -72,14 +82,31 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
                 Parcelable recyclerViewState;
                 recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
-                currencyItemList.clear();
-                currencyItemMap.clear();
-                try {
-                    for (CMCCoin coin : cmcCoinList) {
-                        currencyItemList.add(coin);
-                        currencyItemMap.put(coin.getSymbol(), coin);
+                searchedSymbols.clear();
+                if (searchViewFocused) {
+                    for (CMCCoin coin : filteredList) {
+                        searchedSymbols.put(coin.getSymbol(), coin.getSymbol());
                     }
-                    adapter.setCurrencyList(currencyItemList);
+                } else {
+                    currencyItemList.clear();
+                    currencyItemMap.clear();
+                }
+                try {
+                    if (searchViewFocused) { // Copy some code here to make the checks faster
+                        ArrayList<CMCCoin> tempList = new ArrayList<>();
+                        for (CMCCoin coin : cmcCoinList) {
+                            if (searchedSymbols.get(coin.getSymbol()) != null) {
+                                tempList.add(coin);
+                            }
+                        }
+                        adapter.setCurrencyList(tempList);
+                    } else {
+                        for (CMCCoin coin : cmcCoinList) {
+                            currencyItemList.add(coin);
+                            currencyItemMap.put(coin.getSymbol(), coin);
+                        }
+                        adapter.setCurrencyList(currencyItemList);
+                    }
                     adapter.notifyDataSetChanged();
                     currencyRecyclerView.setAdapter(adapter);
                 } catch (Exception e) {
@@ -102,8 +129,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
-//        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-//        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setHasOptionsMenu(true);
         this.db = DatabaseHelperSingleton.getInstance(mContext);
         // Setup currency list
@@ -115,7 +140,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
         currencyItemMap = new Hashtable<>();
-        adapter = new CurrencyListAdapterBase(currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+        adapter = new AllCurrencyListAdapter(currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
@@ -160,14 +185,15 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public boolean onQueryTextChange(String query) {
+        currQuery = query;
         query = query.toLowerCase();
-        final List<CMCCoin> filteredList = new ArrayList<>();
+        filteredList.clear();
         for (CMCCoin coin : currencyItemList) {
             if (coin.getSymbol().toLowerCase().contains(query) || coin.getName().toLowerCase().contains(query)) {
                 filteredList.add(coin);
             }
         }
-        adapter = new CurrencyListAdapterBase(filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+        adapter = new AllCurrencyListAdapter(filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
@@ -188,11 +214,11 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.d("I", "Inside of onPrepareOptionsMenu");
-
-        if (searchView != null && !searchView.isIconified()) {
-            Log.d("I", "Inside of onPrepareOptionsMenu if statement");
-            searchView.requestFocus();
+        if (searchView != null && searchViewFocused) {
+            searchView.requestFocusFromTouch();
+            searchView.setIconified(false);
+            searchView.setIconified(false);
+            searchView.setQuery(currQuery, false);
             showInputMethod(rootView);
         }
     }
@@ -206,16 +232,15 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
-        final MenuItem newsButton = menu.findItem(R.id.news_button);
-        final MenuItem refreshButton = menu.findItem(R.id.currency_refresh_button);
         Log.d("I", "Inside of onCreateOptionsMenu");
         searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-//         Detect SearchView icon clicks
+        // Detect SearchView icon clicks
         searchView.setOnSearchClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                searchViewFocused = true;
                 setItemsVisibility(menu, searchItem, false);
             }
         });
@@ -223,25 +248,11 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                getActivity().invalidateOptionsMenu();
-                ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+                searchViewFocused = false;
+                setItemsVisibility(menu, searchItem, true);
                 return false;
             }
         });
-//        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    newsButton.setVisible(false);
-//                    refreshButton.setVisible(false);
-//                    showInputMethod(rootView.findFocus());
-//                    ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
-//                } else {
-//                    getActivity().invalidateOptionsMenu();
-//                    ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
-//                }
-//            }
-//        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -250,12 +261,27 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             MenuItem item = menu.getItem(i);
             if (item != exception) item.setVisible(visible);
         }
-        if (visible == false) {
+        if (!visible) {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
         } else {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        searchViewFocused = false;
+        getCurrencyList();
+    }
+
+    public AllCurrencyListAdapter getAdapter() {
+        return this.adapter;
+    }
 }

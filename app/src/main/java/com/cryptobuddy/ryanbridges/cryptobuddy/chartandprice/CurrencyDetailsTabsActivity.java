@@ -26,9 +26,9 @@ public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_currency_details_tabs);
         mToolbar = (Toolbar) findViewById(R.id.toolbar_currency_details);
         setSupportActionBar(mToolbar);
-        setContentView(R.layout.activity_currency_details_tabs);
         String symbol = getIntent().getStringExtra(SYMBOL);
         mViewPager = (CustomViewPager) findViewById(R.id.currencyTabsViewPager);
         mSectionsPagerAdapter = new SectionsPagerAdapterGraphs(getSupportFragmentManager(), symbol);
@@ -37,8 +37,8 @@ public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
-//        getSupportActionBar().setTitle(symbol);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(symbol);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

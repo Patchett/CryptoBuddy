@@ -3,6 +3,8 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,13 +17,19 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar_webview);
+        setSupportActionBar(mToolbar);
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
+        getSupportActionBar().setTitle(getResources().getString(R.string.News));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mWebView = (WebView) this.findViewById(R.id.webView);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -48,7 +56,7 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
             }
         });
 
-        mWebView.getSettings().setJavaScriptEnabled(true);
+//        mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(url);
         mProgressBar.setProgress(0);
     }
@@ -60,4 +68,11 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
             mProgressBar.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
+
 }
