@@ -93,7 +93,6 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
     public void allCoinsRemoveFavorite(CMCCoin coin) {
         AllCurrencyListFragment allCurrencyListFragment = (AllCurrencyListFragment) mSectionsPagerAdapter.getItem(0);
         if (allCurrencyListFragment != null) {
-
             allCurrencyListFragment.getAdapter().notifyDataSetChanged();
         }
     }
