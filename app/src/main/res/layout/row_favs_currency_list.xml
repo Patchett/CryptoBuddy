@@ -58,25 +58,24 @@
         app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
         app:layout_constraintTop_toBottomOf="@+id/currencyListCurrPriceTextView" />
 
-    <com.github.ivbaranov.mfb.MaterialFavoriteButton
+    <ImageView
         android:id="@+id/currencyListFavButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/ic_delete_black_24dp"
+        android:contentDescription="@string/Favorite"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textOff=""
+        android:textOn=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:mfb_animate_favorite="true"
-        app:mfb_animate_unfavorite="true"
-        app:mfb_bounce_duration="300"
-        app:mfb_favorite_image="@drawable/ic_star_enabled_24dp"
-        app:mfb_not_favorite_image="@drawable/ic_star_border_black_24dp"
-        app:mfb_padding="0"
-        app:mfb_rotation_angle="360"
-        app:mfb_rotation_duration="400"
-        app:mfb_size="36" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/oneHourChangeTextView"

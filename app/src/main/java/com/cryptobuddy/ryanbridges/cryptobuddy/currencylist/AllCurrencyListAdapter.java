@@ -14,6 +14,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
@@ -62,15 +63,9 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     }
 
     public void setFavoriteButtonClickListener(final AllCurrencyListAdapter.ViewHolder holder, final int position) {
-        holder.starButton.setOnClickListener(new View.OnClickListener() {
+        holder.favButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (holder.starButton.getBackground() == starDisabled) {
-                    holder.starButton.setBackground(starEnabled);
-                }
-                else {
-                    holder.starButton.setBackground(starDisabled);
-                }
+            public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
                 CoinFavoritesStructures favs = dbRef.get().getFavorites();
                 CMCCoin item = currencyList.get(position);
                 if (favs.favoritesMap.get(item.getSymbol()) == null) { // Coin is not a favorite yet. Add it.
@@ -114,11 +109,8 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         holder.currencyListfullNameTextView.setText(item.getSymbol());
         Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
         CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
-        if (favs.favoritesMap.get(item.getSymbol()) != null) {
-            holder.starButton.setBackground(starEnabled);
-        } else {
-            holder.starButton.setBackground(starDisabled);
-        }
+        boolean isFav = favs.favoritesMap.get(item.getSymbol()) != null;
+        holder.favButton.setFavorite(isFav, false);
         setFavoriteButtonClickListener(holder, position);
     }
 
@@ -138,7 +130,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         private TextView currencyListVolumeTextView;
         private TextView currencyListMarketcapTextView;
         private ImageView currencyListCoinImageView;
-        private ImageView starButton;
+        private MaterialFavoriteButton favButton;
         private CustomItemClickListener listener;
 
         private ViewHolder(View itemLayoutView, CustomItemClickListener listener)
@@ -150,7 +142,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
             currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
             currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
-            starButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavButton);
+            favButton = (MaterialFavoriteButton) itemLayoutView.findViewById(R.id.currencyListFavButton);
             oneHourChangeTextView = (TextView) itemLayoutView.findViewById(R.id.oneHourChangeTextView);
             dayChangeTextView = (TextView) itemLayoutView.findViewById(R.id.dayChangeTextView);
             weekChangeTextView = (TextView) itemLayoutView.findViewById(R.id.weekChangeTextView);

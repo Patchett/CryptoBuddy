@@ -118,7 +118,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
 
     @Override
     public FavsCurrencyListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_currency_list_item, parent, false);
+        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_favs_currency_list, parent, false);
         viewHolder = new FavsCurrencyListAdapter.ViewHolder(itemLayoutView, rowListener);
         return viewHolder;
     }
