@@ -167,10 +167,4 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         return currencyList;
     }
 
-    public AllCurrencyListAdapter setData(ArrayList<CMCCoin> coinList){
-        this.currencyList = coinList;
-        this.notifyDataSetChanged();
-        return this;
-    }
-
 }

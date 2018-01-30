@@ -193,7 +193,16 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        adapter.setData(filteredList);
+        // TODO: Try to make this faster somehow
+        adapter = new AllCurrencyListAdapter(favsUpdateCallback, filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
+            @Override
+            public void onItemClick(int position, View v) {
+                Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
+                intent.putExtra(CurrencyListTabsActivity.SYMBOL, filteredList.get(position).getSymbol());
+                mContext.startActivity(intent);
+            }
+        });
+        currencyRecyclerView.setAdapter(adapter);
         return true;
     }
 
@@ -206,13 +215,14 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("I", "inside of onPrepareOptionsMenu. searchViewFocused: " + searchViewFocused);
         if (searchView != null && searchViewFocused) {
+            ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
             searchView.requestFocusFromTouch();
             searchView.setIconified(false);
             searchView.setIconified(false);
             searchView.setQuery(currQuery, false);
             showInputMethod(rootView);
-            ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
         }
     }
 
@@ -247,6 +257,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 return false;
             }
         });
+        Log.d("I", "inside of onCreateOptionsMenu. searchViewFocused: " + searchViewFocused);
+        if (searchViewFocused) ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
         super.onCreateOptionsMenu(menu, inflater);
     }
 
