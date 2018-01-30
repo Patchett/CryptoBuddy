@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CMCCoin {
 
+    //Side note: the names don't need to match. The annotation name is the one used to serialize the property.
     @JsonProperty("id")
     private String id;
     @JsonProperty("name")

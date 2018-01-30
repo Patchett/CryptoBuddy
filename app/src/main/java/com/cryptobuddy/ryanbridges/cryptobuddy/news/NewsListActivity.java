@@ -11,10 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
-import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.NewsService;
@@ -39,7 +37,6 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 public class NewsListActivity extends BaseAnimationActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private NewsListAdapter adapter;
-    private List<NewsItem> newsItemList;
     private RecyclerView recyclerView;
     private AppCompatActivity mActivity;
     private Toolbar mToolbar;
@@ -59,13 +56,15 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
 
                     Parcelable recyclerViewState;
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
+                    List<NewsItem> myNews = new ArrayList<>();
                     for(News news: newsRestResults){
-                        newsItemList.add(new NewsItem(news.getTitle(),
+                        NewsItem newsItem = new NewsItem(news.getTitle(),
                                 news.getUrl(), news.getBody(),
                                 news.getImageurl(), news.getSource(),
-                                news.getPublishedOn()));
+                                news.getPublishedOn());
+                        myNews.add(newsItem);
                     }
-                    adapter.notifyDataSetChanged();
+                    adapter.setData(myNews);
                     recyclerView.setAdapter(adapter);
                     swipeRefreshLayout.setRefreshing(false);
                     recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
@@ -87,13 +86,15 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                         Parcelable recyclerViewState;
                         recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                         if(newsRestResults.isSuccessful()){
+                            List<NewsItem> myNews = new ArrayList<>();
                             for(News news: newsRestResults.getResultEntity()){
-                                newsItemList.add(new NewsItem(news.getTitle(),
+                                NewsItem newsItem = new NewsItem(news.getTitle(),
                                         news.getUrl(), news.getBody(),
                                         news.getImageurl(), news.getSource(),
-                                        news.getPublishedOn()));
+                                        news.getPublishedOn());
+                                myNews.add(newsItem);
                             }
-                            adapter.notifyDataSetChanged();
+                            adapter.setData(myNews);
                             recyclerView.setAdapter(adapter);
                             swipeRefreshLayout.setRefreshing(false);
                             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
@@ -120,13 +121,15 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                             Parcelable recyclerViewState;
                             recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
                             if(newsRestResults.isSuccessful()){
+                                List<NewsItem> myNews = new ArrayList<>();
                                 for(News news: newsRestResults.getResultEntity()){
-                                    newsItemList.add(new NewsItem(news.getTitle(),
+                                    NewsItem newsItem = new NewsItem(news.getTitle(),
                                             news.getUrl(), news.getBody(),
                                             news.getImageurl(), news.getSource(),
-                                            news.getPublishedOn()));
+                                            news.getPublishedOn());
+                                    myNews.add(newsItem);
                                 }
-                                adapter.notifyDataSetChanged();
+                                adapter.setData(myNews);
                                 recyclerView.setAdapter(adapter);
                                 swipeRefreshLayout.setRefreshing(false);
                                 recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
@@ -158,15 +161,7 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
         recyclerView.setLayoutManager(llm);
         recyclerView.setHasFixedSize(true);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        newsItemList = new ArrayList<>();
-        adapter = new NewsListAdapter(newsItemList, this, new CustomItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Intent browserIntent = new Intent(mActivity, WebViewActivity.class);
-                browserIntent.putExtra("url", newsItemList.get(position).articleURL);
-                startActivity(browserIntent);
-            }
-        });
+        adapter = new NewsListAdapter(new ArrayList<NewsItem>());
         swipeRefreshLayout.setOnRefreshListener(this);
     }
 
