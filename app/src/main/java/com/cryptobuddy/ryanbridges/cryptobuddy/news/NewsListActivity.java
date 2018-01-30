@@ -62,7 +62,7 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                                 news.getUrl(), news.getBody(),
                                 news.getImageurl(), news.getSource(),
                                 news.getPublishedOn());
-                        myNews.add(newsItem);
+                        if(!myNews.contains(newsItem)) myNews.add(newsItem);
                     }
                     adapter.setData(myNews);
                     recyclerView.setAdapter(adapter);
@@ -92,7 +92,7 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                                         news.getUrl(), news.getBody(),
                                         news.getImageurl(), news.getSource(),
                                         news.getPublishedOn());
-                                myNews.add(newsItem);
+                                if(!myNews.contains(newsItem)) myNews.add(newsItem);
                             }
                             adapter.setData(myNews);
                             recyclerView.setAdapter(adapter);
@@ -127,7 +127,7 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
                                             news.getUrl(), news.getBody(),
                                             news.getImageurl(), news.getSource(),
                                             news.getPublishedOn());
-                                    myNews.add(newsItem);
+                                    if(!myNews.contains(newsItem)) myNews.add(newsItem);
                                 }
                                 adapter.setData(myNews);
                                 recyclerView.setAdapter(adapter);

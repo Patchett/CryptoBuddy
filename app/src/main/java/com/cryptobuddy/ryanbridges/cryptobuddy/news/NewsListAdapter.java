@@ -63,6 +63,12 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.holder
         return this;
     }
 
+    public NewsListAdapter setData(List<NewsItem> newsList){
+        this.newsList = newsList;
+        this.notifyDataSetChanged();
+        return this;
+    }
+
     @Override
     public holder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new holder(new NewsView(parent.getContext()));
