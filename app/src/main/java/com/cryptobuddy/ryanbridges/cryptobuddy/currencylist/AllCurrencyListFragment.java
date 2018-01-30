@@ -220,6 +220,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             searchView.setIconified(false);
             searchView.setQuery(currQuery, false);
             showInputMethod(rootView);
+            ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
         }
     }
 

@@ -52,11 +52,11 @@ public class NewsListActivity extends BaseAnimationActivity implements SwipeRefr
             @Override
             public void call(News[] newsRestResults) {
 
+                List<NewsItem> myNews = new ArrayList<>();
                 if(newsRestResults != null && newsRestResults.length > 0){
 
                     Parcelable recyclerViewState;
                     recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-                    List<NewsItem> myNews = new ArrayList<>();
                     for(News news: newsRestResults){
                         NewsItem newsItem = new NewsItem(news.getTitle(),
                                 news.getUrl(), news.getBody(),
