@@ -66,96 +66,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/percent_change" />
 
-        <GridLayout
-            android:id="@+id/gridLayoutChartButtons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart">
-
-            <Button
-                android:id="@+id/monthButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="3"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="@string/Month"
-                app:layout_constraintStart_toEndOf="@+id/weekButton"
-                app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-            <Button
-                android:id="@+id/threeMonthButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="4"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="@string/threeMonth"
-                app:layout_constraintStart_toEndOf="@+id/monthButton"
-                app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-            <Button
-                android:id="@+id/oneYearButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="5"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="@string/Year"
-                app:layout_constraintStart_toEndOf="@+id/threeMonthButton"
-                app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-            <Button
-                android:id="@+id/weekButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="2"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="@string/Week"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-            <Button
-                android:id="@+id/allTimeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="6"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="@string/All"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-            <Button
-                android:id="@+id/oneDayButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_column="0"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="2dp"
-                android:minHeight="0dp"
-                android:minWidth="0dp"
-                android:text="@string/oneDay"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chart" />
-
-        </GridLayout>
-
         <TextView
             android:id="@+id/noChartDataText"
             android:layout_width="wrap_content"
@@ -167,10 +77,73 @@
             android:enabled="false"
             android:text="@string/noChartDataString"
             android:textSize="36sp"
-            app:layout_constraintBottom_toTopOf="@+id/gridLayoutChartButtons"
+            app:layout_constraintBottom_toBottomOf="@+id/chart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
+            android:id="@+id/chart_interval_button_grp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart"
+            app:tbgCheckedButton="@+id/allTimeButton"
+            app:tbgChildSpacing="auto">
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/dayButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/oneDay"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent"/>
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/weekButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Week"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/monthButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Month"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/threeMonthButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/threeMonth"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/yearButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Year"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/allTimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/All"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
+
+        </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
 
 
     </android.support.constraint.ConstraintLayout>

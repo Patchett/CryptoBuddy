@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +37,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.nex3z.togglebuttongroup.SingleSelectToggleGroup;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +79,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public final TimeDateFormatter dayCommaTimeDateFormatter = new TimeDateFormatter();
     public final MonthSlashYearFormatter monthSlashYearFormatter = new MonthSlashYearFormatter();
     private String currentTimeWindow = "";
+    private SingleSelectToggleGroup buttonGroup;
 
 
     /**
@@ -278,6 +279,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
+        buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
+        buttonGroup.check(R.id.allTimeButton);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
         crypto = getArguments().getString(ARG_SYMBOL);
@@ -294,69 +297,51 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                                 }
         );
         XAxisFormatter = monthSlashDayXAxisFormatter;
-        Button oneMonthButton = (Button) rootView.findViewById(R.id.monthButton);
-        Button threeMonthButton = (Button) rootView.findViewById(R.id.threeMonthButton);
-        Button oneWeekButton = (Button) rootView.findViewById(R.id.weekButton);
-        Button oneDayButton = (Button) rootView.findViewById(R.id.oneDayButton);
-        Button yearButton = (Button) rootView.findViewById(R.id.oneYearButton);
-        Button allTimeButton = (Button) rootView.findViewById(R.id.allTimeButton);
 
-        oneDayButton.setOnClickListener(new View.OnClickListener() {
+        buttonGroup.setOnCheckedChangeListener(new SingleSelectToggleGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                currentChartURL = String.format(CHART_URL_1_DAY, crypto);
-                currentTimeWindow = String.format(getString(R.string.oneDay));
-                XAxisFormatter = dayCommaTimeDateFormatter;
-                lineChart.getXAxis().setLabelCount(6);
-                onRefresh();
+            public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.dayButton:
+                        currentChartURL = String.format(CHART_URL_1_DAY, crypto);
+                        currentTimeWindow = String.format(getString(R.string.oneDay));
+                        XAxisFormatter = dayCommaTimeDateFormatter;
+                        lineChart.getXAxis().setLabelCount(6);
+                        onRefresh();
+                        break;
+                    case R.id.weekButton:
+                        currentChartURL = String.format(CHART_URL_WEEK, crypto);
+                        currentTimeWindow = String.format(getString(R.string.Week));
+                        XAxisFormatter = monthSlashDayXAxisFormatter;
+                        onRefresh();
+                        break;
+                    case R.id.monthButton:
+                        currentChartURL = String.format(CHART_URL_MONTH, crypto);
+                        currentTimeWindow = String.format(getString(R.string.Month));
+                        XAxisFormatter = monthSlashDayXAxisFormatter;
+                        onRefresh();
+                        break;
+                    case R.id.threeMonthButton:
+                        currentChartURL = String.format(CHART_URL_3_MONTH, crypto);
+                        currentTimeWindow = String.format(getString(R.string.threeMonth));
+                        XAxisFormatter = monthSlashDayXAxisFormatter;
+                        onRefresh();
+                        break;
+                    case R.id.yearButton:
+                        currentChartURL = String.format(CHART_URL_YEAR, crypto);
+                        currentTimeWindow = String.format(getString(R.string.Year));
+                        XAxisFormatter = monthSlashYearFormatter;
+                        onRefresh();
+                        break;
+                    case R.id.allTimeButton:
+                        currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
+                        currentTimeWindow = String.format(getString(R.string.AllTime));
+                        XAxisFormatter = monthSlashYearFormatter;
+                        onRefresh();
+                        break;
+                }
             }
         });
-        oneWeekButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentChartURL = String.format(CHART_URL_WEEK, crypto);
-                currentTimeWindow = String.format(getString(R.string.Week));
-                XAxisFormatter = monthSlashDayXAxisFormatter;
-                onRefresh();
-            }
-        });
-        oneMonthButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentChartURL = String.format(CHART_URL_MONTH, crypto);
-                currentTimeWindow = String.format(getString(R.string.Month));
-                XAxisFormatter = monthSlashDayXAxisFormatter;
-                onRefresh();
-            }
-        });
-        threeMonthButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentChartURL = String.format(CHART_URL_3_MONTH, crypto);
-                currentTimeWindow = String.format(getString(R.string.threeMonth));
-                XAxisFormatter = monthSlashDayXAxisFormatter;
-                onRefresh();
-            }
-        });
-        allTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
-                currentTimeWindow = String.format(getString(R.string.AllTime));
-                XAxisFormatter = monthSlashYearFormatter;
-                onRefresh();
-            }
-        });
-        yearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentChartURL = String.format(CHART_URL_YEAR, crypto);
-                currentTimeWindow = String.format(getString(R.string.Year));
-                XAxisFormatter = monthSlashYearFormatter;
-                onRefresh();
-            }
-        });
-
         return rootView;
     }
 

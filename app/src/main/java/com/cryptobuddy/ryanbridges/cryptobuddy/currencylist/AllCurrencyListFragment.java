@@ -193,15 +193,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        adapter = new AllCurrencyListAdapter(favsUpdateCallback, filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
-                intent.putExtra(CurrencyListTabsActivity.SYMBOL, filteredList.get(position).getSymbol());
-                mContext.startActivity(intent);
-            }
-        });
-        currencyRecyclerView.setAdapter(adapter);
+        adapter.setData(filteredList);
         return true;
     }
 
