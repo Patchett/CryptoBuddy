@@ -111,7 +111,6 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         }
         holder.currencyListfullNameTextView.setText(item.getSymbol());
         Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
-        CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
         holder.trashButton.setBackground(trashButtonImage);
         setFavoriteButtonClickListener(holder, position);
     }
@@ -144,7 +143,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
             currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
             currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
-            trashButton = (ImageView) itemLayoutView.findViewById(R.id.currencyListFavButton);
+            trashButton = (ImageView) itemLayoutView.findViewById(R.id.favsCurrencyListTrashImage);
             oneHourChangeTextView = (TextView) itemLayoutView.findViewById(R.id.oneHourChangeTextView);
             dayChangeTextView = (TextView) itemLayoutView.findViewById(R.id.dayChangeTextView);
             weekChangeTextView = (TextView) itemLayoutView.findViewById(R.id.weekChangeTextView);

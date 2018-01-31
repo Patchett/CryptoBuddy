@@ -63,18 +63,20 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     }
 
     public void setFavoriteButtonClickListener(final AllCurrencyListAdapter.ViewHolder holder, final int position) {
-        holder.favButton.setOnFavoriteChangeListener(new MaterialFavoriteButton.OnFavoriteChangeListener() {
+        holder.favButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+            public void onClick(View v) {
                 CoinFavoritesStructures favs = dbRef.get().getFavorites();
                 CMCCoin item = currencyList.get(position);
                 if (favs.favoritesMap.get(item.getSymbol()) == null) { // Coin is not a favorite yet. Add it.
                     favs.favoritesMap.put(item.getSymbol(), item.getSymbol());
                     favs.favoriteList.add(item.getSymbol());
+                    holder.favButton.setFavorite(true, true);
                     favsUpdateCallbackRef.get().addFavorite(item);
                 } else { // Coin is already a favorite, remove it
                     favs.favoritesMap.remove(item.getSymbol());
                     favs.favoriteList.remove(item.getSymbol());
+                    holder.favButton.setFavorite(false, true);
                     favsUpdateCallbackRef.get().removeFavorite(item);
                 }
                 dbRef.get().saveCoinFavorites(favs);
