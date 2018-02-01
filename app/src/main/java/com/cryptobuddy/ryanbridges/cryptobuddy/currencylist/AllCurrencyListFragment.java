@@ -126,6 +126,12 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
@@ -236,7 +242,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.all_currency_list_tab_menu, menu);
-        Log.d("I", "Inside of onCreateOptionsMenu");
         searchItem = menu.findItem(R.id.action_search);
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
