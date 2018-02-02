@@ -29,11 +29,13 @@ public class NewsItem {
 
         NewsItem newsItem = (NewsItem) o;
 
-        if (articleTitle != null ? !articleTitle.equals(newsItem.articleTitle) : newsItem.articleTitle != null)
+        if (articleTitle == null || newsItem.articleTitle == null) {
             return false;
-        if (articleURL != null ? !articleURL.equals(newsItem.articleURL) : newsItem.articleURL != null)
-            return false;
-        return sourceName != null ? sourceName.equals(newsItem.sourceName) : newsItem.sourceName == null;
+        }
+        if (articleTitle.equals(newsItem.articleTitle)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
