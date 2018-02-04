@@ -34,6 +34,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
     private String priceStringResource;
     private String mktCapStringResource;
     private String volumeStringResource;
+    private String symbolAndFullNameStringResource;
     private int positiveGreenColor;
     private int negativeRedColor;
     private CustomItemClickListener rowListener;
@@ -55,6 +56,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_format);
         this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
         this.pctChangeNotAvailableStringResource = this.contextRef.get().getString(R.string.not_available_pct_change_text_with_time);
+        this.symbolAndFullNameStringResource = this.contextRef.get().getString(R.string.nameAndSymbol);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
@@ -109,7 +111,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         } else {
             holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, Double.parseDouble(item.getPrice_usd())));
         }
-        holder.currencyListfullNameTextView.setText(item.getSymbol());
+        holder.currencyListfullNameTextView.setText(String.format(this.symbolAndFullNameStringResource, item.getName(), item.getSymbol()));
         Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
         holder.trashButton.setBackground(trashButtonImage);
         setFavoriteButtonClickListener(holder, position);

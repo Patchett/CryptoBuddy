@@ -179,7 +179,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 onRefresh();
                 return true;
             default:
-                Log.d("I", "Inside of default onOptionsItemSelected");
                 return super.onOptionsItemSelected(item);
         }
     }

@@ -13,7 +13,6 @@ public class CurrencyListAdapterUtils {
                                                 int negativeRedColor, int positiveGreenColor, String pctChangeNotAvailableStringResource) {
         if (pctChange == null) {
             textView.setText(String.format(pctChangeNotAvailableStringResource, time));
-//            textView.setTextColor(positiveGreenColor);
         } else {
             double change = Double.parseDouble(pctChange);
             if (change < 0) {

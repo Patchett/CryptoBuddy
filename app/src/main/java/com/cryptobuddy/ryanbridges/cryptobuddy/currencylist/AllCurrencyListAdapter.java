@@ -34,6 +34,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     private String pctChangeNotAvailableStringResource;
     private String negativePercentStringResource;
     private String positivePercentStringResource;
+    private String symbolAndFullNameStringResource;
     private int positiveGreenColor;
     private int negativeRedColor;
     private CustomItemClickListener rowListener;
@@ -55,6 +56,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_format);
         this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
         this.pctChangeNotAvailableStringResource = this.contextRef.get().getString(R.string.not_available_pct_change_text_with_time);
+        this.symbolAndFullNameStringResource = this.contextRef.get().getString(R.string.nameAndSymbol);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
@@ -108,7 +110,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         } else {
             holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, Double.parseDouble(item.getPrice_usd())));
         }
-        holder.currencyListfullNameTextView.setText(item.getSymbol());
+        holder.currencyListfullNameTextView.setText(String.format(this.symbolAndFullNameStringResource, item.getName(), item.getSymbol()));
         Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
         CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
         boolean isFav = favs.favoritesMap.get(item.getSymbol()) != null;
