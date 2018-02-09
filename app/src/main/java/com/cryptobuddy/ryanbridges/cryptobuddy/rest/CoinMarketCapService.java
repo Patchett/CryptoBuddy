@@ -3,6 +3,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.rest;
 import android.content.Context;
 import android.util.Log;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.grizzly.rest.GenericRestCall;
@@ -33,12 +34,10 @@ public class CoinMarketCapService {
                 .setAutomaticCacheRefresh(true).execute(async);
     }
 
-    public static void getCMCChartData(Context context, String coinID, boolean allData, long startTime, long endTime, afterTaskCompletion<CMCChartData> taskCompletion, afterTaskFailure failure, boolean async) {
-        String url;
-        url = allData ? String.format(COIN_MARKETCAP_CHART_URL_ALL_DATA, coinID) : String.format(COIN_MARKETCAP_CHART_URL_WINDOW, coinID, startTime, endTime);
-        Log.d("I", "URL: " + url);
+    public static void getCMCChartData(Context context, String coinID, afterTaskCompletion<CMCChartData> taskCompletion, afterTaskFailure failure, boolean async) {
+        Log.d("I", "URL: " + GraphFragment.CURRENT_CHART_URL);
         new GenericRestCall<>(Void.class, CMCChartData.class, String.class)
-                .setUrl(String.format(url, coinID))
+                .setUrl(String.format(GraphFragment.CURRENT_CHART_URL, coinID))
                 .setContext(context.getApplicationContext())
                 .isCacheEnabled(true)
                 .setCacheTime(300000L)

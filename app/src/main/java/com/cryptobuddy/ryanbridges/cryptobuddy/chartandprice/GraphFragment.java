@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.COIN_MARKETCAP_CHART_URL_ALL_DATA;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.COIN_MARKETCAP_CHART_URL_WINDOW;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -72,10 +74,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public final TimeDateFormatter dayCommaTimeDateFormatter = new TimeDateFormatter();
     public final MonthSlashYearFormatter monthSlashYearFormatter = new MonthSlashYearFormatter();
     private String currentTimeWindow = "";
-    public static boolean allData = true;
-    public static long startTime = 0;
-    public static long endTime = 0;
     private SingleSelectToggleGroup buttonGroup;
+    public static String CURRENT_CHART_URL;
 
 
     public static final String ARG_SYMBOL = "symbol";
@@ -135,7 +135,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         noChartText.setEnabled(false);
         lineChart.setEnabled(true);
         noChartText.setText("");
-        CoinMarketCapService.getCMCChartData(getActivity(), cryptoID, allData, startTime, endTime, new afterTaskCompletion<CMCChartData>() {
+        CoinMarketCapService.getCMCChartData(getActivity(), cryptoID, new afterTaskCompletion<CMCChartData>() {
             @Override
             public void onTaskCompleted(CMCChartData cmcChartData) {
                 // TODO: Allow switching chart from BTC to USD
@@ -259,53 +259,58 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void setDayChecked(Calendar cal) {
-        allData = false;
+        long endTime = cal.getTimeInMillis();
         cal.add(Calendar.DAY_OF_YEAR, -1);
-        startTime = cal.getTimeInMillis();
+        long startTime = cal.getTimeInMillis();
         cal.clear();
+        CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
         currentTimeWindow = String.format(getString(R.string.oneDay));
         XAxisFormatter = dayCommaTimeDateFormatter;
     }
 
     public void setWeekChecked(Calendar cal) {
-        allData = false;
+        long endTime = cal.getTimeInMillis();
         cal.add(Calendar.DAY_OF_YEAR, -7);
-        startTime = cal.getTimeInMillis();
+        long startTime = cal.getTimeInMillis();
         cal.clear();
+        CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
         currentTimeWindow = String.format(getString(R.string.Week));
         XAxisFormatter = monthSlashDayXAxisFormatter;
     }
 
     public void setMonthChecked(Calendar cal) {
-        allData = false;
+        long endTime = cal.getTimeInMillis();
         cal.add(Calendar.MONTH, -1);
-        startTime = cal.getTimeInMillis();
+        long startTime = cal.getTimeInMillis();
         cal.clear();
+        CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
         currentTimeWindow = String.format(getString(R.string.Month));
         XAxisFormatter = monthSlashDayXAxisFormatter;
     }
 
     public void setThreeMonthChecked(Calendar cal) {
-        allData = false;
+        long endTime = cal.getTimeInMillis();
         cal.add(Calendar.MONTH, -3);
-        startTime = cal.getTimeInMillis();
+        long startTime = cal.getTimeInMillis();
         cal.clear();
+        CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
         currentTimeWindow = String.format(getString(R.string.threeMonth));
         XAxisFormatter = monthSlashDayXAxisFormatter;
     }
 
     public void setYearChecked(Calendar cal) {
-        allData = false;
+        long endTime = cal.getTimeInMillis();
         cal.add(Calendar.YEAR, -1);
-        startTime = cal.getTimeInMillis();
+        long startTime = cal.getTimeInMillis();
         cal.clear();
+        CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
         currentTimeWindow = String.format(getString(R.string.Year));
         XAxisFormatter = monthSlashYearFormatter;
     }
 
     public void setAllTimeChecked() {
-        allData = true;
         currentTimeWindow = String.format(getString(R.string.AllTime));
+        CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_ALL_DATA, cryptoID);
         XAxisFormatter = monthSlashYearFormatter;
     }
 
@@ -317,60 +322,45 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
         buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
-//        buttonGroup.check(R.id.dayButton);
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setColorSchemeResources(colorAccent);
         cryptoSymbol = getArguments().getString(ARG_SYMBOL);
         cryptoID = getArguments().getString(ARG_ID);
-        Calendar cal = Calendar.getInstance();
-        switch (buttonGroup.getCheckedId()) {
-            case R.id.dayButton:
-                // lineChart.getXAxis().setLabelCount(4);
-                setDayChecked(cal);
-                break;
-            case R.id.weekButton:
-                setWeekChecked(cal);
-                break;
-            case R.id.monthButton:
-                setMonthChecked(cal);
-                break;
-            case R.id.threeMonthButton:
-                setThreeMonthChecked(cal);
-                break;
-            case R.id.yearButton:
-                setYearChecked(cal);
-                break;
-            case R.id.allTimeButton:
-                setAllTimeChecked();
-                break;
-        }
+        setDayChecked(Calendar.getInstance());
+        buttonGroup.check(R.id.dayButton);
+        currentTimeWindow = String.format(getString(R.string.oneDay));
+        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
-        XAxisFormatter = dayCommaTimeDateFormatter;
+        swipeRefreshLayout.setColorSchemeResources(colorAccent);
+        swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
+                                        getCMCChart();
+                                    }
+                                }
+        );
         buttonGroup.setOnCheckedChangeListener(new SingleSelectToggleGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
-                Calendar cal = Calendar.getInstance();
-                endTime = cal.getTimeInMillis();
+                Calendar.getInstance();
                 switch (checkedId) {
                     case R.id.dayButton:
-                        // lineChart.getXAxis().setLabelCount(4);
-                        setDayChecked(cal);
+                        setDayChecked(Calendar.getInstance());
                         onRefresh();
                         break;
                     case R.id.weekButton:
-                        setWeekChecked(cal);
+                        setWeekChecked(Calendar.getInstance());
                         onRefresh();
                         break;
                     case R.id.monthButton:
-                        setMonthChecked(cal);
+                        setMonthChecked(Calendar.getInstance());
                         onRefresh();
                         break;
                     case R.id.threeMonthButton:
-                        setThreeMonthChecked(cal);
+                        setThreeMonthChecked(Calendar.getInstance());
                         onRefresh();
                         break;
                     case R.id.yearButton:
-                        setYearChecked(cal);
+                        setYearChecked(Calendar.getInstance());
                         onRefresh();
                         break;
                     case R.id.allTimeButton:
@@ -380,14 +370,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             }
         });
-        swipeRefreshLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipeRefreshLayout.setRefreshing(true);
-                                        getCMCChart();
-                                    }
-                                }
-        );
         return rootView;
     }
 
