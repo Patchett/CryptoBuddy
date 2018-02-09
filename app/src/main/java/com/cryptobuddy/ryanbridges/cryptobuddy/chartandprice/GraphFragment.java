@@ -15,18 +15,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashDayDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashYearFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.YAxisPriceFormatter;
-import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.VolleySingleton;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
+import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -37,14 +33,13 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.grizzly.rest.Model.afterTaskCompletion;
+import com.grizzly.rest.Model.afterTaskFailure;
 import com.nex3z.togglebuttongroup.SingleSelectToggleGroup;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -56,7 +51,6 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
  */
 public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnChartValueSelectedListener {
 
-    private final static String VOL_URL = "https://poloniex.com/public?command=return24hVolume";
     private final static String CHART_URL_WEEK = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=168&aggregate=1";
     private final static String CHART_URL_ALL_DATA = "https://min-api.cryptocompare.com/data/histoday?fsym=%s&tsym=USD&allData=true";
     private final static String CHART_URL_YEAR = "https://min-api.cryptocompare.com/data/histoday?fsym=%s&tsym=USD&limit=183&aggregate=2";
@@ -64,29 +58,28 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private final static String CHART_URL_3_MONTH = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=240&aggregate=14";
     private final static String CHART_URL_1_DAY = "https://min-api.cryptocompare.com/data/histominute?fsym=%s&tsym=USD&limit=144&aggregate=10";
     private final static String TICKER_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
-    private String formattedTickerURL;
     private int chartFillColor;
     private int chartBorderColor;
-    private String crypto;
+    private String cryptoSymbol;
+    private String cryptoID;
     private int percentageColor;
     private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
     private View rootView;
     private CustomViewPager viewPager;
-    private String currentChartURL;
     private IAxisValueFormatter XAxisFormatter;
     public final IAxisValueFormatter monthSlashDayXAxisFormatter = new MonthSlashDayDateFormatter();
     public final TimeDateFormatter dayCommaTimeDateFormatter = new TimeDateFormatter();
     public final MonthSlashYearFormatter monthSlashYearFormatter = new MonthSlashYearFormatter();
     private String currentTimeWindow = "";
+    public static boolean allData = true;
+    public static long startTime = 0;
+    public static long endTime = 0;
     private SingleSelectToggleGroup buttonGroup;
 
 
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SYMBOL = "symbol";
+    public static final String ARG_SYMBOL = "symbol";
+    public static final String ARG_ID = "ID";
 
     public GraphFragment() {
     }
@@ -95,10 +88,11 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static GraphFragment newInstance(String symbol) {
+    public static GraphFragment newInstance(String symbol, String id) {
         GraphFragment fragment = new GraphFragment();
         Bundle args = new Bundle();
         args.putString(ARG_SYMBOL, symbol);
+        args.putString(ARG_ID, id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -134,142 +128,185 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return dataSet;
     }
 
-    public void getChartDataRequest() {
+    public void getCMCChart() {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-        final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
         final TextView noChartText = (TextView) rootView.findViewById(R.id.noChartDataText);
+        final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
         noChartText.setEnabled(false);
         lineChart.setEnabled(true);
         noChartText.setText("");
-        JsonObjectRequest chartDataRequest = new JsonObjectRequest(Request.Method.GET, currentChartURL, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        List<Entry> closePrices = new ArrayList<Entry>();
-                        try {
-                            JSONArray rawData = response.getJSONArray("Data");
-                            Log.d("I", "rawData: " + rawData);
-                            if (rawData.length() == 0) { // Prevents a crash if we get an empty resposne
-                                swipeRefreshLayout.setRefreshing(false);
-                                noChartText.setEnabled(true);
-                                lineChart.setData(null);
-                                lineChart.setNoDataText("");
-                                noChartText.setText(getResources().getString(R.string.noChartDataString));
-                                lineChart.setEnabled(false);
-                                lineChart.invalidate();
-                                percentChangeText.setText("");
-                                currPriceText.setText("");
-                                return;
-                            }
-                            Log.d("I", "rawData: " + rawData);
-                            for (int i = 0; i < rawData.length(); i++) {
-                                JSONObject row = rawData.getJSONObject(i);
-                                double closePrice = row.getDouble("close");
-                                double unixSeconds = row.getDouble("time");
-                                closePrices.add(new Entry((float) unixSeconds, (float) closePrice));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            return;
-                        }
-                        TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
-                        float currPrice = closePrices.get(closePrices.size() - 1).getY();
-                        currentPriceTextView.setText(String.format(getString(R.string.price_format_no_word), currPrice));
-                        currentPriceTextView.setTextColor(Color.BLACK);
-                        float firstPrice = closePrices.get(0).getY();
-                        // Handle edge case where we dont have data for the interval on the chart. E.g. user selects
-                        // 3 month window, but we only have data for last month
-                        for (Entry e: closePrices) {
-                            if (firstPrice != 0) {
-                                break;
-                            } else {
-                                firstPrice = e.getY();
-                            }
-                        }
-                        float difference = (currPrice - firstPrice);
-                        float percentChange = (difference / firstPrice) * 100;
-                        if (percentChange < 0) {
-                            percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
-                        } else {
-                            percentChangeText.setText(String.format(getString(R.string.positive_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
-                        }
-                        setColors(percentChange);
-                        percentChangeText.setTextColor(percentageColor);
-                        LineDataSet dataSet = setUpLineDataSet(closePrices);
-                        LineData lineData = new LineData(dataSet);
-                        lineChart.setDoubleTapToZoomEnabled(false);
-                        lineChart.setScaleEnabled(false);
-                        lineChart.getDescription().setEnabled(false);
-                        lineChart.setData(lineData);
-                        lineChart.setContentDescription("");
-                        lineChart.animateX(1000);
-                        lineChart.setOnChartGestureListener(new OnChartGestureListener() {
-                            @Override
-                            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                                viewPager.setPagingEnabled(false);
-                                swipeRefreshLayout.setEnabled(false);
-                            }
-
-                            @Override
-                            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                                viewPager.setPagingEnabled(true);
-                                swipeRefreshLayout.setEnabled(true);
-                            }
-
-                            @Override
-                            public void onChartLongPressed(MotionEvent me) {
-
-                            }
-
-                            @Override
-                            public void onChartDoubleTapped(MotionEvent me) {
-
-                            }
-
-                            @Override
-                            public void onChartSingleTapped(MotionEvent me) {
-
-                            }
-
-                            @Override
-                            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-
-                            }
-
-                            @Override
-                            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
-
-                            }
-
-                            @Override
-                            public void onChartTranslate(MotionEvent me, float dX, float dY) {
-
-                            }
-                        });
-                        lineChart.getLegend().setEnabled(false);
-                        XAxis xAxis = lineChart.getXAxis();
-                        xAxis.setAvoidFirstLastClipping(true);
-                        lineChart.getAxisLeft().setEnabled(true);
-                        lineChart.getAxisLeft().setDrawGridLines(false);
-                        lineChart.getXAxis().setDrawGridLines(false);
-                        lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
-                        lineChart.getAxisRight().setEnabled(false);
-                        xAxis.setDrawAxisLine(true);
-                        xAxis.setValueFormatter(XAxisFormatter);
-                        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
-                        lineChart.invalidate();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, new Response.ErrorListener() {
+        CoinMarketCapService.getCMCChartData(getActivity(), cryptoID, allData, startTime, endTime, new afterTaskCompletion<CMCChartData>() {
             @Override
-            public void onErrorResponse(VolleyError e) {
-                Log.e("I", "Server Error: " + e.getMessage());
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+            public void onTaskCompleted(CMCChartData cmcChartData) {
+                // TODO: Allow switching chart from BTC to USD
+                List<Entry> closePrices = new ArrayList<>();
+                for (List<Float> priceTimeUnit : cmcChartData.getPriceUSD()) {
+                    closePrices.add(new Entry(priceTimeUnit.get(0), priceTimeUnit.get(1)));
+                }
+                if (closePrices.size() == 0) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    noChartText.setEnabled(true);
+                    lineChart.setData(null);
+                    lineChart.setNoDataText("");
+                    noChartText.setText(getResources().getString(R.string.noChartDataString));
+                    lineChart.setEnabled(false);
+                    lineChart.invalidate();
+                    percentChangeText.setText("");
+                    currPriceText.setText("");
+                    return;
+                }
+                TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
+                float currPrice = closePrices.get(closePrices.size() - 1).getY();
+                currentPriceTextView.setText(String.format(getString(R.string.price_format_no_word), currPrice));
+                currentPriceTextView.setTextColor(Color.BLACK);
+                float firstPrice = closePrices.get(0).getY();
+                // Handle edge case where we dont have data for the interval on the chart. E.g. user selects
+                // 3 month window, but we only have data for last month
+                for (Entry e: closePrices) {
+                    if (firstPrice != 0) {
+                        break;
+                    } else {
+                        firstPrice = e.getY();
+                    }
+                }
+                float difference = (currPrice - firstPrice);
+                float percentChange = (difference / firstPrice) * 100;
+                if (percentChange < 0) {
+                    percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
+                } else {
+                    percentChangeText.setText(String.format(getString(R.string.positive_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
+                }
+                setColors(percentChange);
+                percentChangeText.setTextColor(percentageColor);
+                LineDataSet dataSet = setUpLineDataSet(closePrices);
+                LineData lineData = new LineData(dataSet);
+                lineChart.setDoubleTapToZoomEnabled(false);
+                lineChart.setScaleEnabled(false);
+                lineChart.getDescription().setEnabled(false);
+                lineChart.setData(lineData);
+                lineChart.setContentDescription("");
+                lineChart.animateX(800);
+                lineChart.setOnChartGestureListener(new OnChartGestureListener() {
+                    @Override
+                    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                        viewPager.setPagingEnabled(false);
+                        swipeRefreshLayout.setEnabled(false);
+                    }
+
+                    @Override
+                    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                        viewPager.setPagingEnabled(true);
+                        swipeRefreshLayout.setEnabled(true);
+                    }
+
+                    @Override
+                    public void onChartLongPressed(MotionEvent me) {
+
+                    }
+
+                    @Override
+                    public void onChartDoubleTapped(MotionEvent me) {
+
+                    }
+
+                    @Override
+                    public void onChartSingleTapped(MotionEvent me) {
+
+                    }
+
+                    @Override
+                    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+                    }
+
+                    @Override
+                    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+                    }
+
+                    @Override
+                    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+                    }
+                });
+                lineChart.getLegend().setEnabled(false);
+                XAxis xAxis = lineChart.getXAxis();
+                xAxis.setAvoidFirstLastClipping(true);
+                lineChart.getAxisLeft().setEnabled(true);
+                lineChart.getAxisLeft().setDrawGridLines(false);
+                lineChart.getXAxis().setDrawGridLines(false);
+                lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
+                lineChart.getAxisRight().setEnabled(false);
+                xAxis.setDrawAxisLine(true);
+                xAxis.setValueFormatter(XAxisFormatter);
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+                lineChart.invalidate();
                 swipeRefreshLayout.setRefreshing(false);
             }
-        });
-        VolleySingleton.getInstance().addToRequestQueue(chartDataRequest);
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    public void setDayChecked(Calendar cal) {
+        allData = false;
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        startTime = cal.getTimeInMillis();
+        cal.clear();
+        currentTimeWindow = String.format(getString(R.string.oneDay));
+        XAxisFormatter = dayCommaTimeDateFormatter;
+    }
+
+    public void setWeekChecked(Calendar cal) {
+        allData = false;
+        cal.add(Calendar.DAY_OF_YEAR, -7);
+        startTime = cal.getTimeInMillis();
+        cal.clear();
+        currentTimeWindow = String.format(getString(R.string.Week));
+        XAxisFormatter = monthSlashDayXAxisFormatter;
+    }
+
+    public void setMonthChecked(Calendar cal) {
+        allData = false;
+        cal.add(Calendar.MONTH, -1);
+        startTime = cal.getTimeInMillis();
+        cal.clear();
+        currentTimeWindow = String.format(getString(R.string.Month));
+        XAxisFormatter = monthSlashDayXAxisFormatter;
+    }
+
+    public void setThreeMonthChecked(Calendar cal) {
+        allData = false;
+        cal.add(Calendar.MONTH, -3);
+        startTime = cal.getTimeInMillis();
+        cal.clear();
+        currentTimeWindow = String.format(getString(R.string.threeMonth));
+        XAxisFormatter = monthSlashDayXAxisFormatter;
+    }
+
+    public void setYearChecked(Calendar cal) {
+        allData = false;
+        cal.add(Calendar.YEAR, -1);
+        startTime = cal.getTimeInMillis();
+        cal.clear();
+        currentTimeWindow = String.format(getString(R.string.Year));
+        XAxisFormatter = monthSlashYearFormatter;
+    }
+
+    public void setAllTimeChecked() {
+        allData = true;
+        currentTimeWindow = String.format(getString(R.string.AllTime));
+        XAxisFormatter = monthSlashYearFormatter;
     }
 
     @Override
@@ -280,74 +317,83 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
         buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
-        buttonGroup.check(R.id.allTimeButton);
+//        buttonGroup.check(R.id.dayButton);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        crypto = getArguments().getString(ARG_SYMBOL);
-        currentTimeWindow = String.format(getString(R.string.AllTime));
-        formattedTickerURL = String.format(TICKER_URL, crypto);
-        currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
+        cryptoSymbol = getArguments().getString(ARG_SYMBOL);
+        cryptoID = getArguments().getString(ARG_ID);
+        Calendar cal = Calendar.getInstance();
+        switch (buttonGroup.getCheckedId()) {
+            case R.id.dayButton:
+                // lineChart.getXAxis().setLabelCount(4);
+                setDayChecked(cal);
+                break;
+            case R.id.weekButton:
+                setWeekChecked(cal);
+                break;
+            case R.id.monthButton:
+                setMonthChecked(cal);
+                break;
+            case R.id.threeMonthButton:
+                setThreeMonthChecked(cal);
+                break;
+            case R.id.yearButton:
+                setYearChecked(cal);
+                break;
+            case R.id.allTimeButton:
+                setAllTimeChecked();
+                break;
+        }
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipeRefreshLayout.setRefreshing(true);
-                                        getChartDataRequest();
-                                    }
-                                }
-        );
-        XAxisFormatter = monthSlashDayXAxisFormatter;
-
+        XAxisFormatter = dayCommaTimeDateFormatter;
         buttonGroup.setOnCheckedChangeListener(new SingleSelectToggleGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
+                Calendar cal = Calendar.getInstance();
+                endTime = cal.getTimeInMillis();
                 switch (checkedId) {
                     case R.id.dayButton:
-                        currentChartURL = String.format(CHART_URL_1_DAY, crypto);
-                        currentTimeWindow = String.format(getString(R.string.oneDay));
-                        XAxisFormatter = dayCommaTimeDateFormatter;
-                        lineChart.getXAxis().setLabelCount(6);
+                        // lineChart.getXAxis().setLabelCount(4);
+                        setDayChecked(cal);
                         onRefresh();
                         break;
                     case R.id.weekButton:
-                        currentChartURL = String.format(CHART_URL_WEEK, crypto);
-                        currentTimeWindow = String.format(getString(R.string.Week));
-                        XAxisFormatter = monthSlashDayXAxisFormatter;
+                        setWeekChecked(cal);
                         onRefresh();
                         break;
                     case R.id.monthButton:
-                        currentChartURL = String.format(CHART_URL_MONTH, crypto);
-                        currentTimeWindow = String.format(getString(R.string.Month));
-                        XAxisFormatter = monthSlashDayXAxisFormatter;
+                        setMonthChecked(cal);
                         onRefresh();
                         break;
                     case R.id.threeMonthButton:
-                        currentChartURL = String.format(CHART_URL_3_MONTH, crypto);
-                        currentTimeWindow = String.format(getString(R.string.threeMonth));
-                        XAxisFormatter = monthSlashDayXAxisFormatter;
+                        setThreeMonthChecked(cal);
                         onRefresh();
                         break;
                     case R.id.yearButton:
-                        currentChartURL = String.format(CHART_URL_YEAR, crypto);
-                        currentTimeWindow = String.format(getString(R.string.Year));
-                        XAxisFormatter = monthSlashYearFormatter;
+                        setYearChecked(cal);
                         onRefresh();
                         break;
                     case R.id.allTimeButton:
-                        currentChartURL = String.format(CHART_URL_ALL_DATA, crypto);
-                        currentTimeWindow = String.format(getString(R.string.AllTime));
-                        XAxisFormatter = monthSlashYearFormatter;
+                        setAllTimeChecked();
                         onRefresh();
                         break;
                 }
             }
         });
+        swipeRefreshLayout.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeRefreshLayout.setRefreshing(true);
+                                        getCMCChart();
+                                    }
+                                }
+        );
         return rootView;
     }
 
     @Override
     public void onRefresh() {
-        getChartDataRequest();
+        getCMCChart();
     }
 
     @Override
@@ -364,9 +410,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public String getFormattedFullDate(float unixSeconds) {
-        Date date = new Date((int)unixSeconds*1000L);
+        Date date = new Date((long)unixSeconds);
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
         return sdf.format(date);
     }
-
 }

@@ -15,7 +15,7 @@ public class MonthSlashYearFormatter implements IAxisValueFormatter {
 
     @Override
     public String getFormattedValue(float unixSeconds, AxisBase axis) {
-        Date date = new Date((int)unixSeconds*1000L);
+        Date date = new Date((long)unixSeconds);
         SimpleDateFormat sdf = new SimpleDateFormat("MMM/yy", Locale.ENGLISH);
         return sdf.format(date);
     }

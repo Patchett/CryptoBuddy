@@ -92,7 +92,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chart"
-            app:tbgCheckedButton="@+id/allTimeButton"
+            app:tbgCheckedButton="@+id/dayButton"
             app:tbgChildSpacing="auto">
 
             <com.nex3z.togglebuttongroup.button.CircularToggle

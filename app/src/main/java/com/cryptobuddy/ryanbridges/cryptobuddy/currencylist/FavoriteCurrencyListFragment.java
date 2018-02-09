@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
@@ -134,7 +135,8 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
-                intent.putExtra(CurrencyListTabsActivity.SYMBOL, currencyItemFavsList.get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_SYMBOL, currencyItemFavsList.get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_ID, currencyItemFavsList.get(position).getId());
                 getActivity().startActivity(intent);
             }
         });

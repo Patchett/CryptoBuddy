@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
@@ -150,7 +151,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
-                intent.putExtra(CurrencyListTabsActivity.SYMBOL, currencyItemList.get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_SYMBOL, currencyItemList.get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_ID, currencyItemList.get(position).getId());
                 mContext.startActivity(intent);
             }
         });
@@ -203,7 +205,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
-                intent.putExtra(CurrencyListTabsActivity.SYMBOL, filteredList.get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_SYMBOL, filteredList.get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_ID, filteredList.get(position).getId());
                 mContext.startActivity(intent);
             }
         });
@@ -220,7 +223,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.d("I", "inside of onPrepareOptionsMenu. searchViewFocused: " + searchViewFocused);
         if (searchView != null && searchViewFocused) {
             ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
             searchView.requestFocusFromTouch();
@@ -261,7 +263,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 return false;
             }
         });
-        Log.d("I", "inside of onCreateOptionsMenu. searchViewFocused: " + searchViewFocused);
         if (searchViewFocused) ((AppCompatActivity)mContext).getSupportActionBar().setTitle("");
         super.onCreateOptionsMenu(menu, inflater);
     }

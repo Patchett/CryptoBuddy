@@ -11,13 +11,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
 
     private String symbol;
+    private String id;
 
     public SectionsPagerAdapterGraphs(FragmentManager fm) {
         super(fm);
     }
-    public SectionsPagerAdapterGraphs(FragmentManager fm, String symbol) {
+    public SectionsPagerAdapterGraphs(FragmentManager fm, String symbol, String id) {
         super(fm);
         this.symbol = symbol;
+        this.id = id;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
         // Return a GraphFragment (defined as a static inner class below).
         switch (position) {
             case 0:
-                return GraphFragment.newInstance(this.symbol);
+                return GraphFragment.newInstance(this.symbol, this.id);
             case 1:
                 return TechnicalsFragment.newInstance((String) this.getPageTitle(position));
         }

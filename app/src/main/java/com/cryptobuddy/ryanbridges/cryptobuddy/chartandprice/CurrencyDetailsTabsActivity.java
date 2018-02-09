@@ -19,7 +19,6 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
     private SectionsPagerAdapterGraphs mSectionsPagerAdapter;
     public CustomViewPager mViewPager;
-    public final static String SYMBOL = "SYMBOL";
     private Toolbar mToolbar;
 
 
@@ -29,9 +28,10 @@ public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
         setContentView(R.layout.activity_currency_details_tabs);
         mToolbar = (Toolbar) findViewById(R.id.toolbar_currency_details);
         setSupportActionBar(mToolbar);
-        String symbol = getIntent().getStringExtra(SYMBOL);
+        String symbol = getIntent().getStringExtra(GraphFragment.ARG_SYMBOL);
+        String id = getIntent().getStringExtra(GraphFragment.ARG_ID);
         mViewPager = (CustomViewPager) findViewById(R.id.currencyTabsViewPager);
-        mSectionsPagerAdapter = new SectionsPagerAdapterGraphs(getSupportFragmentManager(), symbol);
+        mSectionsPagerAdapter = new SectionsPagerAdapterGraphs(getSupportFragmentManager(), symbol, id);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

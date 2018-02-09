@@ -15,7 +15,7 @@ public class TimeDateFormatter implements IAxisValueFormatter {
 
     @Override
     public String getFormattedValue(float unixSeconds, AxisBase axis) {
-        Date date = new Date((int)unixSeconds*1000L);
+        Date date = new Date((long)unixSeconds);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:MM", Locale.ENGLISH);
         return sdf.format(date);
     }
