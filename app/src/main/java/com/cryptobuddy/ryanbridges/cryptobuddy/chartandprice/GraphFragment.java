@@ -130,11 +130,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void getCMCChart() {
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-        final TextView noChartText = (TextView) rootView.findViewById(R.id.noChartDataText);
         final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
-        noChartText.setEnabled(false);
         lineChart.setEnabled(true);
-        noChartText.setText("");
         CoinMarketCapService.getCMCChartData(getActivity(), cryptoID, new afterTaskCompletion<CMCChartData>() {
             @Override
             public void onTaskCompleted(CMCChartData cmcChartData) {
@@ -145,10 +142,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
                 if (closePrices.size() == 0) {
                     swipeRefreshLayout.setRefreshing(false);
-                    noChartText.setEnabled(true);
                     lineChart.setData(null);
-                    lineChart.setNoDataText("");
-                    noChartText.setText(getResources().getString(R.string.noChartDataString));
                     lineChart.setEnabled(false);
                     lineChart.invalidate();
                     percentChangeText.setText("");
@@ -319,6 +313,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        // TODO: Make noDataText fancy
+        lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+        lineChart.setNoDataTextColor(R.color.darkRed);
         lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
         buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);

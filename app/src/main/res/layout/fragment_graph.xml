@@ -5,146 +5,149 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
-        android:paddingRight="@dimen/graph_fragment_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/current_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:textSize="34sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/percent_change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/graphFragmentDateTextView" />
-
-        <TextView
-            android:id="@+id/graphFragmentDateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.501"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/current_price" />
-
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart"
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="8dp"
-            android:focusableInTouchMode="true"
-            android:padding="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/percent_change" />
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
+            android:paddingRight="@dimen/graph_fragment_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity">
 
-        <TextView
-            android:id="@+id/noChartDataText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:enabled="false"
-            android:text="@string/noChartDataString"
-            android:textSize="36sp"
-            app:layout_constraintBottom_toBottomOf="@+id/chart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
-            android:id="@+id/chart_interval_button_grp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chart"
-            app:tbgCheckedButton="@+id/dayButton"
-            app:tbgChildSpacing="auto">
-
-            <com.nex3z.togglebuttongroup.button.CircularToggle
-                android:id="@+id/dayButton"
+            <TextView
+                android:id="@+id/current_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/oneDay"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:textSize="16sp"
-                app:tbgMarkerColor="@color/colorAccent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <com.nex3z.togglebuttongroup.button.CircularToggle
-                android:id="@+id/weekButton"
+            <TextView
+                android:id="@+id/graphFragmentDateTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Week"
-                android:textSize="16sp"
-                app:tbgMarkerColor="@color/colorAccent" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/current_price" />
 
-            <com.nex3z.togglebuttongroup.button.CircularToggle
-                android:id="@+id/monthButton"
+
+            <TextView
+                android:id="@+id/percent_change"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Month"
-                android:textSize="16sp"
-                app:tbgMarkerColor="@color/colorAccent" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/graphFragmentDateTextView" />
 
-            <com.nex3z.togglebuttongroup.button.CircularToggle
-                android:id="@+id/threeMonthButton"
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/chart"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginStart="2dp"
+                android:focusableInTouchMode="true"
+                android:padding="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline6" />
+
+            <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
+                android:id="@+id/chart_interval_button_grp"
+                android:layout_width="384dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/percent_change"
+                app:tbgCheckedButton="@+id/dayButton"
+                app:tbgChildSpacing="auto">
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/dayButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/oneDay"
+                    android:textSize="16sp"
+                    app:tbgMarkerColor="@color/colorAccent" />
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/weekButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Week"
+                    android:textSize="16sp"
+                    app:tbgMarkerColor="@color/colorAccent" />
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/monthButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Month"
+                    android:textSize="16sp"
+                    app:tbgMarkerColor="@color/colorAccent" />
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/threeMonthButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/threeMonth"
+                    android:textSize="16sp"
+                    app:tbgMarkerColor="@color/colorAccent" />
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/yearButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Year"
+                    android:textSize="16sp"
+                    app:tbgMarkerColor="@color/colorAccent" />
+
+                <com.nex3z.togglebuttongroup.button.CircularToggle
+                    android:id="@+id/allTimeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/All"
+                    android:textSize="16sp"
+                    app:tbgMarkerColor="@color/colorAccent" />
+
+            </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/threeMonth"
-                android:textSize="16sp"
-                app:tbgMarkerColor="@color/colorAccent" />
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
 
-            <com.nex3z.togglebuttongroup.button.CircularToggle
-                android:id="@+id/yearButton"
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/Year"
-                android:textSize="16sp"
-                app:tbgMarkerColor="@color/colorAccent" />
-
-            <com.nex3z.togglebuttongroup.button.CircularToggle
-                android:id="@+id/allTimeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/All"
-                android:textSize="16sp"
-                app:tbgMarkerColor="@color/colorAccent" />
-
-        </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.15" />
 
 
-    </android.support.constraint.ConstraintLayout>
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
