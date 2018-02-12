@@ -153,6 +153,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
                 intent.putExtra(GraphFragment.ARG_SYMBOL, currencyItemList.get(position).getSymbol());
                 intent.putExtra(GraphFragment.ARG_ID, currencyItemList.get(position).getId());
+                intent.putExtra(GraphFragment.COIN_OBJECT, currencyItemList.get(position));
                 mContext.startActivity(intent);
             }
         });
@@ -207,6 +208,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
                 intent.putExtra(GraphFragment.ARG_SYMBOL, filteredList.get(position).getSymbol());
                 intent.putExtra(GraphFragment.ARG_ID, filteredList.get(position).getId());
+                intent.putExtra(GraphFragment.COIN_OBJECT, filteredList.get(position));
                 mContext.startActivity(intent);
             }
         });

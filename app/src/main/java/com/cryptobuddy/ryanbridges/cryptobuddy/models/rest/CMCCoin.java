@@ -1,12 +1,76 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.models.rest;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Created by Ryan on 1/16/2018.
  */
 
-public class CMCCoin {
+public class CMCCoin implements Parcelable {
+
+    public CMCCoin() {
+
+    }
+
+    public CMCCoin(Parcel in){
+        String[] data = new String[15];
+
+        in.readStringArray(data);
+        this.id = data[0];
+        this.name = data[1];
+        this.symbol = data[2];
+        this.rank = data[3];
+        this.price_usd = data[4];
+        this.price_btc = data[5];
+        this.volume_usd_24h = data[6];
+        this.market_cap_usd = data[7];
+        this.available_supply = data[8];
+        this.total_supply = data[9];
+        this.max_supply = data[10];
+        this.percent_change_1h = data[11];
+        this.percent_change_24h = data[12];
+        this.percent_change_7d = data[13];
+        this.last_updated= data[14];
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<CMCCoin> CREATOR= new Parcelable.Creator<CMCCoin>() {
+        @Override
+        public CMCCoin createFromParcel(Parcel source) {
+            return new CMCCoin(source);  //using parcelable constructor
+        }
+        @Override
+        public CMCCoin[] newArray(int size) {
+            return new CMCCoin[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[]{
+                this.id,
+                this.name,
+                this.symbol,
+                this.rank,
+                this.price_usd,
+                this.price_btc,
+                this.volume_usd_24h,
+                this.market_cap_usd,
+                this.available_supply,
+                this.total_supply,
+                this.max_supply,
+                this.percent_change_1h,
+                this.percent_change_24h,
+                this.percent_change_7d,
+                this.last_updated});
+    }
 
     //Side note: the names don't need to match. The annotation name is the one used to serialize the property.
     @JsonProperty("id")

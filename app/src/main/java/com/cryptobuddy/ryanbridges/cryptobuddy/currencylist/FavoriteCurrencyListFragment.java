@@ -137,6 +137,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 Intent intent = new Intent(getActivity(), CurrencyDetailsTabsActivity.class);
                 intent.putExtra(GraphFragment.ARG_SYMBOL, currencyItemFavsList.get(position).getSymbol());
                 intent.putExtra(GraphFragment.ARG_ID, currencyItemFavsList.get(position).getId());
+                intent.putExtra(GraphFragment.COIN_OBJECT, currencyItemFavsList.get(position));
                 getActivity().startActivity(intent);
             }
         });

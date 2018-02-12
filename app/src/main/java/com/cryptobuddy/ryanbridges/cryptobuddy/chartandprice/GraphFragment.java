@@ -22,6 +22,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashYearFormatte
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.YAxisPriceFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -80,6 +81,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public static final String ARG_SYMBOL = "symbol";
     public static final String ARG_ID = "ID";
+    public static final String COIN_OBJECT = "COIN_OBJECT";
 
     public GraphFragment() {
     }
@@ -308,6 +310,11 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         XAxisFormatter = monthSlashYearFormatter;
     }
 
+    public void setTable(CMCCoin coinObject, View rootVeiw) {
+        TextView nameTextView = (TextView) rootVeiw.findViewById(R.id.tableNameDataTextView);
+        nameTextView.setText(coinObject.getName());
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -367,6 +374,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }
             }
         });
+        CMCCoin coinObject = getActivity().getIntent().getParcelableExtra(GraphFragment.COIN_OBJECT);
+        setTable(coinObject, rootView);
         return rootView;
     }
 
