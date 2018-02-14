@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +46,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.COIN_MARKETCAP_CHART_URL_ALL_DATA;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.COIN_MARKETCAP_CHART_URL_WINDOW;
 
@@ -66,7 +66,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String cryptoSymbol;
     private String cryptoID;
     private int percentageColor;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private LineChart lineChart;
     private View rootView;
     private CustomViewPager viewPager;
@@ -77,6 +76,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String currentTimeWindow = "";
     private SingleSelectToggleGroup buttonGroup;
     public static String CURRENT_CHART_URL;
+    private NestedScrollView scrollView;
+    private boolean scrollEnabled = true;
 
 
     public static final String ARG_SYMBOL = "symbol";
@@ -143,7 +144,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     closePrices.add(new Entry(priceTimeUnit.get(0), priceTimeUnit.get(1)));
                 }
                 if (closePrices.size() == 0) {
-                    swipeRefreshLayout.setRefreshing(false);
                     lineChart.setData(null);
                     lineChart.setEnabled(false);
                     lineChart.invalidate();
@@ -185,14 +185,14 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 lineChart.setOnChartGestureListener(new OnChartGestureListener() {
                     @Override
                     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                        scrollEnabled = false;
                         viewPager.setPagingEnabled(false);
-                        swipeRefreshLayout.setEnabled(false);
                     }
 
                     @Override
                     public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                        scrollEnabled = true;
                         viewPager.setPagingEnabled(true);
-                        swipeRefreshLayout.setEnabled(true);
                     }
 
                     @Override
@@ -237,13 +237,11 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 xAxis.setValueFormatter(XAxisFormatter);
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
                 lineChart.invalidate();
-                swipeRefreshLayout.setRefreshing(false);
             }
         }, new afterTaskFailure() {
             @Override
             public void onTaskFailed(Object o, Exception e) {
                 Log.e("ERROR", "Server Error: " + e.getMessage());
-                swipeRefreshLayout.setRefreshing(false);
             }
         }, true);
     }
@@ -311,8 +309,70 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void setTable(CMCCoin coinObject, View rootVeiw) {
+        String usdFormat = getString(R.string.usd_format);
         TextView nameTextView = (TextView) rootVeiw.findViewById(R.id.tableNameDataTextView);
-        nameTextView.setText(coinObject.getName());
+        if (coinObject.getName() == null) {
+            nameTextView.setText("N/A");
+        } else {
+            nameTextView.setText(coinObject.getName());
+        }
+
+        TextView symbolTextView = (TextView) rootVeiw.findViewById(R.id.tableSymbolDataTextView);
+        if (coinObject.getSymbol() == null) {
+            symbolTextView.setText("N/A");
+        } else {
+            symbolTextView.setText(coinObject.getSymbol());
+        }
+
+        TextView priceUSDTextView = (TextView) rootVeiw.findViewById(R.id.tablePriceUSDDataTextView);
+        if (coinObject.getPrice_usd() == null) {
+            priceUSDTextView.setText("N/A");
+        } else {
+            priceUSDTextView.setText(String.format(usdFormat, Double.parseDouble(coinObject.getPrice_usd())));
+        }
+
+        TextView priceBTCTextView = (TextView) rootVeiw.findViewById(R.id.tablePriceBTCDataTextView);
+        if (coinObject.getPrice_btc() == null) {
+            priceBTCTextView.setText("N/A");
+        } else {
+            // TODO: Use a real btc symbol
+            priceBTCTextView.setText(coinObject.getPrice_btc());
+        }
+
+        TextView volumeTextView = (TextView) rootVeiw.findViewById(R.id.tableVolUSDDataTextView);
+        if (coinObject.getVolume_usd_24h() == null) {
+            volumeTextView.setText("N/A");
+        } else {
+            volumeTextView.setText(String.format(usdFormat, Double.parseDouble(coinObject.getVolume_usd_24h())));
+        }
+
+        TextView mktCapTextView = (TextView) rootVeiw.findViewById(R.id.tableMktCapDataTextView);
+        if (coinObject.getMarket_cap_usd() == null) {
+            mktCapTextView.setText("N/A");
+        } else {
+            mktCapTextView.setText(String.format(usdFormat, Double.parseDouble(coinObject.getMarket_cap_usd())));
+        }
+
+        TextView availSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableAvailableSupplyDataTextView);
+        if (coinObject.getAvailable_supply() == null) {
+            availSupplyTextView.setText("N/A");
+        } else {
+            availSupplyTextView.setText(coinObject.getAvailable_supply());
+        }
+
+        TextView totalSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableTotalSupplyDataTextView);
+        if (coinObject.getTotal_supply() == null) {
+            totalSupplyTextView.setText("N/A");
+        } else {
+            totalSupplyTextView.setText(coinObject.getTotal_supply());
+        }
+
+        TextView maxSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableMaxSupplyDataTextView);
+        if (coinObject.getMax_supply() == null) {
+            maxSupplyTextView.setText("N/A");
+        } else {
+            maxSupplyTextView.setText(coinObject.getMax_supply());
+        }
     }
 
     @Override
@@ -331,17 +391,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         setDayChecked(Calendar.getInstance());
         buttonGroup.check(R.id.dayButton);
         currentTimeWindow = String.format(getString(R.string.oneDay));
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorSchemeResources(colorAccent);
-        swipeRefreshLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        swipeRefreshLayout.setRefreshing(true);
-                                        getCMCChart();
-                                    }
-                                }
-        );
         buttonGroup.setOnCheckedChangeListener(new SingleSelectToggleGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {
@@ -376,6 +425,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         });
         CMCCoin coinObject = getActivity().getIntent().getParcelableExtra(GraphFragment.COIN_OBJECT);
         setTable(coinObject, rootView);
+        getCMCChart();
         return rootView;
     }
 

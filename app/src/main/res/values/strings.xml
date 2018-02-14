@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">CryptoBuddy</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="price_format">Price: &#36; %1$.2f</string>
     <string name="price_format_no_word">&#36; %1$.2f</string>
     <string name="mkt_cap_format">MarketCap: &#36; %1$,.2f</string>
     <string name="volume_format">Volume 24h: &#36; %1$,.2f</string>
-
+    <string name="usd_format">&#36; %1$,.2f</string>
     <string name="negative_variable_pct_change_with_dollars_format">%1$s Change: %2$.2f%% &#40;&#45;&#36;%3$.2f&#41;</string>
     <string name="positive_variable_pct_change_with_dollars_format">%1$s Change: &#43;%2$.2f%% &#40;&#43;&#36;%3$.2f&#41;</string>
 
@@ -33,7 +32,7 @@
     <string name="AllTime">All Time</string>
     <string name="action_search">Search</string>
     <string name="noChartDataString">No Chart Data :(</string>
-
+    <string name="notAvailableStringResource">N/A</string>
     <string name="nameAndSymbol">%1$s (%2$s)</string>
 
 

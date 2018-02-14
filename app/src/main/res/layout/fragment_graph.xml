@@ -1,421 +1,390 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/graphFragmentNestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/swipe_refresh_layout"
-            android:layout_gravity="center|bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
+        android:paddingRight="@dimen/graph_fragment_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
-            android:paddingRight="@dimen/graph_fragment_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CurrencyDetailsTabsActivity">
+        <TextView
+            android:id="@+id/current_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/current_price"
+        <TextView
+            android:id="@+id/graphFragmentDateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/current_price" />
+
+
+        <TextView
+            android:id="@+id/percent_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/graphFragmentDateTextView" />
+
+        <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
+            android:id="@+id/chart_interval_button_grp"
+            android:layout_width="362dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/percent_change"
+            app:tbgCheckedButton="@+id/dayButton"
+            app:tbgChildSpacing="auto">
+
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/dayButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
+                android:text="@string/oneDay"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:tbgMarkerColor="@color/colorAccent" />
 
-            <TextView
-                android:id="@+id/graphFragmentDateTextView"
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/weekButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/current_price" />
+                android:text="@string/Week"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
 
-
-            <TextView
-                android:id="@+id/percent_change"
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/monthButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/graphFragmentDateTextView" />
+                android:text="@string/Month"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
 
-            <com.github.mikephil.charting.charts.LineChart
-                android:id="@+id/chart"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginStart="2dp"
-                android:focusableInTouchMode="true"
-                android:padding="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline6" />
-
-            <com.nex3z.togglebuttongroup.SingleSelectToggleGroup
-                android:id="@+id/chart_interval_button_grp"
-                android:layout_width="384dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/percent_change"
-                app:tbgCheckedButton="@+id/dayButton"
-                app:tbgChildSpacing="auto">
-
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/dayButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/oneDay"
-                    android:textSize="16sp"
-                    app:tbgMarkerColor="@color/colorAccent" />
-
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/weekButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Week"
-                    android:textSize="16sp"
-                    app:tbgMarkerColor="@color/colorAccent" />
-
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/monthButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Month"
-                    android:textSize="16sp"
-                    app:tbgMarkerColor="@color/colorAccent" />
-
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/threeMonthButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/threeMonth"
-                    android:textSize="16sp"
-                    app:tbgMarkerColor="@color/colorAccent" />
-
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/yearButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Year"
-                    android:textSize="16sp"
-                    app:tbgMarkerColor="@color/colorAccent" />
-
-                <com.nex3z.togglebuttongroup.button.CircularToggle
-                    android:id="@+id/allTimeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/All"
-                    android:textSize="16sp"
-                    app:tbgMarkerColor="@color/colorAccent" />
-
-            </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
-
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline5"
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/threeMonthButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.5" />
+                android:text="@string/threeMonth"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
 
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline6"
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/yearButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.15" />
+                android:text="@string/Year"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
 
-                <TableLayout
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/guideline5">
+            <com.nex3z.togglebuttongroup.button.CircularToggle
+                android:id="@+id/allTimeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/All"
+                android:textSize="16sp"
+                app:tbgMarkerColor="@color/colorAccent" />
 
-                    <TableRow
-                        android:id="@+id/nameTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+        </com.nex3z.togglebuttongroup.SingleSelectToggleGroup>
 
-                        <TextView
-                            android:id="@+id/tableNameTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Name" />
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="275dp"
+            android:layout_marginTop="8dp"
+            android:focusableInTouchMode="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart_interval_button_grp" />
 
-                        <TextView
-                            android:id="@+id/tableNameDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+        <TableLayout
+            android:id="@+id/tableLayoutGraphFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chart">
 
-                    <TableRow
-                        android:id="@+id/symbolTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/nameTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tableSymbolTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Symbol" />
+                <TextView
+                    android:id="@+id/tableNameTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Name" />
 
-                        <TextView
-                            android:id="@+id/tableSymbolDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/tableNameDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/priceUSDTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/symbolTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tablePriceUSDTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Price (USD)" />
+                <TextView
+                    android:id="@+id/tableSymbolTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Symbol" />
 
-                        <TextView
-                            android:id="@+id/tablePriceUSDDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/tableSymbolDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/priceBTCTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/priceUSDTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tablePriceBTCTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Price (BTC)" />
+                <TextView
+                    android:id="@+id/tablePriceUSDTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Price (USD)" />
 
-                        <TextView
-                            android:id="@+id/tablePriceBTCDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
+                <TextView
+                    android:id="@+id/tablePriceUSDDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    </TableRow>
+            <TableRow
+                android:id="@+id/priceBTCTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    <TableRow
-                        android:id="@+id/volUSDTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tablePriceBTCTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Price (BTC)" />
 
-                        <TextView
-                            android:id="@+id/tableVolUSDTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="24h Volume" />
+                <TextView
+                    android:id="@+id/tablePriceBTCDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
 
-                        <TextView
-                            android:id="@+id/tableVolUSDDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/mktCapUSDTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/volUSDTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tableMktCapTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Market Cap" />
+                <TextView
+                    android:id="@+id/tableVolUSDTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="24h Volume" />
 
-                        <TextView
-                            android:id="@+id/tableMktCapDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/tableVolUSDDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/availableSupplyTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/mktCapUSDTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tableAvailableSupplyTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Available Supply" />
+                <TextView
+                    android:id="@+id/tableMktCapTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Market Cap" />
 
-                        <TextView
-                            android:id="@+id/tableAvailableSupplyDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/tableMktCapDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/totalSupplyTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/availableSupplyTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tableTotalSupplyTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Total Supply" />
+                <TextView
+                    android:id="@+id/tableAvailableSupplyTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Available Supply" />
 
-                        <TextView
-                            android:id="@+id/tableTotalSupplyDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/tableAvailableSupplyDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/maxSupplyTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/totalSupplyTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/tableMaxSupplyTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Max Supply" />
+                <TextView
+                    android:id="@+id/tableTotalSupplyTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Supply" />
 
-                        <TextView
-                            android:id="@+id/tableMaxSupplyDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="textEnd" />
-                    </TableRow>
+                <TextView
+                    android:id="@+id/tableTotalSupplyDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                    <TableRow
-                        android:id="@+id/changeTitlesTableRow"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+            <TableRow
+                android:id="@+id/maxSupplyTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                        <TextView
-                            android:id="@+id/table1hrChangeTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Change 1hr"
-                            android:textAlignment="center" />
+                <TextView
+                    android:id="@+id/tableMaxSupplyTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Max Supply" />
 
-                        <TextView
-                            android:id="@+id/table24hrChangeTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="Change 24hr"
-                            android:textAlignment="center" />
+                <TextView
+                    android:id="@+id/tableMaxSupplyDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="textEnd" />
+            </TableRow>
 
-                        <TextView
-                            android:id="@+id/tableWeekChangeTitleTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:text="Change 7d"
-                            android:textAlignment="center" />
+            <TableRow
+                android:id="@+id/changeTitlesTableRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-                    </TableRow>
+                <TextView
+                    android:id="@+id/table1hrChangeTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Change 1hr"
+                    android:textAlignment="center" />
 
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/table24hrChangeTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Change 24hr"
+                    android:textAlignment="center" />
 
-                        <TextView
-                            android:id="@+id/table1hrChangeDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="TextView"
-                            android:textAlignment="center" />
+                <TextView
+                    android:id="@+id/tableWeekChangeTitleTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="Change 7d"
+                    android:textAlignment="center" />
 
-                        <TextView
-                            android:id="@+id/table24hrChangeDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            android:text="TextView"
-                            android:textAlignment="center" />
+            </TableRow>
 
-                        <TextView
-                            android:id="@+id/table7dChangeDataTextView"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="3"
-                            android:text="TextView"
-                            android:textAlignment="center" />
-                    </TableRow>
-                </TableLayout>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </android.support.constraint.ConstraintLayout>
-</android.support.v4.widget.SwipeRefreshLayout>
+                <TextView
+                    android:id="@+id/table1hrChangeDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TextView"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/table24hrChangeDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="TextView"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/table7dChangeDataTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:text="TextView"
+                    android:textAlignment="center" />
+            </TableRow>
+        </TableLayout>
+
+    </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>
