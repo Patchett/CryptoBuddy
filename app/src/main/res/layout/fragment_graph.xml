@@ -126,8 +126,6 @@
             android:id="@+id/tableLayoutGraphFragment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -137,13 +135,15 @@
             <TableRow
                 android:id="@+id/nameTableRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/lightGray">
 
                 <TextView
                     android:id="@+id/tableNameTitleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Name" />
 
                 <TextView
@@ -151,6 +151,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
@@ -164,6 +165,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Price (USD)" />
 
                 <TextView
@@ -171,19 +173,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/priceBTCTableRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/lightGray">
 
                 <TextView
                     android:id="@+id/tablePriceBTCTitleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Price (BTC)" />
 
                 <TextView
@@ -191,6 +196,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
 
             </TableRow>
@@ -205,6 +211,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="24h Volume" />
 
                 <TextView
@@ -212,19 +219,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/mktCapUSDTableRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/lightGray">
 
                 <TextView
                     android:id="@+id/tableMktCapTitleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Market Cap" />
 
                 <TextView
@@ -232,6 +242,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
@@ -245,6 +256,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Available Supply" />
 
                 <TextView
@@ -252,19 +264,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/totalSupplyTableRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/lightGray">
 
                 <TextView
                     android:id="@+id/tableTotalSupplyTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Total Supply" />
 
                 <TextView
@@ -272,6 +287,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
@@ -285,6 +301,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Max Supply" />
 
                 <TextView
@@ -292,19 +309,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingEnd="8dp"
                     android:textAlignment="textEnd" />
             </TableRow>
 
             <TableRow
                 android:id="@+id/changeTitlesTableRow"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/lightGray">
 
                 <TextView
                     android:id="@+id/table1hrChangeTitleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:paddingStart="8dp"
                     android:text="Change 1hr"
                     android:textAlignment="center" />
 
@@ -313,6 +333,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:paddingStart="8dp"
                     android:text="Change 24hr"
                     android:textAlignment="center" />
 
@@ -321,6 +342,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
+                    android:paddingStart="8dp"
                     android:text="Change 7d"
                     android:textAlignment="center" />
 
@@ -328,28 +350,35 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:background="@color/lightGray">
 
                 <TextView
                     android:id="@+id/table1hrChangeDataTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textAlignment="center" />
+                    android:paddingEnd="8dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/table24hrChangeDataTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:textAlignment="center" />
+                    android:paddingEnd="8dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tableWeekChangeDataTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:textAlignment="center" />
+                    android:paddingEnd="8dp"
+                    android:textAlignment="center"
+                    android:textStyle="bold" />
             </TableRow>
         </TableLayout>
 

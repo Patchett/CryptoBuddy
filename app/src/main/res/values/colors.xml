@@ -20,6 +20,8 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="lightGray">#d3d3d3</color>
+
 </resources>
 
     <!--public final static int materialLightGreen = Color.rgb(153,255,153);-->
