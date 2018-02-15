@@ -334,8 +334,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (coinObject.getPrice_btc() == null) {
             priceBTCTextView.setText("N/A");
         } else {
-            // TODO: Use a real btc symbol
-            priceBTCTextView.setText(coinObject.getPrice_btc());
+            priceBTCTextView.setText(String.format(getActivity().getString(R.string.btc_format), coinObject.getPrice_btc()));
         }
 
         TextView volumeTextView = (TextView) rootVeiw.findViewById(R.id.tableVolUSDDataTextView);
