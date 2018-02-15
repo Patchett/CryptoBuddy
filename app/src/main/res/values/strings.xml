@@ -16,6 +16,9 @@
     <string name="negative_pct_change_with_dollars_format">%1$.2f%% &#40;&#45;&#36;%2$.2f&#41;</string>
     <string name="positive_pct_change_with_dollars_format">&#43;%1$.2f%% &#40;&#43;&#36;%2$.2f&#41;</string>
 
+    <string name="negative_pct_format">%1$.2f%%</string>
+    <string name="positive_pct_format">&#43;%1$.2f%%</string>
+
     <string name="News">News</string>
     <string name="Home">Home</string>
     <string name="CoinImage">Coin Image</string>

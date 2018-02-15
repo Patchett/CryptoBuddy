@@ -39,6 +39,7 @@ import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
 import com.nex3z.togglebuttongroup.SingleSelectToggleGroup;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,6 +79,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public static String CURRENT_CHART_URL;
     private NestedScrollView scrollView;
     private boolean scrollEnabled = true;
+    DecimalFormat rawNumberFormat = new DecimalFormat("#,###");
 
 
     public static final String ARG_SYMBOL = "symbol";
@@ -310,18 +312,15 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void setTable(CMCCoin coinObject, View rootVeiw) {
         String usdFormat = getString(R.string.usd_format);
+        String negativePctFormat = getActivity().getString(R.string.negative_pct_format);
+        String positivePctFormat = getActivity().getString(R.string.positive_pct_format);
+        int negativeRedColor = getActivity().getResources().getColor(R.color.percentNegativeRed);
+        int positiveGreenColor = getActivity().getResources().getColor(R.color.percentPositiveGreen);
         TextView nameTextView = (TextView) rootVeiw.findViewById(R.id.tableNameDataTextView);
         if (coinObject.getName() == null) {
             nameTextView.setText("N/A");
         } else {
             nameTextView.setText(coinObject.getName());
-        }
-
-        TextView symbolTextView = (TextView) rootVeiw.findViewById(R.id.tableSymbolDataTextView);
-        if (coinObject.getSymbol() == null) {
-            symbolTextView.setText("N/A");
-        } else {
-            symbolTextView.setText(coinObject.getSymbol());
         }
 
         TextView priceUSDTextView = (TextView) rootVeiw.findViewById(R.id.tablePriceUSDDataTextView);
@@ -357,22 +356,66 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (coinObject.getAvailable_supply() == null) {
             availSupplyTextView.setText("N/A");
         } else {
-            availSupplyTextView.setText(coinObject.getAvailable_supply());
+            availSupplyTextView.setText(rawNumberFormat.format(Double.parseDouble(coinObject.getAvailable_supply())));
         }
 
         TextView totalSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableTotalSupplyDataTextView);
         if (coinObject.getTotal_supply() == null) {
             totalSupplyTextView.setText("N/A");
         } else {
-            totalSupplyTextView.setText(coinObject.getTotal_supply());
+            totalSupplyTextView.setText(rawNumberFormat.format(Double.parseDouble(coinObject.getTotal_supply())));
         }
 
         TextView maxSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableMaxSupplyDataTextView);
         if (coinObject.getMax_supply() == null) {
             maxSupplyTextView.setText("N/A");
         } else {
-            maxSupplyTextView.setText(coinObject.getMax_supply());
+            maxSupplyTextView.setText(rawNumberFormat.format(Double.parseDouble(coinObject.getMax_supply())));
         }
+
+        TextView oneHrChangeTextView = (TextView) rootVeiw.findViewById(R.id.table1hrChangeDataTextView);
+        if (coinObject.getPercent_change_1h() == null) {
+            oneHrChangeTextView.setText("N/A");
+        } else {
+            double amount = Double.parseDouble(coinObject.getPercent_change_1h());
+            if (amount >= 0) {
+                oneHrChangeTextView.setText(String.format(positivePctFormat, amount));
+                oneHrChangeTextView.setTextColor(positiveGreenColor);
+            } else {
+                oneHrChangeTextView.setText(String.format(negativePctFormat, amount));
+                oneHrChangeTextView.setTextColor(negativeRedColor);
+            }
+        }
+
+        TextView dayChangeTextView = (TextView) rootVeiw.findViewById(R.id.table24hrChangeDataTextView);
+        if (coinObject.getPercent_change_24h() == null) {
+            dayChangeTextView.setText("N/A");
+        } else {
+            double amount = Double.parseDouble(coinObject.getPercent_change_24h());
+            if (amount >= 0) {
+                dayChangeTextView.setText(String.format(positivePctFormat, amount));
+                dayChangeTextView.setTextColor(positiveGreenColor);
+            } else {
+                dayChangeTextView.setText(String.format(negativePctFormat, amount));
+                dayChangeTextView.setTextColor(negativeRedColor);
+            }
+        }
+
+        TextView weekChangeTextView = (TextView) rootVeiw.findViewById(R.id.tableWeekChangeDataTextView);
+        if (coinObject.getPercent_change_7d() == null) {
+            weekChangeTextView.setText("N/A");
+        } else {
+            double amount = Double.parseDouble(coinObject.getPercent_change_7d());
+            if (amount >= 0) {
+                weekChangeTextView.setText(String.format(positivePctFormat, amount));
+                weekChangeTextView.setTextColor(positiveGreenColor);
+            } else {
+                weekChangeTextView.setText(String.format(negativePctFormat, amount));
+                weekChangeTextView.setTextColor(negativeRedColor);
+            }
+        }
+
+
     }
 
     @Override
