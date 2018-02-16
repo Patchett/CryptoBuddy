@@ -4,17 +4,18 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
  * Created by Ryan on 8/11/2017.
  */
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -27,6 +28,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -77,9 +79,10 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String currentTimeWindow = "";
     private SingleSelectToggleGroup buttonGroup;
     public static String CURRENT_CHART_URL;
-    private NestedScrollView scrollView;
-    private boolean scrollEnabled = true;
-    DecimalFormat rawNumberFormat = new DecimalFormat("#,###");
+    private DecimalFormat rawNumberFormat = new DecimalFormat("#,###");
+    private LockableNestedScrollView nestedScrollView;
+    private WindowManager mWinMgr;
+    private int displayWidth;
 
 
     public static final String ARG_SYMBOL = "symbol";
@@ -177,7 +180,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 setColors(percentChange);
                 percentChangeText.setTextColor(percentageColor);
                 LineDataSet dataSet = setUpLineDataSet(closePrices);
-                LineData lineData = new LineData(dataSet);
+                final LineData lineData = new LineData(dataSet);
                 lineChart.setDoubleTapToZoomEnabled(false);
                 lineChart.setScaleEnabled(false);
                 lineChart.getDescription().setEnabled(false);
@@ -187,14 +190,19 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 lineChart.setOnChartGestureListener(new OnChartGestureListener() {
                     @Override
                     public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                        scrollEnabled = false;
-                        viewPager.setPagingEnabled(false);
+                        YAxis yAxis = lineChart.getAxisLeft();
+                        // Allow scrolling in the right and left margins
+                        if (me.getX() > yAxis.getLongestLabel().length() * yAxis.getTextSize() &&
+                                me.getX() < displayWidth - lineChart.getViewPortHandler().offsetRight()) {
+                            viewPager.setPagingEnabled(false);
+                            nestedScrollView.setScrollingEnabled(false);
+                        }
                     }
 
                     @Override
                     public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                        scrollEnabled = true;
                         viewPager.setPagingEnabled(true);
+                        nestedScrollView.setScrollingEnabled(true);
                     }
 
                     @Override
@@ -422,11 +430,14 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        displayWidth = mWinMgr.getDefaultDisplay().getWidth();
         // TODO: Make noDataText fancy
         lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
         lineChart.setNoDataTextColor(R.color.darkRed);
         lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
+        nestedScrollView = (LockableNestedScrollView) rootView.findViewById(R.id.graphFragmentNestedScrollView);
         buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
         cryptoSymbol = getArguments().getString(ARG_SYMBOL);
         cryptoID = getArguments().getString(ARG_ID);
