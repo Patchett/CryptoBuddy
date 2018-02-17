@@ -5,10 +5,11 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
  */
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -28,7 +29,6 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.YAxisPriceFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
-import com.cryptobuddy.ryanbridges.cryptobuddy.news.WebViewActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -454,10 +454,9 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         sourceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(getContext(), WebViewActivity.class);
-                browserIntent.putExtra("url", BASE_CMC_SOURCE_URL + cryptoID);
-                browserIntent.putExtra("title", "CMC - " + cryptoSymbol);
-                getContext().startActivity(browserIntent);
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(getActivity(), Uri.parse(BASE_CMC_SOURCE_URL + cryptoID));
             }
         });
         buttonGroup.setOnCheckedChangeListener(new SingleSelectToggleGroup.OnCheckedChangeListener() {

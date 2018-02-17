@@ -42,6 +42,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:customtabs:25.4.0'
     compile 'com.nex3z:toggle-button-group:1.1.2'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
     compile 'com.android.support:design:25.4.0'
