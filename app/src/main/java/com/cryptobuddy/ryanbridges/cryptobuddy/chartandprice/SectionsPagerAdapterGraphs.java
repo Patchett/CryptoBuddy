@@ -30,7 +30,7 @@ public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
             case 0:
                 return GraphFragment.newInstance(this.symbol, this.id);
             case 1:
-                return TechnicalsFragment.newInstance((String) this.getPageTitle(position));
+                return MarketsFragment.newInstance((String) this.getPageTitle(position));
         }
         return null;
     }
@@ -47,7 +47,7 @@ public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
             case 0:
                 return "Chart";
             case 1:
-                return "Technicals";
+                return "Markets";
             default:
                 return null;
         }
