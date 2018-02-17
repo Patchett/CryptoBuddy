@@ -5,7 +5,9 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
@@ -16,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -25,6 +28,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.YAxisPriceFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
+import com.cryptobuddy.ryanbridges.cryptobuddy.news.WebViewActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -64,6 +68,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private final static String CHART_URL_3_MONTH = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=240&aggregate=14";
     private final static String CHART_URL_1_DAY = "https://min-api.cryptocompare.com/data/histominute?fsym=%s&tsym=USD&limit=144&aggregate=10";
     private final static String TICKER_URL = "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=%s&tsyms=USD";
+    public final static String BASE_CMC_SOURCE_URL = "https://coinmarketcap.com/currencies/";
     private int chartFillColor;
     private int chartBorderColor;
     private String cryptoSymbol;
@@ -432,6 +437,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
+        Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
+        sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         // TODO: Make noDataText fancy
         lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
         lineChart.setNoDataTextColor(R.color.darkRed);
@@ -444,6 +451,14 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         setDayChecked(Calendar.getInstance());
         buttonGroup.check(R.id.dayButton);
         currentTimeWindow = String.format(getString(R.string.oneDay));
+        sourceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent browserIntent = new Intent(getContext(), WebViewActivity.class);
+                browserIntent.putExtra("url", BASE_CMC_SOURCE_URL + cryptoID);
+                getContext().startActivity(browserIntent);
+            }
+        });
         buttonGroup.setOnCheckedChangeListener(new SingleSelectToggleGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(SingleSelectToggleGroup group, int checkedId) {

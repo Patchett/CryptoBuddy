@@ -23,8 +23,6 @@
             android:layout_below="@+id/toolbar"
             android:scrollbars="vertical"
             android:paddingTop="0dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
             android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
