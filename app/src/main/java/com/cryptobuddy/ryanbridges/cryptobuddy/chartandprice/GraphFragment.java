@@ -456,6 +456,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             public void onClick(View v) {
                 Intent browserIntent = new Intent(getContext(), WebViewActivity.class);
                 browserIntent.putExtra("url", BASE_CMC_SOURCE_URL + cryptoID);
+                browserIntent.putExtra("title", "CMC - " + cryptoSymbol);
                 getContext().startActivity(browserIntent);
             }
         });

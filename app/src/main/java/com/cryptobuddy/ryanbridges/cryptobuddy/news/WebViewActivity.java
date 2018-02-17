@@ -27,7 +27,8 @@ public class WebViewActivity extends BaseAnimationActivity implements CustomWebC
         setSupportActionBar(mToolbar);
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
-        getSupportActionBar().setTitle(getResources().getString(R.string.News));
+        String title = intent.getStringExtra("title");
+        getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 

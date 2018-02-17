@@ -57,6 +57,7 @@ public class NewsView extends ConstraintLayout {
             public void onClick(View v) {
                 Intent browserIntent = new Intent(getContext(), WebViewActivity.class);
                 browserIntent.putExtra("url", newsItem.articleURL);
+                browserIntent.putExtra("title", "News");
                 getContext().startActivity(browserIntent);
             }
         });
