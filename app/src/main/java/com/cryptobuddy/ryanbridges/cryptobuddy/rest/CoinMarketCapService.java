@@ -40,11 +40,11 @@ public class CoinMarketCapService {
                 .setUrl(String.format(GraphFragment.CURRENT_CHART_URL, coinID))
                 .setContext(context.getApplicationContext())
                 .isCacheEnabled(true)
-                .setCacheTime(300000L)
+                .setCacheTime(60000L)
                 .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(taskCompletion)
                 .setTaskFailure(failure)
-                .setAutomaticCacheRefresh(true).execute(async);
+                .setAutomaticCacheRefresh(false).execute(async);
     }
 
 }
