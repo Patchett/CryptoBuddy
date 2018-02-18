@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.markets.MarketsFragment;
+
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
@@ -30,7 +32,7 @@ public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
             case 0:
                 return GraphFragment.newInstance(this.symbol, this.id);
             case 1:
-                return MarketsFragment.newInstance((String) this.getPageTitle(position));
+                return MarketsFragment.newInstance(this.symbol);
         }
         return null;
     }

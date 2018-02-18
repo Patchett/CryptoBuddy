@@ -46,5 +46,4 @@ public class CoinMarketCapService {
                 .setTaskFailure(failure)
                 .setAutomaticCacheRefresh(false).execute(async);
     }
-
 }
