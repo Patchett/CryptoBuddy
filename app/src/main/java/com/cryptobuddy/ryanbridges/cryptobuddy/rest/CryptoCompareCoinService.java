@@ -3,6 +3,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.rest;
 import android.content.Context;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.MarketsResponse;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.TradingPair;
 import com.grizzly.rest.GenericRestCall;
 import com.grizzly.rest.Model.afterTaskCompletion;
@@ -19,6 +20,7 @@ public class CryptoCompareCoinService {
 
     public static final String ALL_COINS_LIST_URL = "https://min-api.cryptocompare.com/data/all/coinlist";
     public static final String TOP_PAIRS_URL = "https://min-api.cryptocompare.com/data/top/pairs?fsym=%s&limit=20";
+    public static final String PAIR_MARKET_URL = "https://min-api.cryptocompare.com/data/top/exchanges/full?fsym=%s&tsym=%s&limit=25";
 
     public static void getAllCoins(Context context, afterTaskCompletion<CoinList> taskCompletion, afterTaskFailure failure, boolean async) {
         new GenericRestCall<>(Void.class, CoinList.class, String.class)
@@ -45,4 +47,20 @@ public class CryptoCompareCoinService {
                 .setTaskFailure(failure)
                 .setAutomaticCacheRefresh(false).execute(true);
     }
+
+    public static void getPairsMarket(Context context, String tsymbol, String fsymbol, afterTaskCompletion<MarketsResponse> taskCompletion, afterTaskFailure failure) {
+        String url = String.format(PAIR_MARKET_URL, tsymbol, fsymbol);
+        new GenericRestCall<>(Void.class, MarketsResponse.class, String.class)
+                .setUrl(url)
+                .setContext(context.getApplicationContext())
+                .isCacheEnabled(true)
+                // Cache markets for 5min
+                .setCacheTime(300000L)
+                .setMethodToCall(HttpMethod.GET)
+                .setTaskCompletion(taskCompletion)
+                .setTaskFailure(failure)
+                .setAutomaticCacheRefresh(false).execute(true);
+    }
+
+
 }

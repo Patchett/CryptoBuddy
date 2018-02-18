@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.MarketNode;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.MarketsResponse;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.TradingPair;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.TradingPairNode;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CryptoCompareCoinService;
@@ -48,6 +50,22 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         return fragment;
     }
 
+    public void getPairMarket(String fsymbol, String tsymbol) {
+        CryptoCompareCoinService.getPairsMarket(getActivity(), tsymbol, fsymbol, new afterTaskCompletion<MarketsResponse>() {
+            @Override
+            public void onTaskCompleted(MarketsResponse marketsResponse) {
+                for (MarketNode node : marketsResponse.getData().getMarketsList()) {
+                    Log.d("I", "marketNode: " + node);
+                }
+            }
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+            }
+        });
+    }
+
     public void getTopPairs() {
         CryptoCompareCoinService.getTopPairs(getActivity(), symbol, new afterTaskCompletion<TradingPair>() {
             @Override
@@ -59,6 +77,8 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pairs);
                 spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(spinnerArrayAdapter);
+                String symbols[] = pairs.get(0).split("/");
+                getPairMarket(symbols[1], symbols[0]);
             }
         }, new afterTaskFailure() {
             @Override
