@@ -45,6 +45,4 @@ public class CryptoCompareCoinService {
                 .setTaskFailure(failure)
                 .setAutomaticCacheRefresh(false).execute(true);
     }
-
-
 }
