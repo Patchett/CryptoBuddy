@@ -7,12 +7,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.TradingPair;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.TradingPairNode;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CryptoCompareCoinService;
 import com.grizzly.rest.Model.afterTaskCompletion;
 import com.grizzly.rest.Model.afterTaskFailure;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.GraphFragment.ARG_SYMBOL;
 
@@ -24,6 +30,8 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
     private View rootView;
     private String symbol;
+    private Spinner spinner;
+    private ArrayAdapter<String> spinnerAdapter;
 
     public MarketsFragment() {
     }
@@ -44,7 +52,13 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         CryptoCompareCoinService.getTopPairs(getActivity(), symbol, new afterTaskCompletion<TradingPair>() {
             @Override
             public void onTaskCompleted(TradingPair tradingPair) {
-                Log.d("I", "tradingPair: " + tradingPair.getData());
+                List<String> pairs = new ArrayList<>();
+                for (TradingPairNode node : tradingPair.getData()) {
+                    pairs.add(node.getFromSymbol() + "/" + node.getToSymbol());
+                }
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pairs);
+                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(spinnerArrayAdapter);
             }
         }, new afterTaskFailure() {
             @Override
@@ -60,6 +74,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_markets, container, false);
         symbol = getArguments().getString(ARG_SYMBOL);
+        spinner = (Spinner) rootView.findViewById(R.id.top_pairs_spinner);
         getTopPairs();
         return rootView;
     }
