@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -132,10 +133,9 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         marketsRecyclerView.setLayoutManager(llm);
         pairs = new ArrayList<>();
         markets = new ArrayList<>();
-        adapter = new MarketsListAdapter(markets, new CustomItemClickListener() {
+        adapter = new MarketsListAdapter(markets, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
-                Log.d("I", "inside onItemClick MarketsListAdapter");
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 CustomTabsIntent customTabsIntent = builder.build();
                 String marketStr = markets.get(position).getMarket();

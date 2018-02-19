@@ -84,7 +84,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String currentTimeWindow = "";
     private SingleSelectToggleGroup buttonGroup;
     public static String CURRENT_CHART_URL;
-    private DecimalFormat rawNumberFormat = new DecimalFormat("#,###");
+    public final static DecimalFormat rawNumberFormat = new DecimalFormat("#,###.##");
     private LockableNestedScrollView nestedScrollView;
     private WindowManager mWinMgr;
     private int displayWidth;

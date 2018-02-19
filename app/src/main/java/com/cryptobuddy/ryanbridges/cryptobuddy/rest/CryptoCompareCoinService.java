@@ -1,6 +1,7 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.rest;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinList;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.MarketsResponse;
@@ -50,6 +51,7 @@ public class CryptoCompareCoinService {
 
     public static void getPairsMarket(Context context, String tsymbol, String fsymbol, afterTaskCompletion<MarketsResponse> taskCompletion, afterTaskFailure failure) {
         String url = String.format(PAIR_MARKET_URL, tsymbol, fsymbol);
+        Log.d("I", "Markets URL: " + url);
         new GenericRestCall<>(Void.class, MarketsResponse.class, String.class)
                 .setUrl(url)
                 .setContext(context.getApplicationContext())

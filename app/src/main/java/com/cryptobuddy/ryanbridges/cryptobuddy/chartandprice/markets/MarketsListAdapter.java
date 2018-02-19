@@ -1,7 +1,7 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.markets;
 
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +11,9 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.MarketNode;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -23,10 +25,20 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
     private CustomItemClickListener listener;
     private MarketsListAdapter.ViewHolder viewHolder;
     private List<MarketNode> markets;
+    private WeakReference<AppCompatActivity> contextRef;
+    String negativePctFormat;
+    String positivPctFormat;
+    private int positiveGreenColor;
+    private int negativeRedColor;
 
-    public MarketsListAdapter(List<MarketNode> markets, CustomItemClickListener listener) {
+    public MarketsListAdapter(List<MarketNode> markets, AppCompatActivity context, CustomItemClickListener listener) {
         this.markets = markets;
+        this.contextRef = new WeakReference<>(context);
         this.listener = listener;
+        this.negativePctFormat = context.getString(R.string.negative_pct_format);
+        this.positivPctFormat = context.getString(R.string.positive_pct_format);
+        this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
+        this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
     }
 
 
@@ -35,9 +47,15 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
         MarketNode node = markets.get(position);
         holder.exchangeNameTextView.setText(node.getMarket());
         // TODO: Use strings.xml and use currency specific symbols
-        holder.volDataTextView.setText(Float.toString(node.getVolume24h()));
-        holder.changeTextView.setText(Float.toString(node.getChangePct24h()));
-        holder.priceTextView.setText(Float.toString(node.getPrice()));
+        holder.volDataTextView.setText(String.format(Locale.getDefault(), "%,.2f", node.getVolume24h()));
+        if (node.getChangePct24h() >= 0) {
+            holder.changeTextView.setTextColor(positiveGreenColor);
+            holder.changeTextView.setText(String.format(positivPctFormat, node.getChangePct24h()));
+        } else {
+            holder.changeTextView.setTextColor(negativeRedColor);
+            holder.changeTextView.setText(String.format(negativePctFormat, node.getChangePct24h()));
+        }
+        holder.priceTextView.setText(String.format(Locale.getDefault(), "%f", node.getPrice()));
     }
 
     @Override
@@ -74,7 +92,6 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
 
         @Override
         public void onClick(View v) {
-            Log.d("I", "in onClick market");
             this.listener.onItemClick(getAdapterPosition(), v);
         }
     }
