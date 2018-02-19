@@ -426,8 +426,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 weekChangeTextView.setTextColor(negativeRedColor);
             }
         }
-
-
     }
 
     @Override

@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.markets.MarketsFragment;
+import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.markets.MarketsFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

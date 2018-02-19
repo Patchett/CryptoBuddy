@@ -2,11 +2,13 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="144dp"
+    android:layout_height="wrap_content"
     android:focusable="true"
     android:background="@drawable/button_ripple_effect"
     android:paddingEnd="4dp"
     android:paddingStart="4dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:clickable="true">
 
     <TextView
@@ -14,7 +16,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/currencyListCoinImageView"
         app:layout_constraintTop_toTopOf="parent" />
