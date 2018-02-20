@@ -73,6 +73,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             public void onTaskCompleted(MarketsResponse marketsResponse) {
                 markets.clear();
                 markets.addAll(marketsResponse.getData().getMarketsList());
+                adapter.settSymbol(tsymbol);
                 adapter.setMarketsList(marketsResponse.getData().getMarketsList());
                 adapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);

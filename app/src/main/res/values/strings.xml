@@ -38,6 +38,8 @@
     <string name="nameAndSymbol">%1$s (%2$s)</string>
     <string name="volume24h">Volume24h: </string>
 
+    <string name="basic_currency_format">%1$s %2$s</string>
+
     <string name="btc_format">\u0E3F %1$s</string>
     <string name="eth_format">\u039e %1$s</string>
     <string name="ltc_format">\u0141 %1$s</string>

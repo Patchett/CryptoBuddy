@@ -30,6 +30,7 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
     String positivPctFormat;
     private int positiveGreenColor;
     private int negativeRedColor;
+    private String tSymbol = null;
 
     public MarketsListAdapter(List<MarketNode> markets, AppCompatActivity context, CustomItemClickListener listener) {
         this.markets = markets;
@@ -41,6 +42,13 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
     }
 
+    public void settSymbol(String tSymbol) {
+        this.tSymbol = tSymbol;
+    }
+
+    public String gettSymbol() {
+        return tSymbol;
+    }
 
     @Override
     public void onBindViewHolder(final MarketsListAdapter.ViewHolder holder, final int position) {
