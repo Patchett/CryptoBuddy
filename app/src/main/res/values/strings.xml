@@ -5,7 +5,6 @@
     <string name="price_format_no_word">&#36; %1$.2f</string>
     <string name="mkt_cap_format">MarketCap: &#36; %1$,.2f</string>
     <string name="volume_format">Volume 24h: &#36; %1$,.2f</string>
-    <string name="usd_format">&#36; %1$,.2f</string>
     <string name="negative_variable_pct_change_with_dollars_format">%1$s Change: %2$.2f%% &#40;&#45;&#36;%3$.2f&#41;</string>
     <string name="positive_variable_pct_change_with_dollars_format">%1$s Change: &#43;%2$.2f%% &#40;&#43;&#36;%3$.2f&#41;</string>
 
@@ -37,9 +36,90 @@
     <string name="noChartDataString">No Chart Data :(</string>
     <string name="notAvailableStringResource">N/A</string>
     <string name="nameAndSymbol">%1$s (%2$s)</string>
-    <string name="btc_format">\u0E3F %1$s</string>
     <string name="volume24h">Volume24h: </string>
 
+    <string name="btc_format">\u0E3F %1$s</string>
+    <string name="eth_format">\u039e %1$s</string>
+    <string name="ltc_format">\u0141 %1$s</string>
 
+    <!--AIC, USDT, NZD, AUD, CAD, CLP, COP, HKD, MXN, TTD, XCD-->
+    <string name="usd_format">&#36; %1$,.2f</string>
+    <string name="krw_format">\u20A9  %1$,.2f</string>
+    <string name="jpy_format">\u00A5  %1$,.2f</string>
+    <string name="euro_format">\u20AC  %1$,.2f</string>
+    <!--vietnamese DONG-->
+    <string name="vnd_format">\u20AB  %1$,.2f</string>
+    <!--british pound-->
+    <string name="gbp_format">\u20AB  %1$,.2f</string>
+    <!--brazilian real-->
+    <string name="brl_format">\u0052\u0024  %1$,.2f</string>
+    <!--Bahamian Dollar-->
+    <string name="bsd_format">\u0052\u0024  %1$,.2f</string>
+    <!--swiss franc-->
+    <string name="chf_format">\u0043\u0048\u0046 %1$,.2f</string>
+    <!--Chinese Yuan Renminbi-->
+    <string name="cny_format">\u00a5 %1$,.2f</string>
+    <!--Czech Koruna-->
+    <string name="czk_format">\u004b\u0010d %1$,.2f</string>
+    <!--Danish Krone-->
+    <string name="dkk_format">\u006b\u0072 %1$,.2f</string>
+    <!--Fiji Dollar-->
+    <string name="fjd_format">\u0046\u004a\u0024 %1$,.2f</string>
+    <!--Ghanaian New Cedi-->
+    <string name="ghs_format">\u0047\u0048\u20b5 %1$,.2f</string>
+    <!--Guatemalan Quetzal-->
+    <string name="gtq_format">\u0051 %1$,.2f</string>
+    <!--Honduran Lempira-->
+    <string name="hnl_format">\u004c %1$,.2f</string>
+    <!--Croatian Kuna-->
+    <string name="kn_format">\u006b\u006e %1$,.2f</string>
+    <!--Hungarian Forint-->
+    <string name="huf_format">\u0046\u0074 %1$,.2f</string>
+    <!--Indonesian Rupiah-->
+    <string name="idr_format">\u0052\u0070 %1$,.2f</string>
+    <!--Israeli New Shekel-->
+    <string name="ils_format">\u20aa %1$,.2f</string>
+    <!--Indian Rupee-->
+    <string name="inr_format">\u20b9 %1$,.2f</string>
+    <!--Iceland Krona, NOK, SEK-->
+    <string name="isk_format">\u006b\u0072 %1$,.2f</string>
+    <!--Jamaican Dollar-->
+    <string name="jmd_format">\u004a\u0024 %1$,.2f</string>
+    <!--Sri Lanka Rupee, PKR-->
+    <string name="lkr_format">\u20a8 %1$,.2f</string>
+    <!--Myanmar Kyat-->
+    <string name="mmk_format">\u004b %1$,.2f</string>
+    <!--Malaysian Ringgit-->
+    <string name="myr_format">\u0052\u004d %1$,.2f</string>
+    <!--Panamanian Balboa-->
+    <string name="pab_format">\u0042\u002f\u002e %1$,.2f</string>
+    <!--Peruvian Nuevo Sol-->
+    <string name="pen_format">\u0053\u002f\u002e %1$,.2f</string>
+    <!--Philippine Peso-->
+    <string name="php_format">\u20b1 %1$,.2f</string>
+    <!--Polish Zloty-->
+    <string name="pln_format">\u007a\u0142 %1$,.2f</string>
+    <!--Romanian New Lei-->
+    <string name="ron_format">\u006c\u0065\u0069 %1$,.2f</string>
+    <!--Serbian Dinar-->
+    <string name="rsd_format">\u0052\u0053\u0044 %1$,.2f</string>
+    <!--Russian Rouble-->
+    <string name="rub_format">\u0440\u0443\u0431 %1$,.2f</string>
+    <!--Singapore Dollar-->
+    <string name="sgd_format">\u0053\u0024 %1$,.2f</string>
+    <!--Thai Baht-->
+    <string name="thb_format">\u0e3f %1$,.2f</string>
+    <!--Turkish Lira-->
+    <string name="try_format">\u0054\u004c %1$,.2f</string>
+    <!--Taiwan Dollar-->
+    <string name="twd_format">\u004e\u0054\u0024 %1$,.2f</string>
+    <!--Venezuelan Bolivar Fuerte-->
+    <string name="vef_format">\u0042\u0073 %1$,.2f</string>
+    <!--CFA Franc BEAC-->
+    <string name="xaf_format">\u0046\u0043\u0046\u0041 %1$,.2f</string>
+    <!--CFP Franc-->
+    <string name="xpf_format">\u0046 %1$,.2f</string>
+    <!--South African Rand-->
+    <string name="zar_format">\u0052 %1$,.2f</string>
 
 </resources>

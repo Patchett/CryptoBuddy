@@ -176,5 +176,4 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         swipeRefreshLayout.setRefreshing(true);
         getPairMarket();
     }
-
 }
