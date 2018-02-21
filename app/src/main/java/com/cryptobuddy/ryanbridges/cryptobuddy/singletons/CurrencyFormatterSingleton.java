@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Ryan on 2/19/2018.
@@ -16,11 +19,16 @@ public class CurrencyFormatterSingleton {
     private Context context;
     private HashMap<String, String> currencyFormatMap;
     private static CurrencyFormatterSingleton sInstance;
+    private Set<String> cryptoList;
+    private DecimalFormat cryptoFormatter;
 
 
     private CurrencyFormatterSingleton(Context context) {
         this.context = context;
         currencyFormatMap = new HashMap<String, String>();
+        cryptoList = new HashSet<>();
+        cryptoFormatter = new DecimalFormat("#,###.########");
+        addCryptos();
         buildHashMap();
     }
 
@@ -30,6 +38,12 @@ public class CurrencyFormatterSingleton {
             sInstance = new CurrencyFormatterSingleton(context.getApplicationContext());
         }
         return sInstance;
+    }
+
+    public void addCryptos() {
+        cryptoList.add("BTC");
+        cryptoList.add("LTC");
+        cryptoList.add("ETH");
     }
 
     public void buildHashMap() {
@@ -94,9 +108,15 @@ public class CurrencyFormatterSingleton {
         currencyFormatMap.put("ZAR", context.getString(R.string.zar_format));
         currencyFormatMap.put("VND", context.getString(R.string.vnd_format));
         currencyFormatMap.put("NGN", context.getString(R.string.ngn_format));
+        currencyFormatMap.put("ROUNDED_BTC_NO_SPACE", context.getString(R.string.rounded_btc_format_no_space));
+        currencyFormatMap.put("USD_NO_SPACE", context.getString(R.string.usd_format_no_space));
     }
 
     public String format(float amount, String currency) {
+        if (cryptoList.contains(currency)) {
+            String amountString = cryptoFormatter.format(amount);
+            return String.format(currencyFormatMap.get(currency), amountString);
+        }
         String format = currencyFormatMap.get(currency);
         if (format != null) {
             return String.format(format, amount);

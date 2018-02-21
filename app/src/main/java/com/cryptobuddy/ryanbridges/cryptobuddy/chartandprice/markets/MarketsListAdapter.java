@@ -75,7 +75,6 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
 
         private CustomItemClickListener listener;
         private TextView exchangeNameTextView;
-        private TextView volTitleTextView;
         private TextView volDataTextView;
         private TextView changeTextView;
         private TextView priceTextView;
@@ -88,7 +87,6 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
             this.volDataTextView = (TextView) itemLayoutView.findViewById(R.id.volDataTextView);
             this.changeTextView = (TextView) itemLayoutView.findViewById(R.id.changeTextView);
             this.priceTextView = (TextView) itemLayoutView.findViewById(R.id.priceTextView);
-            this.volTitleTextView = (TextView) itemLayoutView.findViewById(R.id.volTitleTextView);
             this.listener = listener;
         }
 

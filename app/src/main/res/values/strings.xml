@@ -2,7 +2,6 @@
     <string name="app_name">CryptoBuddy</string>
     <string name="action_settings">Settings</string>
     <string name="price_format">Price: &#36; %1$.2f</string>
-    <string name="price_format_no_word">&#36; %1$.2f</string>
     <string name="mkt_cap_format">MarketCap: &#36; %1$,.2f</string>
     <string name="volume_format">Volume 24h: &#36; %1$,.2f</string>
     <string name="negative_variable_pct_change_with_dollars_format">%1$s Change: %2$.2f%% &#40;&#45;&#36;%3$.2f&#41;</string>
@@ -39,6 +38,10 @@
     <string name="volume24h">Volume24h: </string>
 
     <string name="basic_currency_format">%1$s %2$s</string>
+
+    <string name="rounded_btc_format_no_space">\u0E3F%1$,.4f</string>
+    <string name="rounded_btc_format">\u0E3F %1$,.4f</string>
+    <string name="usd_format_no_space">&#36;%1$,.2f</string>
 
     <string name="btc_format">\u0E3F %1$s</string>
     <string name="eth_format">\u039e %1$s</string>

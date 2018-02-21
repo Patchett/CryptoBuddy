@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.LockableNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/graphFragmentNestedScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,7 +12,7 @@
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/graph_fragment_horizontal_margin"
         android:paddingRight="@dimen/graph_fragment_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin">
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/current_price"
@@ -408,6 +407,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/chart" />
+
+        <Spinner
+            android:id="@+id/chartCurrencySelectSpinnr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 </com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.LockableNestedScrollView>

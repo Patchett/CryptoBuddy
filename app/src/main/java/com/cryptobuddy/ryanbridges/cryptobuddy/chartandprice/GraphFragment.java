@@ -18,19 +18,23 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashDayDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashYearFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;
-import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.YAxisPriceFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.CurrencyFormatterSingleton;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -89,7 +93,10 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private WindowManager mWinMgr;
     private int displayWidth;
     private ProgressBar chartProgressBar;
-
+    private List<String> currencyPairs;
+    private Spinner chartCurrencySelector;
+    private String tsymbol;
+    private CurrencyFormatterSingleton currencyFormatter;
 
     public static final String ARG_SYMBOL = "symbol";
     public static final String ARG_ID = "ID";
@@ -153,8 +160,14 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
             public void onTaskCompleted(CMCChartData cmcChartData) {
                 // TODO: Allow switching chart from BTC to USD
                 List<Entry> closePrices = new ArrayList<>();
-                for (List<Float> priceTimeUnit : cmcChartData.getPriceUSD()) {
-                    closePrices.add(new Entry(priceTimeUnit.get(0), priceTimeUnit.get(1)));
+                if (tsymbol.equals("USD")) {
+                    for (List<Float> priceTimeUnit : cmcChartData.getPriceUSD()) {
+                        closePrices.add(new Entry(priceTimeUnit.get(0), priceTimeUnit.get(1)));
+                    }
+                } else {
+                    for (List<Float> priceTimeUnit : cmcChartData.getPriceBTC()) {
+                        closePrices.add(new Entry(priceTimeUnit.get(0), priceTimeUnit.get(1)));
+                    }
                 }
                 if (closePrices.size() == 0) {
                     lineChart.setData(null);
@@ -168,7 +181,11 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 }
                 TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
                 float currPrice = closePrices.get(closePrices.size() - 1).getY();
-                currentPriceTextView.setText(String.format(getString(R.string.price_format_no_word), currPrice));
+                if (tsymbol.equals("USD")) {
+                    currentPriceTextView.setText(currencyFormatter.format(currPrice, "USD"));
+                } else {
+                    currentPriceTextView.setText(currencyFormatter.format(currPrice, "BTC"));
+                }
                 currentPriceTextView.setTextColor(Color.BLACK);
                 float firstPrice = closePrices.get(0).getY();
                 // Handle edge case where we dont have data for the interval on the chart. E.g. user selects
@@ -251,7 +268,21 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 lineChart.getAxisLeft().setEnabled(true);
                 lineChart.getAxisLeft().setDrawGridLines(false);
                 lineChart.getXAxis().setDrawGridLines(false);
-                lineChart.getAxisLeft().setValueFormatter(new YAxisPriceFormatter());
+                if (tsymbol.equals("USD")) {
+                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float money, AxisBase axis) {
+                            return currencyFormatter.format(money, "USD_NO_SPACE");
+                        }
+                    });
+                } else {
+                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float money, AxisBase axis) {
+                            return currencyFormatter.format(money, "ROUNDED_BTC_NO_SPACE");
+                        }
+                    });
+                }
                 lineChart.getAxisRight().setEnabled(false);
                 xAxis.setDrawAxisLine(true);
                 xAxis.setValueFormatter(XAxisFormatter);
@@ -435,12 +466,33 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        lineChart.setMaxVisibleValueCount(4);
+        currencyFormatter = CurrencyFormatterSingleton.getInstance(getContext());
         mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
         chartProgressBar = (ProgressBar) rootView.findViewById(R.id.chartProgressSpinner);
         Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
         sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        // TODO: Make noDataText fancy
+        currencyPairs = new ArrayList<String>(2);
+        currencyPairs.add("USD");
+        currencyPairs.add("BTC");
+        chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyPairs);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        chartCurrencySelector.setAdapter(spinnerArrayAdapter);
+        chartCurrencySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tsymbol = currencyPairs.get(position);
+                getCMCChart();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
         lineChart.setNoDataTextColor(R.color.darkRed);
         lineChart.setOnChartValueSelectedListener(this);
@@ -502,7 +554,11 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     public void onValueSelected(Entry e, Highlight h) {
         TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
         TextView dateTextView = (TextView) rootView.findViewById(R.id.graphFragmentDateTextView);
-        currentPrice.setText(String.format(getString(R.string.price_format_no_word), e.getY()));
+        if (tsymbol.equals("USD")) {
+            currentPrice.setText(currencyFormatter.format(e.getY(), "USD"));
+        } else {
+            currentPrice.setText(currencyFormatter.format(e.getY(), "BTC"));
+        }
         dateTextView.setText(getFormattedFullDate(e.getX()));
     }
 
