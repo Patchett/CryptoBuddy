@@ -10,10 +10,10 @@ import android.widget.TextView;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.MarketNode;
+import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.CurrencyFormatterSingleton;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Locale;
 
 
 /**
@@ -30,10 +30,11 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
     String positivPctFormat;
     private int positiveGreenColor;
     private int negativeRedColor;
-    private String tSymbol = null;
+    private CurrencyFormatterSingleton currencyFormatter;
 
     public MarketsListAdapter(List<MarketNode> markets, AppCompatActivity context, CustomItemClickListener listener) {
         this.markets = markets;
+        this.currencyFormatter = CurrencyFormatterSingleton.getInstance(context);
         this.contextRef = new WeakReference<>(context);
         this.listener = listener;
         this.negativePctFormat = context.getString(R.string.negative_pct_format);
@@ -42,20 +43,12 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
     }
 
-    public void settSymbol(String tSymbol) {
-        this.tSymbol = tSymbol;
-    }
-
-    public String gettSymbol() {
-        return tSymbol;
-    }
-
     @Override
     public void onBindViewHolder(final MarketsListAdapter.ViewHolder holder, final int position) {
         MarketNode node = markets.get(position);
         holder.exchangeNameTextView.setText(node.getMarket());
-        // TODO: Use strings.xml and use currency specific symbols
-        holder.volDataTextView.setText(String.format(Locale.getDefault(), "%,.2f", node.getVolume24h()));
+        String formattedVolume = this.currencyFormatter.format(node.getVolume24h(), node.getToSymbol());
+        holder.volDataTextView.setText(formattedVolume);
         if (node.getChangePct24h() >= 0) {
             holder.changeTextView.setTextColor(positiveGreenColor);
             holder.changeTextView.setText(String.format(positivPctFormat, node.getChangePct24h()));
@@ -63,7 +56,8 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
             holder.changeTextView.setTextColor(negativeRedColor);
             holder.changeTextView.setText(String.format(negativePctFormat, node.getChangePct24h()));
         }
-        holder.priceTextView.setText(String.format(Locale.getDefault(), "%f", node.getPrice()));
+        String formattedPrice = this.currencyFormatter.format(node.getPrice(), node.getToSymbol());
+        holder.priceTextView.setText(formattedPrice);
     }
 
     @Override

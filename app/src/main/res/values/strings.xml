@@ -128,5 +128,8 @@
     <string name="xpf_format">\u0046 %1$,.2f</string>
     <!--South African Rand-->
     <string name="zar_format">\u0052 %1$,.2f</string>
+    <!--Nigerian Naira-->
+    <string name="ngn_format">\u0052 %1$,.2f</string>
+
 
 </resources>

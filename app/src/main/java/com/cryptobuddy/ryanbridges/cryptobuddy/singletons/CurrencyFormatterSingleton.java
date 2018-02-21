@@ -33,8 +33,8 @@ public class CurrencyFormatterSingleton {
     }
 
     public void buildHashMap() {
-        currencyFormatMap.put("AIC", context.getString(R.string.usd_format));
         currencyFormatMap.put("USDT", context.getString(R.string.usd_format));
+        currencyFormatMap.put("AIC", context.getString(R.string.usd_format));
         currencyFormatMap.put("NZD", context.getString(R.string.usd_format));
         currencyFormatMap.put("CAD", context.getString(R.string.usd_format));
         currencyFormatMap.put("CLP", context.getString(R.string.usd_format));
@@ -64,6 +64,7 @@ public class CurrencyFormatterSingleton {
         currencyFormatMap.put("ILS", context.getString(R.string.ils_format));
         currencyFormatMap.put("INR", context.getString(R.string.inr_format));
         currencyFormatMap.put("ISK", context.getString(R.string.isk_format));
+        currencyFormatMap.put("KRW", context.getString(R.string.krw_format));
         currencyFormatMap.put("NOK", context.getString(R.string.isk_format));
         currencyFormatMap.put("SEK", context.getString(R.string.isk_format));
         currencyFormatMap.put("JMD", context.getString(R.string.jmd_format));
@@ -87,6 +88,8 @@ public class CurrencyFormatterSingleton {
         currencyFormatMap.put("XAF", context.getString(R.string.xaf_format));
         currencyFormatMap.put("XPF", context.getString(R.string.xpf_format));
         currencyFormatMap.put("ZAR", context.getString(R.string.zar_format));
+        currencyFormatMap.put("VND", context.getString(R.string.vnd_format));
+        currencyFormatMap.put("NGN", context.getString(R.string.ngn_format));
     }
 
     public String format(float amount, String currency) {
