@@ -90,8 +90,9 @@ public class CurrencyFormatterSingleton {
     }
 
     public String format(float amount, String currency) {
-        if (currencyFormatMap.get(currency) != null) {
-            return String.format(currencyFormatMap.get(currency), amount);
+        String format = currencyFormatMap.get(currency);
+        if (format != null) {
+            return String.format(format, amount);
         } else {
             NumberFormat nf = NumberFormat.getInstance(context.getResources().getConfiguration().locale);
             nf.setMaximumFractionDigits(10);
