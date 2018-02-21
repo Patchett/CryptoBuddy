@@ -147,6 +147,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                swipeRefreshLayout.setRefreshing(true);
                 String symbols[] = pairs.get(position).split("/");
                 fsymbol = symbols[1];
                 tsymbol = symbols[0];

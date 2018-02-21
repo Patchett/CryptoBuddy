@@ -33,6 +33,10 @@ public class CurrencyFormatterSingleton {
     }
 
     public void buildHashMap() {
+        currencyFormatMap.put("LTC", context.getString(R.string.ltc_format));
+        currencyFormatMap.put("BTC", context.getString(R.string.btc_format));
+        currencyFormatMap.put("ETH", context.getString(R.string.eth_format));
+
         currencyFormatMap.put("USDT", context.getString(R.string.usd_format));
         currencyFormatMap.put("AIC", context.getString(R.string.usd_format));
         currencyFormatMap.put("NZD", context.getString(R.string.usd_format));
