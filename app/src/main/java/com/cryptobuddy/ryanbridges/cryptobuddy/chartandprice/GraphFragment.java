@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -59,7 +59,7 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.
 /**
  * A placeholder fragment containing a simple view.
  */
-public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, OnChartValueSelectedListener {
+public class GraphFragment extends Fragment implements OnChartValueSelectedListener {
 
     private final static String CHART_URL_WEEK = "https://min-api.cryptocompare.com/data/histohour?fsym=%s&tsym=USD&limit=168&aggregate=1";
     private final static String CHART_URL_ALL_DATA = "https://min-api.cryptocompare.com/data/histoday?fsym=%s&tsym=USD&allData=true";
@@ -88,6 +88,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private LockableNestedScrollView nestedScrollView;
     private WindowManager mWinMgr;
     private int displayWidth;
+    private ProgressBar chartProgressBar;
 
 
     public static final String ARG_SYMBOL = "symbol";
@@ -145,6 +146,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
         final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
         lineChart.setEnabled(true);
+        lineChart.clear();
+        chartProgressBar.setVisibility(View.VISIBLE);
         CoinMarketCapService.getCMCChartData(getActivity(), cryptoID, new afterTaskCompletion<CMCChartData>() {
             @Override
             public void onTaskCompleted(CMCChartData cmcChartData) {
@@ -159,6 +162,8 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     lineChart.invalidate();
                     percentChangeText.setText("");
                     currPriceText.setText("");
+                    lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+                    chartProgressBar.setVisibility(View.GONE);
                     return;
                 }
                 TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
@@ -251,20 +256,17 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 xAxis.setDrawAxisLine(true);
                 xAxis.setValueFormatter(XAxisFormatter);
                 xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+                chartProgressBar.setVisibility(View.GONE);
                 lineChart.invalidate();
             }
         }, new afterTaskFailure() {
             @Override
             public void onTaskFailed(Object o, Exception e) {
                 Log.e("ERROR", "Server Error: " + e.getMessage());
+                lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+                chartProgressBar.setVisibility(View.GONE);
             }
         }, true);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
     }
 
     public void setDayChecked(Calendar cal) {
@@ -435,6 +437,7 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
+        chartProgressBar = (ProgressBar) rootView.findViewById(R.id.chartProgressSpinner);
         Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
         sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         // TODO: Make noDataText fancy
@@ -464,27 +467,27 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 switch (checkedId) {
                     case R.id.dayButton:
                         setDayChecked(Calendar.getInstance());
-                        onRefresh();
+                        getCMCChart();
                         break;
                     case R.id.weekButton:
                         setWeekChecked(Calendar.getInstance());
-                        onRefresh();
+                        getCMCChart();
                         break;
                     case R.id.monthButton:
                         setMonthChecked(Calendar.getInstance());
-                        onRefresh();
+                        getCMCChart();
                         break;
                     case R.id.threeMonthButton:
                         setThreeMonthChecked(Calendar.getInstance());
-                        onRefresh();
+                        getCMCChart();
                         break;
                     case R.id.yearButton:
                         setYearChecked(Calendar.getInstance());
-                        onRefresh();
+                        getCMCChart();
                         break;
                     case R.id.allTimeButton:
                         setAllTimeChecked();
-                        onRefresh();
+                        getCMCChart();
                         break;
                 }
             }
@@ -493,11 +496,6 @@ public class GraphFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         setTable(coinObject, rootView);
         getCMCChart();
         return rootView;
-    }
-
-    @Override
-    public void onRefresh() {
-        getCMCChart();
     }
 
     @Override
