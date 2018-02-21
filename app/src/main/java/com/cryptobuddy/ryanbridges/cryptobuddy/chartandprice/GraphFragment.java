@@ -466,7 +466,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
-        lineChart.setMaxVisibleValueCount(4);
         currencyFormatter = CurrencyFormatterSingleton.getInstance(getContext());
         mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
