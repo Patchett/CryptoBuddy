@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/markets_swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_gravity="center|bottom">
 
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/markets_swipe_refresh"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_gravity="center|bottom"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <Spinner
+            android:id="@+id/top_pairs_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view"
+            style="@style/Divider"
+            app:layout_constraintBottom_toTopOf="@+id/markets_recycler_view"
+            app:layout_constraintTop_toBottomOf="@+id/top_pairs_spinner" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/markets_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="38dp"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_pairs_spinner">
 
-            <Spinner
-                android:id="@+id/top_pairs_spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:paddingBottom="8dp"
-                android:paddingTop="8dp"
-                android:gravity="center_horizontal"/>
-
-            <View style="@style/Divider"/>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/markets_recycler_view"
-                android:layout_width="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:scrollbars="vertical"
-                android:layout_height="match_parent"/>
-        </LinearLayout>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+        </android.support.v7.widget.RecyclerView>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -91,6 +91,10 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         this.mContext = context;
     }
 
+    public void showServerError() {
+
+    }
+
     public void getTopPairs() {
         CryptoCompareCoinService.getTopPairs(getActivity(), symbol, new afterTaskCompletion<TradingPair>() {
             @Override
@@ -99,6 +103,10 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                 pairs.clear();
                 for (TradingPairNode node : tradingPair.getData()) {
                     pairs.add(node.getFromSymbol() + "/" + node.getToSymbol());
+                }
+                if (pairs.isEmpty()) {
+                    showServerError();
+                    return;
                 }
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pairs);
                 spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
