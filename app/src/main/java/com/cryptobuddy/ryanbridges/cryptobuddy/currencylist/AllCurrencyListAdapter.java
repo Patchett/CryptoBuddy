@@ -44,6 +44,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     private Drawable starDisabled;
     private Drawable starEnabled;
 
+    //test
     public AllCurrencyListAdapter(AllCurrencyListFragment.FavoritesListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
                                   DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
