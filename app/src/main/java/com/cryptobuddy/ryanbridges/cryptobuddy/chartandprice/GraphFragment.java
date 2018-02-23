@@ -101,7 +101,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     public static final String ARG_SYMBOL = "symbol";
     public static final String ARG_ID = "ID";
     public static final String COIN_OBJECT = "COIN_OBJECT";
-
+    //test
     public GraphFragment() {
     }
 
