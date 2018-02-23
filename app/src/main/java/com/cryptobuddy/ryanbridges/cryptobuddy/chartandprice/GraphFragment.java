@@ -131,6 +131,73 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         }
     }
 
+    public void setUpChart() {
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setDrawAxisLine(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
+        xAxis.setAvoidFirstLastClipping(true);
+        lineChart.getAxisLeft().setEnabled(true);
+        lineChart.getAxisLeft().setDrawGridLines(false);
+        lineChart.getXAxis().setDrawGridLines(false);
+        lineChart.getAxisRight().setEnabled(false);
+        lineChart.getLegend().setEnabled(false);
+        lineChart.setDoubleTapToZoomEnabled(false);
+        lineChart.setScaleEnabled(false);
+        lineChart.getDescription().setEnabled(false);
+        lineChart.setContentDescription("");
+        lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+        lineChart.setNoDataTextColor(R.color.darkRed);
+        lineChart.setOnChartValueSelectedListener(this);
+        lineChart.setOnChartGestureListener(new OnChartGestureListener() {
+            @Override
+            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                YAxis yAxis = lineChart.getAxisLeft();
+                // Allow scrolling in the right and left margins
+                if (me.getX() > yAxis.getLongestLabel().length() * yAxis.getTextSize() &&
+                        me.getX() < displayWidth - lineChart.getViewPortHandler().offsetRight()) {
+                    viewPager.setPagingEnabled(false);
+                    nestedScrollView.setScrollingEnabled(false);
+                }
+            }
+
+            @Override
+            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+                viewPager.setPagingEnabled(true);
+                nestedScrollView.setScrollingEnabled(true);
+            }
+
+            @Override
+            public void onChartLongPressed(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartDoubleTapped(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartSingleTapped(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+            }
+
+            @Override
+            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+            }
+
+            @Override
+            public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+            }
+        });
+    }
+
     public LineDataSet setUpLineDataSet(List<Entry> entries) {
         LineDataSet dataSet = new LineDataSet(entries, "Price");
         dataSet.setColor(chartBorderColor);
@@ -179,6 +246,23 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                     chartProgressBar.setVisibility(View.GONE);
                     return;
                 }
+                XAxis xAxis = lineChart.getXAxis();
+                xAxis.setValueFormatter(XAxisFormatter);
+                if (tsymbol.equals("USD")) {
+                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float money, AxisBase axis) {
+                            return currencyFormatter.format(money, "USD_NO_SPACE");
+                        }
+                    });
+                } else {
+                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
+                        @Override
+                        public String getFormattedValue(float money, AxisBase axis) {
+                            return currencyFormatter.format(money, "ROUNDED_BTC_NO_SPACE");
+                        }
+                    });
+                }
                 TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
                 float currPrice = closePrices.get(closePrices.size() - 1).getY();
                 if (tsymbol.equals("USD")) {
@@ -207,88 +291,10 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 setColors(percentChange);
                 percentChangeText.setTextColor(percentageColor);
                 LineDataSet dataSet = setUpLineDataSet(closePrices);
-                final LineData lineData = new LineData(dataSet);
-                lineChart.setDoubleTapToZoomEnabled(false);
-                lineChart.setScaleEnabled(false);
-                lineChart.getDescription().setEnabled(false);
+                LineData lineData = new LineData(dataSet);
                 lineChart.setData(lineData);
-                lineChart.setContentDescription("");
                 lineChart.animateX(800);
-                lineChart.setOnChartGestureListener(new OnChartGestureListener() {
-                    @Override
-                    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                        YAxis yAxis = lineChart.getAxisLeft();
-                        // Allow scrolling in the right and left margins
-                        if (me.getX() > yAxis.getLongestLabel().length() * yAxis.getTextSize() &&
-                                me.getX() < displayWidth - lineChart.getViewPortHandler().offsetRight()) {
-                            viewPager.setPagingEnabled(false);
-                            nestedScrollView.setScrollingEnabled(false);
-                        }
-                    }
-
-                    @Override
-                    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
-                        viewPager.setPagingEnabled(true);
-                        nestedScrollView.setScrollingEnabled(true);
-                    }
-
-                    @Override
-                    public void onChartLongPressed(MotionEvent me) {
-
-                    }
-
-                    @Override
-                    public void onChartDoubleTapped(MotionEvent me) {
-
-                    }
-
-                    @Override
-                    public void onChartSingleTapped(MotionEvent me) {
-
-                    }
-
-                    @Override
-                    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
-
-                    }
-
-                    @Override
-                    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
-
-                    }
-
-                    @Override
-                    public void onChartTranslate(MotionEvent me, float dX, float dY) {
-
-                    }
-                });
-                lineChart.getLegend().setEnabled(false);
-                XAxis xAxis = lineChart.getXAxis();
-                xAxis.setAvoidFirstLastClipping(true);
-                lineChart.getAxisLeft().setEnabled(true);
-                lineChart.getAxisLeft().setDrawGridLines(false);
-                lineChart.getXAxis().setDrawGridLines(false);
-                if (tsymbol.equals("USD")) {
-                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float money, AxisBase axis) {
-                            return currencyFormatter.format(money, "USD_NO_SPACE");
-                        }
-                    });
-                } else {
-                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float money, AxisBase axis) {
-                            return currencyFormatter.format(money, "ROUNDED_BTC_NO_SPACE");
-                        }
-                    });
-                }
-                lineChart.getAxisRight().setEnabled(false);
-                xAxis.setDrawAxisLine(true);
-                xAxis.setValueFormatter(XAxisFormatter);
-                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM_INSIDE);
                 chartProgressBar.setVisibility(View.GONE);
-                lineChart.invalidate();
             }
         }, new afterTaskFailure() {
             @Override
@@ -466,6 +472,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        setUpChart();
         currencyFormatter = CurrencyFormatterSingleton.getInstance(getContext());
         mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
@@ -492,9 +499,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
             }
         });
 
-        lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
-        lineChart.setNoDataTextColor(R.color.darkRed);
-        lineChart.setOnChartValueSelectedListener(this);
         viewPager = (CustomViewPager) container;
         nestedScrollView = (LockableNestedScrollView) rootView.findViewById(R.id.graphFragmentNestedScrollView);
         buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
@@ -545,7 +549,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         });
         CMCCoin coinObject = getActivity().getIntent().getParcelableExtra(GraphFragment.COIN_OBJECT);
         setTable(coinObject, rootView);
-        getCMCChart();
         return rootView;
     }
 
