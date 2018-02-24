@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +10,9 @@ import android.view.MenuItem;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CustomViewPager;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.SectionsPagerAdapterDetails;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 
 /**
@@ -17,7 +20,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
  */
 
 public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
-    private SectionsPagerAdapterGraphs mSectionsPagerAdapter;
+    private SectionsPagerAdapterDetails mSectionsPagerAdapter;
     public CustomViewPager mViewPager;
     private Toolbar mToolbar;
 
@@ -31,7 +34,7 @@ public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
         String symbol = getIntent().getStringExtra(GraphFragment.ARG_SYMBOL);
         String id = getIntent().getStringExtra(GraphFragment.ARG_ID);
         mViewPager = (CustomViewPager) findViewById(R.id.currencyTabsViewPager);
-        mSectionsPagerAdapter = new SectionsPagerAdapterGraphs(getSupportFragmentManager(), symbol, id);
+        mSectionsPagerAdapter = new SectionsPagerAdapterDetails(getSupportFragmentManager(), symbol, id);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);

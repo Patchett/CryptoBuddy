@@ -3,7 +3,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.rest;
 import android.content.Context;
 import android.util.Log;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.GraphFragment;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCChartData;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.grizzly.rest.GenericRestCall;

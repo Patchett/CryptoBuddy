@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

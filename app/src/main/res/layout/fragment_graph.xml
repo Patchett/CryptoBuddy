@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.LockableNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.LockableNestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/graphFragmentNestedScrollView"
     android:layout_width="match_parent"
@@ -416,4 +416,4 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
-</com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.LockableNestedScrollView>
+</com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.LockableNestedScrollView>

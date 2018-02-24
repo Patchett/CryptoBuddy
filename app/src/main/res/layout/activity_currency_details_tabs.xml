@@ -28,7 +28,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.CustomViewPager
+    <com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CustomViewPager
         android:id="@+id/currencyTabsViewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

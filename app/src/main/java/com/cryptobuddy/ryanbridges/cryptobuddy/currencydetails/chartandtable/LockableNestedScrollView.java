@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable;
 
 
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable;
 
 /**
  * Created by Ryan on 8/11/2017.
@@ -26,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CustomViewPager;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashDayDateFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.MonthSlashYearFormatter;
 import com.cryptobuddy.ryanbridges.cryptobuddy.formatters.TimeDateFormatter;

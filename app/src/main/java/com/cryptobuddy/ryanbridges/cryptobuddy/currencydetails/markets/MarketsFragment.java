@@ -1,6 +1,7 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.markets;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.markets;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
@@ -15,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
@@ -31,7 +34,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.GraphFragment.ARG_SYMBOL;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment.ARG_SYMBOL;
 
 /**
  * Created by Ryan on 12/29/2017.
@@ -50,6 +53,10 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     private MarketsListAdapter adapter;
     private List<MarketNode> markets;
     private Context mContext;
+    private TextView noMarketsText;
+    private Button marketsSourceButton;
+    private View spinnerDivider;
+    public static final String BASE_CRYPTOCOMPARE_OVERVIEW_STRING = "https://www.cryptocompare.com/coins/%s/overview/";
     public static final String BASE_MARKET_URL_CHROME_URL = "https://www.cryptocompare.com/exchanges/binance/overview/%s";
 
     public MarketsFragment() {
@@ -68,9 +75,15 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void getPairMarket() {
+        if (tsymbol == null || fsymbol == null) {
+            showServerError();
+            swipeRefreshLayout.setRefreshing(false);
+            return;
+        }
         CryptoCompareCoinService.getPairsMarket(getActivity(), tsymbol, fsymbol, new afterTaskCompletion<MarketsResponse>() {
             @Override
             public void onTaskCompleted(MarketsResponse marketsResponse) {
+                setVisible();
                 markets.clear();
                 markets.addAll(marketsResponse.getData().getMarketsList());
                 adapter.setMarketsList(marketsResponse.getData().getMarketsList());
@@ -92,14 +105,33 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
     }
 
     public void showServerError() {
+        noMarketsText.setEnabled(true);
+        marketsSourceButton.setEnabled(true);
+        noMarketsText.setVisibility(View.VISIBLE);
+        marketsSourceButton.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.GONE);
+        spinner.setEnabled(false);
+        spinnerDivider.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
+    }
 
+    public void setVisible() {
+        marketsRecyclerView.setEnabled(true);
+        marketsRecyclerView.setVisibility(View.VISIBLE);
+        spinner.setEnabled(true);
+        spinner.setVisibility(View.VISIBLE);
+        noMarketsText.setVisibility(View.GONE);
+        marketsSourceButton.setVisibility(View.GONE);
+        noMarketsText.setEnabled(false);
+        marketsSourceButton.setEnabled(false);
+        spinnerDivider.setVisibility(View.VISIBLE);
     }
 
     public void getTopPairs() {
+        swipeRefreshLayout.setRefreshing(true);
         CryptoCompareCoinService.getTopPairs(getActivity(), symbol, new afterTaskCompletion<TradingPair>() {
             @Override
             public void onTaskCompleted(TradingPair tradingPair) {
-                swipeRefreshLayout.setRefreshing(true);
                 pairs.clear();
                 for (TradingPairNode node : tradingPair.getData()) {
                     pairs.add(node.getFromSymbol() + "/" + node.getToSymbol());
@@ -108,6 +140,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     showServerError();
                     return;
                 }
+                setVisible();
                 ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pairs);
                 spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(spinnerArrayAdapter);
@@ -133,6 +166,19 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_markets, container, false);
         symbol = getArguments().getString(ARG_SYMBOL);
+        spinnerDivider = rootView.findViewById(R.id.marketSpinnerDivider);
+        marketsSourceButton = (Button) rootView.findViewById(R.id.marketsSourceButton);
+        marketsSourceButton.setPaintFlags(marketsSourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        marketsSourceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(getActivity(), Uri.parse(String.format(BASE_CRYPTOCOMPARE_OVERVIEW_STRING, symbol)));
+            }
+        });
+
+        noMarketsText = (TextView) rootView.findViewById(R.id.noMarketsTextView);
         marketsRecyclerView = (RecyclerView) rootView.findViewById(R.id.markets_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(getActivity()).build();
         marketsRecyclerView.addItemDecoration(divider);

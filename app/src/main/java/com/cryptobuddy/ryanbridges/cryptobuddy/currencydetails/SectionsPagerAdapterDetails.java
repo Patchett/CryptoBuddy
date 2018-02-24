@@ -1,24 +1,25 @@
-package com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice;
+package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.chartandprice.markets.MarketsFragment;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
+import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.markets.MarketsFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapterGraphs extends FragmentPagerAdapter {
+public class SectionsPagerAdapterDetails extends FragmentPagerAdapter {
 
     private String symbol;
     private String id;
 
-    public SectionsPagerAdapterGraphs(FragmentManager fm) {
+    public SectionsPagerAdapterDetails(FragmentManager fm) {
         super(fm);
     }
-    public SectionsPagerAdapterGraphs(FragmentManager fm, String symbol, String id) {
+    public SectionsPagerAdapterDetails(FragmentManager fm, String symbol, String id) {
         super(fm);
         this.symbol = symbol;
         this.id = id;

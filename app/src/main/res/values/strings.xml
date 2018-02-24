@@ -33,6 +33,7 @@
     <string name="AllTime">All Time</string>
     <string name="action_search">Search</string>
     <string name="noChartDataString">No Chart Data :(</string>
+    <string name="noMarketsString">No Markets Available :(</string>
     <string name="notAvailableStringResource">N/A</string>
     <string name="nameAndSymbol">%1$s (%2$s)</string>
     <string name="volume24h">Volume24h: </string>

@@ -2,6 +2,7 @@
 
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/markets_swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,6 +12,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <Button
+            android:id="@+id/marketsSourceButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/button_ripple_effect"
+            android:text="SOURCE"
+            android:enabled="false"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/noMarketsTextView" />
+
+
+        <TextView
+            android:id="@+id/noMarketsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="12dp"
+            android:enabled="false"
+            android:text="@string/noMarketsString"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintBottom_toTopOf="@+id/marketsSourceButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.504"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/top_pairs_spinner" />
 
         <Spinner
             android:id="@+id/top_pairs_spinner"
@@ -25,7 +62,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
-            android:id="@+id/view"
+            android:id="@+id/marketSpinnerDivider"
             style="@style/Divider"
             app:layout_constraintBottom_toTopOf="@+id/markets_recycler_view"
             app:layout_constraintTop_toBottomOf="@+id/top_pairs_spinner" />
@@ -34,8 +71,6 @@
             android:id="@+id/markets_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="38dp"
             android:scrollbars="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -44,5 +79,6 @@
             app:layout_constraintTop_toBottomOf="@+id/top_pairs_spinner">
 
         </android.support.v7.widget.RecyclerView>
+
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.SwipeRefreshLayout>
