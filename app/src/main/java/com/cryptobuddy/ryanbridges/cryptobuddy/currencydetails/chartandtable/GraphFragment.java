@@ -285,9 +285,17 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 float difference = (currPrice - firstPrice);
                 float percentChange = (difference / firstPrice) * 100;
                 if (percentChange < 0) {
-                    percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
+                    if (tsymbol.equals("USD")) {
+                        percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
+                    } else {
+                        percentChangeText.setText(String.format(getString(R.string.negative_variable_pct_change_without_dollars_format), currentTimeWindow, percentChange));
+                    }
                 } else {
-                    percentChangeText.setText(String.format(getString(R.string.positive_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
+                    if (tsymbol.equals("USD")) {
+                        percentChangeText.setText(String.format(getString(R.string.positive_variable_pct_change_with_dollars_format), currentTimeWindow, percentChange, Math.abs(difference)));
+                    } else {
+                        percentChangeText.setText(String.format(getString(R.string.positive_variable_pct_change_without_dollars_format), currentTimeWindow, percentChange));
+                    }
                 }
                 setColors(percentChange);
                 percentChangeText.setTextColor(percentageColor);
