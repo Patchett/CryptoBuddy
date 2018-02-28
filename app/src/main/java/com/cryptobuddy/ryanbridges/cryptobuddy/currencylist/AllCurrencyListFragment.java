@@ -25,6 +25,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CurrencyDetailsTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCQuickSearch;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
@@ -56,6 +57,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private Context mContext;
     public static String currQuery = "";
     private HashMap<String, String> searchedSymbols = new HashMap<>();
+    private HashMap<String, Integer> slugToIDMap = new HashMap<>();
     public static boolean searchViewFocused = false;
     private FavoritesListUpdater favsUpdateCallback;
 
@@ -65,6 +67,33 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     }
 
     public AllCurrencyListFragment() {
+    }
+
+    public void getQuickSearch() {
+        CoinMarketCapService.getCMCQuickSearch(mContext, new afterTaskCompletion<CMCQuickSearch[]>() {
+            @Override
+            public void onTaskCompleted(CMCQuickSearch[] quickSearchNodeList) {
+                slugToIDMap = new HashMap<>();
+                Parcelable recyclerViewState;
+                recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
+                for (CMCQuickSearch node : quickSearchNodeList) {
+                    slugToIDMap.put(node.getSlug(), node.getId());
+                }
+                for (CMCCoin coin : currencyItemList) {
+                    coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                }
+                adapter.notifyDataSetChanged();
+                currencyRecyclerView.setAdapter(adapter);
+                currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, true);
     }
 
     @Override
@@ -81,8 +110,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         CoinMarketCapService.getAllCoins(mContext, new afterTaskCompletion<CMCCoin[]>() {
             @Override
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
-                Parcelable recyclerViewState;
-                recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
                 searchedSymbols.clear();
                 if (searchViewFocused) {
                     for (CMCCoin coin : filteredList) {
@@ -108,14 +135,10 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                         }
                         adapter.setCurrencyList(currencyItemList);
                     }
-                    adapter.notifyDataSetChanged();
-                    currencyRecyclerView.setAdapter(adapter);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                swipeRefreshLayout.setRefreshing(false);
-                currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-
+                getQuickSearch();
             }
         }, new afterTaskFailure() {
             @Override

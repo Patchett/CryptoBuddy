@@ -112,7 +112,9 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
             holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, Double.parseDouble(item.getPrice_usd())));
         }
         holder.currencyListfullNameTextView.setText(String.format(this.symbolAndFullNameStringResource, item.getName(), item.getSymbol()));
-        Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, item.getId())).into(holder.currencyListCoinImageView);
+        if (item.getQuickSearchID() != -1) {
+            Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, Integer.toString(item.getQuickSearchID()))).into(holder.currencyListCoinImageView);
+        }
         CoinFavoritesStructures favs = this.dbRef.get().getFavorites();
         boolean isFav = favs.favoritesMap.get(item.getSymbol()) != null;
         holder.favButton.setFavorite(isFav, false);

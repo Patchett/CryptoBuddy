@@ -24,6 +24,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CurrencyDetailsTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
+import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCQuickSearch;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CoinFavoritesStructures;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
@@ -33,6 +34,7 @@ import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
@@ -53,6 +55,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private Hashtable<String, CMCCoin> currencyItemMap = new Hashtable<>();
     private AllCoinsListUpdater favsUpdateCallback;
     private AppCompatActivity mContext;
+    private HashMap<String, Integer> slugToIDMap = new HashMap<>();
 
     public interface AllCoinsListUpdater {
         void allCoinsModifyFavorites(CMCCoin coin);
@@ -90,9 +93,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                             currencyItemMap.put(coin.getSymbol(), coin);
                         }
                     }
-                    adapter.setCurrencyList(currencyItemFavsList);
-                    adapter.notifyDataSetChanged();
-                    currencyRecyclerView.setAdapter(adapter);
+                    getQuickSearch();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -107,6 +108,35 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             }
         }, true);
     }
+
+    public void getQuickSearch() {
+        CoinMarketCapService.getCMCQuickSearch(mContext, new afterTaskCompletion<CMCQuickSearch[]>() {
+            @Override
+            public void onTaskCompleted(CMCQuickSearch[] quickSearchNodeList) {
+                slugToIDMap = new HashMap<>();
+                Parcelable recyclerViewState;
+                recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
+                for (CMCQuickSearch node : quickSearchNodeList) {
+                    slugToIDMap.put(node.getSlug(), node.getId());
+                }
+                for (CMCCoin coin : currencyItemFavsList) {
+                    coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                }
+                adapter.setCurrencyList(currencyItemFavsList);
+                adapter.notifyDataSetChanged();
+                currencyRecyclerView.setAdapter(adapter);
+                currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, new afterTaskFailure() {
+            @Override
+            public void onTaskFailed(Object o, Exception e) {
+                Log.e("ERROR", "Server Error: " + e.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, true);
+    }
+
 
     @Override
     public void onAttach(Activity activity) {

@@ -16,7 +16,7 @@ public class CMCCoin implements Parcelable {
     }
 
     public CMCCoin(Parcel in){
-        String[] data = new String[15];
+        String[] data = new String[16];
 
         in.readStringArray(data);
         this.id = data[0];
@@ -33,7 +33,8 @@ public class CMCCoin implements Parcelable {
         this.percent_change_1h = data[11];
         this.percent_change_24h = data[12];
         this.percent_change_7d = data[13];
-        this.last_updated= data[14];
+        this.last_updated = data[14];
+        this.quickSearchID = Integer.parseInt(data[15]);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class CMCCoin implements Parcelable {
         return 0;
     }
 
-    public static final Parcelable.Creator<CMCCoin> CREATOR= new Parcelable.Creator<CMCCoin>() {
+    public static final Parcelable.Creator<CMCCoin> CREATOR = new Parcelable.Creator<CMCCoin>() {
         @Override
         public CMCCoin createFromParcel(Parcel source) {
             return new CMCCoin(source);  //using parcelable constructor
@@ -69,9 +70,11 @@ public class CMCCoin implements Parcelable {
                 this.percent_change_1h,
                 this.percent_change_24h,
                 this.percent_change_7d,
-                this.last_updated});
+                this.last_updated,
+                Integer.toString(this.quickSearchID)});
     }
 
+    private int quickSearchID;
     //Side note: the names don't need to match. The annotation name is the one used to serialize the property.
     @JsonProperty("id")
     private String id;
@@ -222,5 +225,13 @@ public class CMCCoin implements Parcelable {
 
     public void setLast_updated(String last_updated) {
         this.last_updated = last_updated;
+    }
+
+    public void setQuickSearchID(int quickSearchID) {
+        this.quickSearchID = quickSearchID;
+    }
+
+    public int getQuickSearchID() {
+        return quickSearchID;
     }
 }
