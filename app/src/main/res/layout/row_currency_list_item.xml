@@ -75,10 +75,10 @@
         app:mfb_bounce_duration="300"
         app:mfb_favorite_image="@drawable/ic_star_enabled_24dp"
         app:mfb_not_favorite_image="@drawable/ic_star_border_black_24dp"
-        app:mfb_padding="12"
+        app:mfb_padding="8"
         app:mfb_rotation_angle="360"
         app:mfb_rotation_duration="400"
-        app:mfb_size="64" />
+        app:mfb_size="56" />
 
     <TextView
         android:id="@+id/oneHourChangeTextView"
