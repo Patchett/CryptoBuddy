@@ -35,7 +35,6 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 
 /**
@@ -51,8 +50,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private FavsCurrencyListAdapter adapter;
     private ArrayList<CMCCoin> currencyItemFavsList = new ArrayList<>();
     private ArrayList<CMCCoin> allCoinsList = new ArrayList<>();
-    private Hashtable<String, CMCCoin> allCoinsMap = new Hashtable<>();
-    private Hashtable<String, CMCCoin> currencyItemMap = new Hashtable<>();
+    private HashMap<String, CMCCoin> currencyItemMap = new HashMap<>();
     private AllCoinsListUpdater favsUpdateCallback;
     private AppCompatActivity mContext;
     private HashMap<String, Integer> slugToIDMap = new HashMap<>();
@@ -82,12 +80,10 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 currencyItemFavsList.clear();
                 currencyItemMap.clear();
                 allCoinsList.clear();
-                allCoinsMap.clear();
                 CoinFavoritesStructures favs = db.getFavorites();
                 try {
                     for (CMCCoin coin : cmcCoinList) {
                         allCoinsList.add(coin);
-                        allCoinsMap.put(coin.getSymbol(), coin);
                         if (favs.favoritesMap.get(coin.getSymbol()) != null) {
                             currencyItemFavsList.add(coin);
                             currencyItemMap.put(coin.getSymbol(), coin);
@@ -159,8 +155,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemFavsList = new ArrayList<>();
         allCoinsList = new ArrayList<>();
-        currencyItemMap = new Hashtable<>();
-        allCoinsMap = new Hashtable<>();
+        currencyItemMap = new HashMap<>();
         adapter = new FavsCurrencyListAdapter(favsUpdateCallback, currencyItemFavsList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
@@ -218,10 +213,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     @Override
     public void onRefresh() {
         getCurrencyList();
-    }
-
-    public FavsCurrencyListAdapter getAdapter() {
-        return this.adapter;
     }
 
     public void removeFavorite(CMCCoin coin) {
