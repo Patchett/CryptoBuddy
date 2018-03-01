@@ -10,8 +10,6 @@ import android.view.MenuItem;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CustomViewPager;
-import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.SectionsPagerAdapterDetails;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 

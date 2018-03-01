@@ -35,10 +35,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 
 /**
  * Created by Ryan on 1/21/2018.
@@ -52,7 +49,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private AllCurrencyListAdapter adapter;
     private ArrayList<CMCCoin> currencyItemList;
     private ArrayList<CMCCoin> filteredList = new ArrayList<>();
-    private DatabaseHelperSingleton db;
     private MenuItem searchItem;
     private SearchView searchView;
     private View rootView;
@@ -165,7 +161,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
         setHasOptionsMenu(true);
-        this.db = DatabaseHelperSingleton.getInstance(mContext);
+        DatabaseHelperSingleton db = DatabaseHelperSingleton.getInstance(mContext);
         searchList = new ArrayList<>();
         // Setup currency list
         currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_list_recycler_view);

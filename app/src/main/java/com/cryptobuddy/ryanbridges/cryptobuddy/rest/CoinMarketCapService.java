@@ -13,8 +13,6 @@ import com.grizzly.rest.Model.afterTaskFailure;
 
 import org.springframework.http.HttpMethod;
 
-import java.util.HashSet;
-
 /**
  * Created by Ryan on 1/16/2018.
  */

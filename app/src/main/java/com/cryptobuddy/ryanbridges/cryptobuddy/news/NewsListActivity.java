@@ -1,6 +1,5 @@
 package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.widget.SwipeRefreshLayout;
