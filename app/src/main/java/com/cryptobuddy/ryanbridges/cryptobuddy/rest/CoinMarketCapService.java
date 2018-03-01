@@ -62,7 +62,7 @@ public class CoinMarketCapService {
                 .setMethodToCall(HttpMethod.GET)
                 .setTaskCompletion(taskCompletion)
                 .setTaskFailure(failure)
-                .setAutomaticCacheRefresh(true).execute(async);
+                .setAutomaticCacheRefresh(false).execute(async);
     }
 
 }

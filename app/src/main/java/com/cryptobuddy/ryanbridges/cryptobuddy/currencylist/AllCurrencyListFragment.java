@@ -49,7 +49,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private AllCurrencyListAdapter adapter;
     private ArrayList<CMCCoin> currencyItemList;
     private ArrayList<CMCCoin> filteredList = new ArrayList<>();
-    private Hashtable<String, CMCCoin> currencyItemMap;
     private DatabaseHelperSingleton db;
     private MenuItem searchItem;
     private SearchView searchView;
@@ -117,7 +116,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                     }
                 } else {
                     currencyItemList.clear();
-                    currencyItemMap.clear();
                 }
                 try {
                     if (searchViewFocused) { // Copy some code here to make the checks faster
@@ -131,7 +129,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                     } else {
                         for (CMCCoin coin : cmcCoinList) {
                             currencyItemList.add(coin);
-                            currencyItemMap.put(coin.getSymbol(), coin);
                         }
                         adapter.setCurrencyList(currencyItemList);
                     }
@@ -169,7 +166,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemList = new ArrayList<>();
-        currencyItemMap = new Hashtable<>();
         adapter = new AllCurrencyListAdapter(favsUpdateCallback, currencyItemList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
