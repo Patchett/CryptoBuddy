@@ -34,6 +34,9 @@ import com.grizzly.rest.Model.afterTaskFailure;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 
@@ -55,6 +58,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private View rootView;
     private Context mContext;
     public static String currQuery = "";
+    ArrayList<CMCCoin> searchList;
     private HashMap<String, String> searchedSymbols = new HashMap<>();
     private HashMap<String, Integer> slugToIDMap = new HashMap<>();
     public static boolean searchViewFocused = false;
@@ -78,8 +82,14 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 for (CMCQuickSearch node : quickSearchNodeList) {
                     slugToIDMap.put(node.getSlug(), node.getId());
                 }
-                for (CMCCoin coin : currencyItemList) {
-                    coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                if (searchViewFocused) {
+                    for (CMCCoin coin: searchList) {
+                        coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                    }
+                } else {
+                    for (CMCCoin coin : currencyItemList) {
+                        coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 currencyRecyclerView.setAdapter(adapter);
@@ -109,8 +119,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         CoinMarketCapService.getAllCoins(mContext, new afterTaskCompletion<CMCCoin[]>() {
             @Override
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
-                searchedSymbols.clear();
                 if (searchViewFocused) {
+                    searchedSymbols.clear();
+                    searchList.clear();
                     for (CMCCoin coin : filteredList) {
                         searchedSymbols.put(coin.getSymbol(), coin.getSymbol());
                     }
@@ -119,17 +130,14 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 }
                 try {
                     if (searchViewFocused) { // Copy some code here to make the checks faster
-                        ArrayList<CMCCoin> tempList = new ArrayList<>();
                         for (CMCCoin coin : cmcCoinList) {
                             if (searchedSymbols.get(coin.getSymbol()) != null) {
-                                tempList.add(coin);
+                                searchList.add(coin);
                             }
                         }
-                        adapter.setCurrencyList(tempList);
+                        adapter.setCurrencyList(searchList);
                     } else {
-                        for (CMCCoin coin : cmcCoinList) {
-                            currencyItemList.add(coin);
-                        }
+                        currencyItemList.addAll(Arrays.asList(cmcCoinList));
                         adapter.setCurrencyList(currencyItemList);
                     }
                 } catch (Exception e) {
@@ -158,6 +166,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
         setHasOptionsMenu(true);
         this.db = DatabaseHelperSingleton.getInstance(mContext);
+        searchList = new ArrayList<>();
         // Setup currency list
         currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_list_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(mContext).build();
