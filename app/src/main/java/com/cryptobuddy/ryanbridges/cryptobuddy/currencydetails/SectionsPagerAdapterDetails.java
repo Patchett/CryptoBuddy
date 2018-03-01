@@ -19,7 +19,7 @@ public class SectionsPagerAdapterDetails extends FragmentPagerAdapter {
     public SectionsPagerAdapterDetails(FragmentManager fm) {
         super(fm);
     }
-    public SectionsPagerAdapterDetails(FragmentManager fm, String symbol, String id) {
+    protected SectionsPagerAdapterDetails(FragmentManager fm, String symbol, String id) {
         super(fm);
         this.symbol = symbol;
         this.id = id;

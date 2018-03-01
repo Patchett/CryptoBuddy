@@ -141,7 +141,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     return;
                 }
                 setVisible();
-                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, pairs);
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, pairs);
                 spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(spinnerArrayAdapter);
                 if (fsymbol == null || tsymbol == null) {

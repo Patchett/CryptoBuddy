@@ -41,10 +41,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
     private WeakReference<AllCurrencyListFragment.FavoritesListUpdater> favsUpdateCallbackRef;
-    private Drawable starDisabled;
-    private Drawable starEnabled;
 
-    //test
     public AllCurrencyListAdapter(AllCurrencyListFragment.FavoritesListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
                                   DatabaseHelperSingleton db, AppCompatActivity context, CustomItemClickListener listener) {
         this.currencyList = currencyList;
@@ -60,8 +57,6 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         this.symbolAndFullNameStringResource = this.contextRef.get().getString(R.string.nameAndSymbol);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
-        this.starDisabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_border_black_24dp);
-        this.starEnabled = contextRef.get().getResources().getDrawable(R.drawable.ic_star_enabled_24dp);
         this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
     }
 

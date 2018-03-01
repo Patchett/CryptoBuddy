@@ -76,7 +76,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     public final static String BASE_CMC_SOURCE_URL = "https://coinmarketcap.com/currencies/";
     private int chartFillColor;
     private int chartBorderColor;
-    private String cryptoSymbol;
     private String cryptoID;
     private int percentageColor;
     private LineChart lineChart;
@@ -91,11 +90,9 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     public static String CURRENT_CHART_URL;
     public final static DecimalFormat rawNumberFormat = new DecimalFormat("#,###.##");
     private LockableNestedScrollView nestedScrollView;
-    private WindowManager mWinMgr;
     private int displayWidth;
     private ProgressBar chartProgressBar;
     private List<String> currencyPairs;
-    private Spinner chartCurrencySelector;
     private String tsymbol;
     private CurrencyFormatterSingleton currencyFormatter;
 
@@ -146,7 +143,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         lineChart.setScaleEnabled(false);
         lineChart.getDescription().setEnabled(false);
         lineChart.setContentDescription("");
-        lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+        lineChart.setNoDataText(getString(R.string.noChartDataString));
         lineChart.setNoDataTextColor(R.color.darkRed);
         lineChart.setOnChartValueSelectedListener(this);
         lineChart.setOnChartGestureListener(new OnChartGestureListener() {
@@ -243,7 +240,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                     lineChart.invalidate();
                     percentChangeText.setText("");
                     currPriceText.setText("");
-                    lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+                    lineChart.setNoDataText(getString(R.string.noChartDataString));
                     chartProgressBar.setVisibility(View.GONE);
                     return;
                 }
@@ -309,7 +306,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
             @Override
             public void onTaskFailed(Object o, Exception e) {
                 Log.e("ERROR", "Server Error: " + e.getMessage());
-                lineChart.setNoDataText(getActivity().getString(R.string.noChartDataString));
+                lineChart.setNoDataText(getString(R.string.noChartDataString));
                 chartProgressBar.setVisibility(View.GONE);
             }
         }, true);
@@ -321,7 +318,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         long startTime = cal.getTimeInMillis();
         cal.clear();
         CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
-        currentTimeWindow = String.format(getString(R.string.oneDay));
+        currentTimeWindow = getString(R.string.oneDay);
         XAxisFormatter = dayCommaTimeDateFormatter;
     }
 
@@ -331,7 +328,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         long startTime = cal.getTimeInMillis();
         cal.clear();
         CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
-        currentTimeWindow = String.format(getString(R.string.Week));
+        currentTimeWindow = getString(R.string.Week);
         XAxisFormatter = monthSlashDayXAxisFormatter;
     }
 
@@ -341,7 +338,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         long startTime = cal.getTimeInMillis();
         cal.clear();
         CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
-        currentTimeWindow = String.format(getString(R.string.Month));
+        currentTimeWindow = getString(R.string.Month);
         XAxisFormatter = monthSlashDayXAxisFormatter;
     }
 
@@ -351,7 +348,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         long startTime = cal.getTimeInMillis();
         cal.clear();
         CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
-        currentTimeWindow = String.format(getString(R.string.threeMonth));
+        currentTimeWindow = getString(R.string.threeMonth);
         XAxisFormatter = monthSlashDayXAxisFormatter;
     }
 
@@ -361,22 +358,22 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         long startTime = cal.getTimeInMillis();
         cal.clear();
         CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_WINDOW, cryptoID, startTime, endTime);
-        currentTimeWindow = String.format(getString(R.string.Year));
+        currentTimeWindow = getString(R.string.Year);
         XAxisFormatter = monthSlashYearFormatter;
     }
 
     public void setAllTimeChecked() {
-        currentTimeWindow = String.format(getString(R.string.AllTime));
+        currentTimeWindow = getString(R.string.AllTime);
         CURRENT_CHART_URL = String.format(COIN_MARKETCAP_CHART_URL_ALL_DATA, cryptoID);
         XAxisFormatter = monthSlashYearFormatter;
     }
 
     public void setTable(CMCCoin coinObject, View rootVeiw) {
         String usdFormat = getString(R.string.usd_format);
-        String negativePctFormat = getActivity().getString(R.string.negative_pct_format);
-        String positivePctFormat = getActivity().getString(R.string.positive_pct_format);
-        int negativeRedColor = getActivity().getResources().getColor(R.color.percentNegativeRed);
-        int positiveGreenColor = getActivity().getResources().getColor(R.color.percentPositiveGreen);
+        String negativePctFormat = getString(R.string.negative_pct_format);
+        String positivePctFormat = getString(R.string.positive_pct_format);
+        int negativeRedColor = getResources().getColor(R.color.percentNegativeRed);
+        int positiveGreenColor = getResources().getColor(R.color.percentPositiveGreen);
         TextView nameTextView = (TextView) rootVeiw.findViewById(R.id.tableNameDataTextView);
         if (coinObject.getName() == null) {
             nameTextView.setText("N/A");
@@ -395,7 +392,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         if (coinObject.getPrice_btc() == null) {
             priceBTCTextView.setText("N/A");
         } else {
-            priceBTCTextView.setText(String.format(getActivity().getString(R.string.btc_format), coinObject.getPrice_btc()));
+            priceBTCTextView.setText(String.format(getString(R.string.btc_format), coinObject.getPrice_btc()));
         }
 
         TextView volumeTextView = (TextView) rootVeiw.findViewById(R.id.tableVolUSDDataTextView);
@@ -483,15 +480,15 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
         setUpChart();
         currencyFormatter = CurrencyFormatterSingleton.getInstance(getContext());
-        mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        WindowManager mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
         chartProgressBar = (ProgressBar) rootView.findViewById(R.id.chartProgressSpinner);
         Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
         sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        currencyPairs = new ArrayList<String>(2);
+        currencyPairs = new ArrayList<>(2);
         currencyPairs.add("USD");
         currencyPairs.add("BTC");
-        chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
+        Spinner chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyPairs);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         chartCurrencySelector.setAdapter(spinnerArrayAdapter);
@@ -511,11 +508,10 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         viewPager = (CustomViewPager) container;
         nestedScrollView = (LockableNestedScrollView) rootView.findViewById(R.id.graphFragmentNestedScrollView);
         buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
-        cryptoSymbol = getArguments().getString(ARG_SYMBOL);
         cryptoID = getArguments().getString(ARG_ID);
         setDayChecked(Calendar.getInstance());
         buttonGroup.check(R.id.dayButton);
-        currentTimeWindow = String.format(getString(R.string.oneDay));
+        currentTimeWindow = getString(R.string.oneDay);
         sourceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

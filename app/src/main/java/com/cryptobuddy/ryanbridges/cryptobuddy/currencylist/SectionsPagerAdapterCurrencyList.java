@@ -15,7 +15,7 @@ public class SectionsPagerAdapterCurrencyList extends FragmentPagerAdapter {
     private SparseArray<String> mFragmentTags;
     private FragmentManager mFragmentManager;
 
-    public SectionsPagerAdapterCurrencyList(FragmentManager fm) {
+    protected SectionsPagerAdapterCurrencyList(FragmentManager fm) {
         super(fm);
         mFragmentManager = fm;
         mFragmentTags = new SparseArray<>();

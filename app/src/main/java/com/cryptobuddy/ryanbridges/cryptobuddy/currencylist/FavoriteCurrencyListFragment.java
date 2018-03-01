@@ -49,8 +49,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private RecyclerView currencyRecyclerView;
     private FavsCurrencyListAdapter adapter;
     private ArrayList<CMCCoin> currencyItemFavsList = new ArrayList<>();
-    private ArrayList<CMCCoin> allCoinsList = new ArrayList<>();
-    private HashMap<String, CMCCoin> currencyItemMap = new HashMap<>();
     private AllCoinsListUpdater favsUpdateCallback;
     private AppCompatActivity mContext;
     private HashMap<String, Integer> slugToIDMap = new HashMap<>();
@@ -78,15 +76,11 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 Parcelable recyclerViewState;
                 recyclerViewState = currencyRecyclerView.getLayoutManager().onSaveInstanceState();
                 currencyItemFavsList.clear();
-                currencyItemMap.clear();
-                allCoinsList.clear();
                 CoinFavoritesStructures favs = db.getFavorites();
                 try {
                     for (CMCCoin coin : cmcCoinList) {
-                        allCoinsList.add(coin);
                         if (favs.favoritesMap.get(coin.getSymbol()) != null) {
                             currencyItemFavsList.add(coin);
-                            currencyItemMap.put(coin.getSymbol(), coin);
                         }
                     }
                     getQuickSearch();
@@ -154,8 +148,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         currencyRecyclerView.setLayoutManager(llm);
         currencyItemFavsList = new ArrayList<>();
-        allCoinsList = new ArrayList<>();
-        currencyItemMap = new HashMap<>();
         adapter = new FavsCurrencyListAdapter(favsUpdateCallback, currencyItemFavsList, db, (AppCompatActivity) getActivity(), new CustomItemClickListener() {
             @Override
             public void onItemClick(int position, View v) {
@@ -221,7 +213,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         while (currFavsIterator.hasNext()) {
             CMCCoin currCoin = currFavsIterator.next();
             if (currCoin.getId().equals(coin.getId())) {
-                currencyItemMap.remove(currCoin.getSymbol());
                 currFavsIterator.remove();
                 adapter.notifyDataSetChanged();
                 return;
@@ -231,7 +222,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
 
     public void addFavorite(CMCCoin coin) {
         currencyItemFavsList.add(0, coin);
-        currencyItemMap.put(coin.getSymbol(), coin);
         adapter.notifyDataSetChanged();
     }
 
