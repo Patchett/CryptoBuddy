@@ -41,7 +41,6 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
     private WeakReference<AppCompatActivity> contextRef;
     private WeakReference<DatabaseHelperSingleton> dbRef;
     private WeakReference<FavoriteCurrencyListFragment.AllCoinsListUpdater> favsUpdateCallbackRef;
-    private Drawable trashButtonImage;
     private FavsCurrencyListAdapter me;
 
     public FavsCurrencyListAdapter(FavoriteCurrencyListFragment.AllCoinsListUpdater favsUpdateCallback, ArrayList<CMCCoin> currencyList,
@@ -60,7 +59,6 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
         this.positiveGreenColor = this.contextRef.get().getResources().getColor(R.color.percentPositiveGreen);
         this.favsUpdateCallbackRef = new WeakReference<>(favsUpdateCallback);
-        this.trashButtonImage = contextRef.get().getResources().getDrawable(R.drawable.ic_delete_black_24dp);
         this.me = this;
     }
 
@@ -115,7 +113,6 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         if (item.getQuickSearchID() != -1) {
             Picasso.with(contextRef.get()).load(String.format(CurrencyListTabsActivity.IMAGE_URL_FORMAT, Integer.toString(item.getQuickSearchID()))).into(holder.currencyListCoinImageView);
         }
-        holder.trashButton.setBackground(trashButtonImage);
         setFavoriteButtonClickListener(holder, position);
     }
 
