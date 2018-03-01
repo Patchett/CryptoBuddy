@@ -168,6 +168,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
 
     public void setCurrencyList(ArrayList<CMCCoin> newCurrencyList) {
         this.currencyList = newCurrencyList;
+        notifyDataSetChanged();
     }
 
     public ArrayList<CMCCoin> getCurrencyList() {

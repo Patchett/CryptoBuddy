@@ -179,9 +179,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             @Override
             public void onItemClick(int position, View v) {
                 Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
-                intent.putExtra(GraphFragment.ARG_SYMBOL, currencyItemList.get(position).getSymbol());
-                intent.putExtra(GraphFragment.ARG_ID, currencyItemList.get(position).getId());
-                intent.putExtra(GraphFragment.COIN_OBJECT, currencyItemList.get(position));
+                intent.putExtra(GraphFragment.ARG_SYMBOL, adapter.getCurrencyList().get(position).getSymbol());
+                intent.putExtra(GraphFragment.ARG_ID, adapter.getCurrencyList().get(position).getId());
+                intent.putExtra(GraphFragment.COIN_OBJECT, adapter.getCurrencyList().get(position));
                 mContext.startActivity(intent);
             }
         });
@@ -229,18 +229,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 filteredList.add(coin);
             }
         }
-        // TODO: Try to make this faster somehow
-        adapter = new AllCurrencyListAdapter(favsUpdateCallback, filteredList, db, (AppCompatActivity) mContext, new CustomItemClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                Intent intent = new Intent(mContext, CurrencyDetailsTabsActivity.class);
-                intent.putExtra(GraphFragment.ARG_SYMBOL, filteredList.get(position).getSymbol());
-                intent.putExtra(GraphFragment.ARG_ID, filteredList.get(position).getId());
-                intent.putExtra(GraphFragment.COIN_OBJECT, filteredList.get(position));
-                mContext.startActivity(intent);
-            }
-        });
-        currencyRecyclerView.setAdapter(adapter);
+        adapter.setCurrencyList(filteredList);
         return true;
     }
 
