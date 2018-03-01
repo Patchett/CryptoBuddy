@@ -25,7 +25,7 @@ public class CurrencyFormatterSingleton {
 
     private CurrencyFormatterSingleton(Context context) {
         this.context = context;
-        currencyFormatMap = new HashMap<String, String>();
+        currencyFormatMap = new HashMap<>();
         cryptoList = new HashSet<>();
         cryptoFormatter = new DecimalFormat("#,###.########");
         addCryptos();
@@ -40,13 +40,13 @@ public class CurrencyFormatterSingleton {
         return sInstance;
     }
 
-    public void addCryptos() {
+    private void addCryptos() {
         cryptoList.add("BTC");
         cryptoList.add("LTC");
         cryptoList.add("ETH");
     }
 
-    public void buildHashMap() {
+    private void buildHashMap() {
         currencyFormatMap.put("LTC", context.getString(R.string.ltc_format));
         currencyFormatMap.put("BTC", context.getString(R.string.btc_format));
         currencyFormatMap.put("ETH", context.getString(R.string.eth_format));

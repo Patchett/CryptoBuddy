@@ -58,7 +58,7 @@ public class DatabaseHelperSingleton extends SQLiteOpenHelper {
         // Create the new table with 2 columns. One for ID and one for the coin list
         db.execSQL("CREATE TABLE " + DATABASE_TABLE + " (" + FAVORITE_COINS_COL_0 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + FAVORITE_COINS_COL_1 + " TEXT)");
         // Convert the defaultCoinsList string into a list of strings. Use comma as the delimeter
-        List<String> defaultCoinsList = new ArrayList<String>(Arrays.asList(DEFAULT_FAVORITE_COINS.split(",")));
+        List<String> defaultCoinsList = new ArrayList<>(Arrays.asList(DEFAULT_FAVORITE_COINS.split(",")));
         // Instantiate a serializer so we can easily load/store the list in the DB
         Gson gson = new Gson();
         // Serialize the list of strings into a JSON payload that we can store in the DB
@@ -90,7 +90,7 @@ public class DatabaseHelperSingleton extends SQLiteOpenHelper {
         // Load the string of the user's favorite coins into a list of strings!
         ArrayList<String> favoritesList = gson.fromJson(favoritesListString, type);
         // Instantiate a new hashmap and put all of the items in the list above into the hashmap
-        HashMap<String, String> favoritesMap = new HashMap<String, String>();
+        HashMap<String, String> favoritesMap = new HashMap<>();
         for (int i = 0; i < favoritesList.size(); i++) {
             favoritesMap.put(favoritesList.get(i), favoritesList.get(i));
         }
