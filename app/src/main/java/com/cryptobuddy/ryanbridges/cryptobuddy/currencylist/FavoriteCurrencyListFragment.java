@@ -114,7 +114,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 }
                 adapter.setCurrencyList(currencyItemFavsList);
                 adapter.notifyDataSetChanged();
-                currencyRecyclerView.setAdapter(adapter);
                 currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -158,7 +157,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 getActivity().startActivity(intent);
             }
         });
-
+        currencyRecyclerView.setAdapter(adapter);
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.currency_favs_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);

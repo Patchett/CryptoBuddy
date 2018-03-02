@@ -82,13 +82,14 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                     for (CMCCoin coin: searchList) {
                         coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
                     }
+                    adapter.setCurrencyList(searchList);
                 } else {
                     for (CMCCoin coin : currencyItemList) {
                         coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
                     }
+                    adapter.setCurrencyList(currencyItemList);
                 }
                 adapter.notifyDataSetChanged();
-                currencyRecyclerView.setAdapter(adapter);
                 currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -131,10 +132,8 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                                 searchList.add(coin);
                             }
                         }
-                        adapter.setCurrencyList(searchList);
                     } else {
                         currencyItemList.addAll(Arrays.asList(cmcCoinList));
-                        adapter.setCurrencyList(currencyItemList);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -181,7 +180,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 mContext.startActivity(intent);
             }
         });
-
+        currencyRecyclerView.setAdapter(adapter);
         // Setup swipe refresh layout
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.currency_list_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
