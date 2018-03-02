@@ -223,7 +223,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         CoinMarketCapService.getCMCChartData(getActivity(), cryptoID, new afterTaskCompletion<CMCChartData>() {
             @Override
             public void onTaskCompleted(CMCChartData cmcChartData) {
-                // TODO: Allow switching chart from BTC to USD
                 List<Entry> closePrices = new ArrayList<>();
                 if (tsymbol.equals("USD")) {
                     for (List<Float> priceTimeUnit : cmcChartData.getPriceUSD()) {
@@ -246,21 +245,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 }
                 XAxis xAxis = lineChart.getXAxis();
                 xAxis.setValueFormatter(XAxisFormatter);
-                if (tsymbol.equals("USD")) {
-                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float money, AxisBase axis) {
-                            return currencyFormatter.format(money, "USD_NO_SPACE");
-                        }
-                    });
-                } else {
-                    lineChart.getAxisLeft().setValueFormatter(new IAxisValueFormatter() {
-                        @Override
-                        public String getFormattedValue(float money, AxisBase axis) {
-                            return currencyFormatter.format(money, "ROUNDED_BTC_NO_SPACE");
-                        }
-                    });
-                }
                 TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
                 float currPrice = closePrices.get(closePrices.size() - 1).getY();
                 if (tsymbol.equals("USD")) {
