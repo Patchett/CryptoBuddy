@@ -5,6 +5,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable;
  */
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -58,6 +59,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.COIN_MARKETCAP_CHART_URL_ALL_DATA;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService.COIN_MARKETCAP_CHART_URL_WINDOW;
 
@@ -95,7 +97,10 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private List<String> currencyPairs;
     private String tsymbol;
     private CurrencyFormatterSingleton currencyFormatter;
+    private SharedPreferences sharedPreferences;
 
+    public static final String SHAREDPREF_SETTINGS = "cryptobuddy_settings";
+    public static final String CHART_SPINNER_SETTING = "chart_spinner_setting";
     public static final String ARG_SYMBOL = "symbol";
     public static final String ARG_ID = "ID";
     public static final String COIN_OBJECT = "COIN_OBJECT";
@@ -469,17 +474,29 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         chartProgressBar = (ProgressBar) rootView.findViewById(R.id.chartProgressSpinner);
         Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
         sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
         currencyPairs = new ArrayList<>(2);
         currencyPairs.add("USD");
         currencyPairs.add("BTC");
         Spinner chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyPairs);
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        tsymbol = sharedPreferences.getString(CHART_SPINNER_SETTING, "USD");
+        Log.d("I", "tsymbol on entering graphfrag: " + tsymbol);
         chartCurrencySelector.setAdapter(spinnerArrayAdapter);
+        if (tsymbol.equals("USD")) {
+            chartCurrencySelector.setSelection(0);
+        } else {
+            chartCurrencySelector.setSelection(1);
+        }
         chartCurrencySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 tsymbol = currencyPairs.get(position);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(CHART_SPINNER_SETTING, tsymbol);
+                editor.apply();
+                Log.d("I", "sharedPref spinner setting: " + sharedPreferences.getString(CHART_SPINNER_SETTING, "NOT SET"));
                 getCMCChart();
             }
 
