@@ -17,6 +17,8 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleto
 import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -96,6 +98,11 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         } else {
             holder.currencyListMarketcapTextView.setText(String.format(mktCapStringResource, Double.parseDouble(item.getMarket_cap_usd())));
         }
+        if (item.getRank() == null) {
+            holder.rankTextView.setText("N/A");
+        } else {
+            holder.rankTextView.setText(item.getRank());
+        }
         if (item.getVolume_usd_24h() == null) {
             holder.currencyListVolumeTextView.setText("N/A");
         } else {
@@ -128,6 +135,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         private TextView oneHourChangeTextView;
         private TextView dayChangeTextView;
         private TextView weekChangeTextView;
+        private TextView rankTextView;
         private TextView currencyListCurrPriceTextView;
         private TextView currencyListVolumeTextView;
         private TextView currencyListMarketcapTextView;
@@ -139,6 +147,7 @@ public class AllCurrencyListAdapter extends RecyclerView.Adapter<AllCurrencyList
         {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
+            rankTextView = (TextView) itemLayoutView.findViewById(R.id.rankTextView);
             currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
             currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);

@@ -116,23 +116,20 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         CoinMarketCapService.getAllCoins(mContext, new afterTaskCompletion<CMCCoin[]>() {
             @Override
             public void onTaskCompleted(CMCCoin[] cmcCoinList) {
-                if (searchViewFocused) {
-                    searchedSymbols.clear();
-                    searchList.clear();
-                    for (CMCCoin coin : filteredList) {
-                        searchedSymbols.put(coin.getSymbol(), coin.getSymbol());
-                    }
-                } else {
-                    currencyItemList.clear();
-                }
                 try {
                     if (searchViewFocused) { // Copy some code here to make the checks faster
+                        searchedSymbols.clear();
+                        searchList.clear();
+                        for (CMCCoin coin : filteredList) {
+                            searchedSymbols.put(coin.getSymbol(), coin.getSymbol());
+                        }
                         for (CMCCoin coin : cmcCoinList) {
                             if (searchedSymbols.get(coin.getSymbol()) != null) {
                                 searchList.add(coin);
                             }
                         }
                     } else {
+                        currencyItemList.clear();
                         currencyItemList.addAll(Arrays.asList(cmcCoinList));
                     }
                 } catch (Exception e) {

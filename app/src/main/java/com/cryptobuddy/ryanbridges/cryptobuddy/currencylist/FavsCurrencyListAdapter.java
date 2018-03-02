@@ -98,6 +98,11 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         } else {
             holder.currencyListMarketcapTextView.setText(String.format(mktCapStringResource, Double.parseDouble(item.getMarket_cap_usd())));
         }
+        if (item.getRank() == null) {
+            holder.rankTextViewFavs.setText("N/A");
+        } else {
+            holder.rankTextViewFavs.setText(item.getRank());
+        }
         if (item.getVolume_usd_24h() == null) {
             holder.currencyListVolumeTextView.setText("N/A");
         } else {
@@ -129,6 +134,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         private TextView weekChangeTextView;
         private TextView currencyListCurrPriceTextView;
         private TextView currencyListVolumeTextView;
+        private TextView rankTextViewFavs;
         private TextView currencyListMarketcapTextView;
         private ImageView currencyListCoinImageView;
         protected ImageView trashButton;
@@ -138,6 +144,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
+            rankTextViewFavs = (TextView) itemLayoutView.findViewById(R.id.rankTextViewFavs);
             currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
             currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
             currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
