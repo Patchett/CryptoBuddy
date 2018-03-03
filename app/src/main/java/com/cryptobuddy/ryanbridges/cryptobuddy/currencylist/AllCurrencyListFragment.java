@@ -85,7 +85,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                     adapter.setCurrencyList(searchList);
                 } else {
                     for (CMCCoin coin : currencyItemList) {
-                        coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                        if (coin.getId() != null && slugToIDMap.get(coin.getId()) != null) {
+                            coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
+                        }
                     }
                     adapter.setCurrencyList(currencyItemList);
                 }

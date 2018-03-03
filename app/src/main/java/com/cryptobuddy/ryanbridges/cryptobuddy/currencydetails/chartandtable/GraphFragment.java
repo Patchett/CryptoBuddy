@@ -476,9 +476,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
         Spinner chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, getResources().getStringArray(R.array.chart_spinner_options));
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         tsymbol = sharedPreferences.getString(CHART_SPINNER_SETTING, "USD");
-        Log.d("I", "tsymbol on entering graphfrag: " + tsymbol);
         chartCurrencySelector.setAdapter(spinnerArrayAdapter);
         if (tsymbol.equals("USD")) {
             chartCurrencySelector.setSelection(0);
@@ -492,7 +491,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(CHART_SPINNER_SETTING, tsymbol);
                 editor.apply();
-                Log.d("I", "sharedPref spinner setting: " + sharedPreferences.getString(CHART_SPINNER_SETTING, "NOT SET"));
                 getCMCChart();
             }
 

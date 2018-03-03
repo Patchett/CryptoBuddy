@@ -3,10 +3,12 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:textSize="16sp"
+    style="?android:attr/spinnerItemStyle"
+    android:layout_height="match_parent"
     android:gravity="start"
     android:textColor="#2196F3"
+    android:singleLine="true"
+    android:textAlignment="inherit"
+    android:ellipsize="marquee"
     android:textStyle="bold"
-    android:padding="5dip"
     />

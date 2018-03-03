@@ -414,7 +414,8 @@
             android:layout_height="wrap_content"
             android:entries="@array/chart_spinner_options"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
     </android.support.constraint.ConstraintLayout>
 </com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.LockableNestedScrollView>

@@ -52,8 +52,6 @@
             android:id="@+id/top_pairs_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"

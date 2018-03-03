@@ -141,8 +141,8 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
                     return;
                 }
                 setVisible();
-                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, pairs);
-                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_item, pairs);
+                spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
                 spinner.setAdapter(spinnerArrayAdapter);
                 if (fsymbol == null || tsymbol == null) {
                     // TODO: Fix errors with MIOTA
