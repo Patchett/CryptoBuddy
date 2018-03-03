@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="chart_spinner_options">
+        <item>USD</item>
+        <item>BTC</item>
+    </string-array>
+</resources>

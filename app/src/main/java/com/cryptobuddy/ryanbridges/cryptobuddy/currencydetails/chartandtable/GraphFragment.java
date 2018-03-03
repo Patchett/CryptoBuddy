@@ -94,7 +94,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private LockableNestedScrollView nestedScrollView;
     private int displayWidth;
     private ProgressBar chartProgressBar;
-    private List<String> currencyPairs;
     private String tsymbol;
     private CurrencyFormatterSingleton currencyFormatter;
     private SharedPreferences sharedPreferences;
@@ -104,7 +103,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     public static final String ARG_SYMBOL = "symbol";
     public static final String ARG_ID = "ID";
     public static final String COIN_OBJECT = "COIN_OBJECT";
-    //test
+
     public GraphFragment() {
     }
 
@@ -475,12 +474,9 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
         sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
-        currencyPairs = new ArrayList<>(2);
-        currencyPairs.add("USD");
-        currencyPairs.add("BTC");
         Spinner chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, currencyPairs);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, getResources().getStringArray(R.array.chart_spinner_options));
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
         tsymbol = sharedPreferences.getString(CHART_SPINNER_SETTING, "USD");
         Log.d("I", "tsymbol on entering graphfrag: " + tsymbol);
         chartCurrencySelector.setAdapter(spinnerArrayAdapter);
@@ -492,7 +488,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         chartCurrencySelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                tsymbol = currencyPairs.get(position);
+                tsymbol = spinnerArrayAdapter.getItem(position);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(CHART_SPINNER_SETTING, tsymbol);
                 editor.apply();
