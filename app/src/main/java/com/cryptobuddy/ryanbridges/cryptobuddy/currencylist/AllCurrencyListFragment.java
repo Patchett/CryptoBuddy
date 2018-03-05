@@ -36,6 +36,8 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -212,6 +214,80 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                         .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                switch (which) {
+                                    // Name A-Z
+                                    case 0:
+                                        Collections.sort(adapter.getCurrencyList(), new Comparator<CMCCoin>() {
+                                            @Override
+                                            public int compare(CMCCoin lhs, CMCCoin rhs) {
+                                                return lhs.getName().compareTo(rhs.getName());
+                                            }
+                                        });
+                                        adapter.notifyDataSetChanged();
+                                        break;
+                                    // Market Cap
+                                    case 1:
+                                        Collections.sort(adapter.getCurrencyList(), new Comparator<CMCCoin>() {
+                                            @Override
+                                            public int compare(CMCCoin lhs, CMCCoin rhs) {
+                                                if (lhs.getMarket_cap_usd() == null) {
+                                                    return -1;
+                                                }
+                                                if (rhs.getMarket_cap_usd() == null) {
+                                                    return 1;
+                                                }
+                                                return lhs.getMarket_cap_usd().compareTo(rhs.getMarket_cap_usd());
+                                            }
+                                        });
+                                        adapter.notifyDataSetChanged();
+                                        break;
+                                    // Price
+                                    case 2:
+                                    // Volume 24h
+                                    case 3:
+                                    // Change 1h
+                                    case 4:
+                                    // Change 24h
+                                    case 5:
+                                    // Change 7d
+                                    case 6:
+                                    // Name Z-A
+                                    case 7:
+                                        Collections.sort(adapter.getCurrencyList(), new Comparator<CMCCoin>() {
+                                            @Override
+                                            public int compare(CMCCoin lhs, CMCCoin rhs) {
+                                                return lhs.getName().compareTo(rhs.getName());
+                                            }
+                                        });
+                                        adapter.notifyDataSetChanged();
+                                        break;
+                                    // Market Cap LH
+                                    case 8:
+                                        Collections.sort(adapter.getCurrencyList(), new Comparator<CMCCoin>() {
+                                            @Override
+                                            public int compare(CMCCoin lhs, CMCCoin rhs) {
+                                                if (lhs.getMarket_cap_usd() == null) {
+                                                    return 1;
+                                                }
+                                                if (rhs.getMarket_cap_usd() == null) {
+                                                    return -1;
+                                                }
+                                                return rhs.getMarket_cap_usd().compareTo(lhs.getMarket_cap_usd());
+                                            }
+                                        });
+                                        adapter.notifyDataSetChanged();
+                                        break;
+                                    // Price LH
+                                    case 9:
+                                    // Volume 24h LH
+                                    case 10:
+                                    // Change 1h LH
+                                    case 11:
+                                    // Change 24h LH
+                                    case 12:
+                                    // Change 7d LH
+                                    case 13:
+                                }
                                 /**
                                  * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
                                  * returning false here won't allow the newly selected radio button to actually be selected.
