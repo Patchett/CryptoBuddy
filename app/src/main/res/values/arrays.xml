@@ -4,4 +4,23 @@
         <item>USD</item>
         <item>BTC</item>
     </string-array>
+
+    <string-array name="sort_options">
+        <item>Name A-Z</item>
+        <item>Market Cap</item>
+        <item>Price</item>
+        <item>Volume 24h</item>
+        <item>Change 1h</item>
+        <item>Change 24h</item>
+        <item>Change 7d</item>
+
+        <item>Name Z-A</item>
+        <item>Market Cap LH</item>
+        <item>Price LH</item>
+        <item>Volume 24h LH</item>
+        <item>Change 1h LH</item>
+        <item>Change 24h LH</item>
+        <item>Change 7d LH</item>
+    </string-array>
+
 </resources>

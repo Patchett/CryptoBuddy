@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CurrencyDetailsTabsActivity;
@@ -205,6 +206,21 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 mContext.startActivity(new Intent(mContext, NewsListActivity.class));
                 return true;
             case R.id.sort_button:
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.sort_by)
+                        .items(R.array.sort_options)
+                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                /**
+                                 * If you use alwaysCallSingleChoiceCallback(), which is discussed below,
+                                 * returning false here won't allow the newly selected radio button to actually be selected.
+                                 **/
+                                Log.d("I", "Selected: " + text.toString() + " at position: " + Integer.toString(which));
+                                return true;
+                            }
+                        })
+                        .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
