@@ -193,9 +193,6 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             case R.id.news_button_favs_list:
                 mContext.startActivity(new Intent(mContext, NewsListActivity.class));
                 return true;
-            case R.id.currency_refresh_button_favs_list:
-                onRefresh();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

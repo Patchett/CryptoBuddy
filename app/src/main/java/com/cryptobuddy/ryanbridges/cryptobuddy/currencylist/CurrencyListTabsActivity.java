@@ -36,13 +36,9 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_list_tabs);
-//        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         mToolbar = (Toolbar) findViewById(R.id.toolbar_currency_list);
-//        mToolbar.setTitle(getResources().getString(R.string.app_name));
         setSupportActionBar(mToolbar);
-//        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
         TabLayout tabLayout = (TabLayout) findViewById(R.id.currency_list_tabs);
-//        setContentView(tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.currency_list_tabs_container);
         mSectionsPagerAdapter = new SectionsPagerAdapterCurrencyList(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);

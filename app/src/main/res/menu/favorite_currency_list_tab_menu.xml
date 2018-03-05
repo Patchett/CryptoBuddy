@@ -3,11 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity">
 
-    <item
-        android:id="@+id/currency_refresh_button_favs_list"
-        android:title="@string/Refresh"
-        android:icon="@drawable/ic_refresh_white_24dp"
-        app:showAsAction="always" />
+    <item android:id="@+id/sort_button"
+        android:title="@string/action_sort"
+        android:icon="@drawable/ic_import_export_white_24dp"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/news_button_favs_list"

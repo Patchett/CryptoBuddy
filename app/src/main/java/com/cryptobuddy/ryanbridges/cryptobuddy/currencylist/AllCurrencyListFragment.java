@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by Ryan on 1/21/2018.
  */
@@ -159,6 +162,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
         setHasOptionsMenu(true);
+        ButterKnife.bind(rootView);
         DatabaseHelperSingleton db = DatabaseHelperSingleton.getInstance(mContext);
         searchList = new ArrayList<>();
         // Setup currency list
@@ -200,8 +204,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             case R.id.news_button:
                 mContext.startActivity(new Intent(mContext, NewsListActivity.class));
                 return true;
-            case R.id.currency_refresh_button:
-                onRefresh();
+            case R.id.sort_button:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -296,7 +299,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         searchViewFocused = false;
-        getCurrencyList();
     }
 
     public AllCurrencyListAdapter getAdapter() {

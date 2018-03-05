@@ -34,6 +34,7 @@
     <string name="All">All</string>
     <string name="AllTime">All Time</string>
     <string name="action_search">Search</string>
+    <string name="action_sort">Sort</string>
     <string name="noChartDataString">No Chart Data :(</string>
     <string name="noMarketsString">No Markets Available :(</string>
     <string name="notAvailableStringResource">N/A</string>

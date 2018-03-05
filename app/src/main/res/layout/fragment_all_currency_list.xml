@@ -26,4 +26,5 @@
             android:layout_height="match_parent"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>
