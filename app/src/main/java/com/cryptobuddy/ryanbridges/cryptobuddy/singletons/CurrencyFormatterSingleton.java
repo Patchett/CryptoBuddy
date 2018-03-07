@@ -27,7 +27,7 @@ public class CurrencyFormatterSingleton {
         this.context = context;
         currencyFormatMap = new HashMap<>();
         cryptoList = new HashSet<>();
-        cryptoFormatter = new DecimalFormat("#,###.########");
+        cryptoFormatter = new DecimalFormat("#,###.##########");
         addCryptos();
         buildHashMap();
     }
