@@ -36,7 +36,6 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.CurrencyFormatterSingleton;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -52,6 +51,7 @@ import com.grizzly.rest.Model.afterTaskFailure;
 import com.nex3z.togglebuttongroup.SingleSelectToggleGroup;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -97,6 +97,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private String tsymbol;
     private CurrencyFormatterSingleton currencyFormatter;
     private SharedPreferences sharedPreferences;
+    NumberFormat chartUSDPriceFormat = NumberFormat.getInstance();
 
     public static final String SHAREDPREF_SETTINGS = "cryptobuddy_settings";
     public static final String CHART_SPINNER_SETTING = "chart_spinner_setting";
@@ -251,8 +252,10 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 xAxis.setValueFormatter(XAxisFormatter);
                 TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
                 float currPrice = closePrices.get(closePrices.size() - 1).getY();
+                TextView chartDateTextView = (TextView) rootView.findViewById(R.id.graphFragmentDateTextView);
+                chartDateTextView.setText(getFormattedFullDate(closePrices.get(closePrices.size() - 1).getX()));
                 if (tsymbol.equals("USD")) {
-                    currentPriceTextView.setText(currencyFormatter.format(currPrice, "USD"));
+                    currentPriceTextView.setText(String.format(getString(R.string.unrounded_usd_chart_price_format), String.valueOf(currPrice)));
                 } else {
                     currentPriceTextView.setText(currencyFormatter.format(currPrice, "BTC"));
                 }
@@ -466,6 +469,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
         lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        chartUSDPriceFormat = NumberFormat.getInstance();
+        chartUSDPriceFormat.setMaximumFractionDigits(10);
         setUpChart();
         currencyFormatter = CurrencyFormatterSingleton.getInstance(getContext());
         WindowManager mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
@@ -557,7 +562,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
         TextView dateTextView = (TextView) rootView.findViewById(R.id.graphFragmentDateTextView);
         if (tsymbol.equals("USD")) {
-            currentPrice.setText(currencyFormatter.format(e.getY(), "USD"));
+            currentPrice.setText(String.format(getString(R.string.unrounded_usd_chart_price_format), String.valueOf(e.getY())));
         } else {
             currentPrice.setText(currencyFormatter.format(e.getY(), "BTC"));
         }

@@ -52,7 +52,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         this.volumeStringResource = this.contextRef.get().getString(R.string.volume_format);
         this.negativePercentStringResource = this.contextRef.get().getString(R.string.negative_pct_change_format);
         this.positivePercentStringResource = this.contextRef.get().getString(R.string.positive_pct_change_format);
-        this.priceStringResource = this.contextRef.get().getString(R.string.price_format);
+        this.priceStringResource = this.contextRef.get().getString(R.string.unrounded_price_format);
         this.pctChangeNotAvailableStringResource = this.contextRef.get().getString(R.string.not_available_pct_change_text_with_time);
         this.symbolAndFullNameStringResource = this.contextRef.get().getString(R.string.nameAndSymbol);
         this.negativeRedColor = this.contextRef.get().getResources().getColor(R.color.percentNegativeRed);
@@ -111,7 +111,7 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         if (item.getPrice_usd() == null) {
             holder.currencyListCurrPriceTextView.setText("N/A");
         } else {
-            holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, Double.parseDouble(item.getPrice_usd())));
+            holder.currencyListCurrPriceTextView.setText(String.format(priceStringResource, item.getPrice_usd()));
         }
         holder.currencyListfullNameTextView.setText(String.format(this.symbolAndFullNameStringResource, item.getName(), item.getSymbol()));
         if (item.getQuickSearchID() != -1) {
