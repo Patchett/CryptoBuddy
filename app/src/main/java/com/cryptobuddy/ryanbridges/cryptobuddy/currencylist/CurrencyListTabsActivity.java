@@ -30,6 +30,7 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
     public final static String DAY = "24h";
     public final static String WEEK = "7d";
     public final static String HOUR = "1h";
+    public final static String SORT_SETTING = "sort_setting";
 
 
     @Override

@@ -2,6 +2,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -40,7 +41,10 @@ import java.util.HashMap;
 
 import butterknife.ButterKnife;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.SortUtil.sortList;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment.SHAREDPREF_SETTINGS;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity.SORT_SETTING;
 
 /**
  * Created by Ryan on 1/21/2018.
@@ -64,6 +68,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     private HashMap<String, Integer> slugToIDMap = new HashMap<>();
     public static boolean searchViewFocused = false;
     private FavoritesListUpdater favsUpdateCallback;
+    private SharedPreferences sharedPreferences;
 
     public interface FavoritesListUpdater {
         void removeFavorite(CMCCoin coin);
@@ -166,6 +171,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         setHasOptionsMenu(true);
         ButterKnife.bind(rootView);
         DatabaseHelperSingleton db = DatabaseHelperSingleton.getInstance(mContext);
+        sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
         searchList = new ArrayList<>();
         // Setup currency list
         currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_list_recycler_view);
@@ -207,14 +213,18 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 mContext.startActivity(new Intent(mContext, NewsListActivity.class));
                 return true;
             case R.id.sort_button:
+                int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
                 new MaterialDialog.Builder(getActivity())
                         .title(R.string.sort_by)
                         .items(R.array.sort_options)
-                        .itemsCallbackSingleChoice(-1, new MaterialDialog.ListCallbackSingleChoice() {
+                        .itemsCallbackSingleChoice(sortType, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
                                 sortList(adapter.getCurrencyList(), which);
                                 adapter.notifyDataSetChanged();
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt(SORT_SETTING, which);
+                                editor.apply();
                                 Log.d("I", "Selected: " + text.toString() + " at position: " + Integer.toString(which));
                                 return true;
                             }

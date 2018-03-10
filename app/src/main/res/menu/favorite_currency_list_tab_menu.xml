@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity">
 
-    <item android:id="@+id/sort_button"
+    <item android:id="@+id/sort_favs_button"
         android:title="@string/action_sort"
         android:icon="@drawable/ic_import_export_white_24dp"
         app:showAsAction="always"/>

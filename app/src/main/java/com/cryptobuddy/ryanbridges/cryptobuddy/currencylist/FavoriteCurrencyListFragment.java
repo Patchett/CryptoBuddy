@@ -3,6 +3,7 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.currencylist;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CurrencyDetailsTabsActivity;
@@ -37,6 +39,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.SortUtil.sortList;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment.SHAREDPREF_SETTINGS;
+import static com.cryptobuddy.ryanbridges.cryptobuddy.currencylist.CurrencyListTabsActivity.SORT_SETTING;
+
 /**
  * Created by Ryan on 1/21/2018.
  */
@@ -52,6 +59,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
     private AllCoinsListUpdater favsUpdateCallback;
     private AppCompatActivity mContext;
     private HashMap<String, Integer> slugToIDMap = new HashMap<>();
+    private SharedPreferences sharedPreferences;
 
     public interface AllCoinsListUpdater {
         void allCoinsModifyFavorites(CMCCoin coin);
@@ -140,6 +148,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         rootView = inflater.inflate(R.layout.fragment_favorite_currency_list, container, false);
         setHasOptionsMenu(true);
         this.db = DatabaseHelperSingleton.getInstance(getActivity());
+        sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
         currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_favs_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(getActivity()).build();
         currencyRecyclerView.addItemDecoration(divider);
@@ -192,6 +201,25 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         switch(item.getItemId()) {
             case R.id.news_button_favs_list:
                 mContext.startActivity(new Intent(mContext, NewsListActivity.class));
+                return true;
+            case R.id.sort_favs_button:
+                int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
+                new MaterialDialog.Builder(getActivity())
+                        .title(R.string.sort_by)
+                        .items(R.array.sort_options)
+                        .itemsCallbackSingleChoice(sortType, new MaterialDialog.ListCallbackSingleChoice() {
+                            @Override
+                            public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
+                                sortList(adapter.getCurrencyList(), which);
+                                adapter.notifyDataSetChanged();
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt(SORT_SETTING, which);
+                                editor.apply();
+                                Log.d("I", "Selected: " + text.toString() + " at position: " + Integer.toString(which));
+                                return true;
+                            }
+                        })
+                        .show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
