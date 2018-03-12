@@ -111,4 +111,19 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
             frag.getAdapter().notifyDataSetChanged();
         }
     }
+
+    public void performFavsSort() {
+        FavoriteCurrencyListFragment frag = (FavoriteCurrencyListFragment) mSectionsPagerAdapter.getFragment(1);
+        if (frag != null) {
+            frag.performFavsSort();
+        }
+    }
+
+    public void performAllCoinsSort() {
+        AllCurrencyListFragment frag = (AllCurrencyListFragment) mSectionsPagerAdapter.getFragment(0);
+        if (frag != null) {
+            frag.performAllCoinsSort();
+        }
+    }
+
 }

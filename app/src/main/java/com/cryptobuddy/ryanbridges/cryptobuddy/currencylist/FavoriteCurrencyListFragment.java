@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
@@ -63,6 +64,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
 
     public interface AllCoinsListUpdater {
         void allCoinsModifyFavorites(CMCCoin coin);
+        void performAllCoinsSort();
     }
 
     public FavoriteCurrencyListFragment() {
@@ -74,6 +76,12 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
      */
     public static FavoriteCurrencyListFragment newInstance() {
         return new FavoriteCurrencyListFragment();
+    }
+
+    public void performFavsSort() {
+        int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
+        sortList(adapter.getCurrencyList(), sortType);
+        adapter.notifyDataSetChanged();
     }
 
     public void getCurrencyList() {
@@ -121,7 +129,10 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                     coin.setQuickSearchID(slugToIDMap.get(coin.getId()));
                 }
                 adapter.setCurrencyList(currencyItemFavsList);
+                int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
+                sortList(adapter.getCurrencyList(), sortType);
                 adapter.notifyDataSetChanged();
+                favsUpdateCallback.performAllCoinsSort();
                 currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -207,6 +218,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                 new MaterialDialog.Builder(getActivity())
                         .title(R.string.sort_by)
                         .items(R.array.sort_options)
+                        .buttonRippleColor(getContext().getResources().getColor(R.color.colorPrimary))
                         .itemsCallbackSingleChoice(sortType, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -215,7 +227,9 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putInt(SORT_SETTING, which);
                                 editor.apply();
-                                Log.d("I", "Selected: " + text.toString() + " at position: " + Integer.toString(which));
+                                favsUpdateCallback.performAllCoinsSort();
+                                Toast toast = Toast.makeText(getContext(), "Sorting by: " + text, Toast.LENGTH_SHORT);
+                                toast.show();
                                 return true;
                             }
                         })

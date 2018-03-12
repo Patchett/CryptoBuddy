@@ -40,10 +40,10 @@ public class SortUtil {
                             return 0;
                         }
                         if (lhs.getPrice_usd() == null) {
-                            return -1;
+                            return 1;
                         }
                         if (rhs.getPrice_usd() == null) {
-                            return 1;
+                            return -1;
                         }
                         float comp = Float.parseFloat(rhs.getPrice_usd()) - Float.parseFloat(lhs.getPrice_usd());
                         return floatComp(comp);
@@ -169,10 +169,10 @@ public class SortUtil {
                             return 0;
                         }
                         if (lhs.getVolume_usd_24h() == null) {
-                            return -1;
+                            return 1;
                         }
                         if (rhs.getVolume_usd_24h() == null) {
-                            return 1;
+                            return -1;
                         }
                         float comp = Float.parseFloat(rhs.getVolume_usd_24h()) - Float.parseFloat(lhs.getVolume_usd_24h());
                         return floatCompLH(comp);

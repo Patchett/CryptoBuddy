@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
@@ -73,9 +74,16 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public interface FavoritesListUpdater {
         void removeFavorite(CMCCoin coin);
         void addFavorite(CMCCoin coin);
+        void performFavsSort();
     }
 
     public AllCurrencyListFragment() {
+    }
+
+    public void performAllCoinsSort() {
+        int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
+        sortList(adapter.getCurrencyList(), sortType);
+        adapter.notifyDataSetChanged();
     }
 
     public void getQuickSearch() {
@@ -101,7 +109,10 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                     }
                     adapter.setCurrencyList(currencyItemList);
                 }
+                int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
+                sortList(adapter.getCurrencyList(), sortType);
                 adapter.notifyDataSetChanged();
+                favsUpdateCallback.performFavsSort();
                 currencyRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -217,6 +228,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                 new MaterialDialog.Builder(getActivity())
                         .title(R.string.sort_by)
                         .items(R.array.sort_options)
+                        .dividerColorRes(R.color.colorPrimary)
+                        .widgetColorRes(R.color.colorPrimary)
+                        .buttonRippleColorRes(R.color.colorPrimary)
                         .itemsCallbackSingleChoice(sortType, new MaterialDialog.ListCallbackSingleChoice() {
                             @Override
                             public boolean onSelection(MaterialDialog dialog, View view, int which, CharSequence text) {
@@ -225,7 +239,9 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putInt(SORT_SETTING, which);
                                 editor.apply();
-                                Log.d("I", "Selected: " + text.toString() + " at position: " + Integer.toString(which));
+                                favsUpdateCallback.performFavsSort();
+                                Toast toast = Toast.makeText(getContext(), "Sorting by: " + text, Toast.LENGTH_SHORT);
+                                toast.show();
                                 return true;
                             }
                         })
