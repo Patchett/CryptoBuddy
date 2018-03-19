@@ -558,6 +558,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         return rootView;
     }
 
+    // test commit
+
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
