@@ -20,7 +20,7 @@ Cryptobuddy is an Android app that tracks and displays prices, news, charts, mar
 * Statistics about the supply of each currency are displayed on a table under the chart
 * Easily navigate directly to the CoinMarketCap page for a currency from right inside the app
 * Displays markets for each currency sorted by volume
-* Displays news for crypto currencies as a whole that is always up to date
+* Aggregates crypto currency news from many different news sources and displays articles in a clean and aesthetic manner
 
 ## Libraries Used
 
