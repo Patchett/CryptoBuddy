@@ -2,7 +2,7 @@
 
 [![platform](https://img.shields.io/badge/platform-Android-brightgreen.svg)](https://www.android.com)
 [![license](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/Patchett/Cryptobuddy/raw/master/LICENSE)
-[![GitHub (pre-)release](https://img.shields.io/github/release/Patchett/Cryptobuddy/all.svg)](https://github.com/Patchett/CryptoBuddy/releases/tag/5.2)
+[![GitHub (pre-)release](https://img.shields.io/github/release/Patchett/Cryptobuddy/all.svg)](https://github.com/Patchett/CryptoBuddy/releases/tag/5.2.2)
 
 
 Cryptobuddy is an Android app that tracks and displays prices, news, charts, markets, and fundamentals of over 1500 crypto currencies! The app is completely open source with NO ADS EVER! It was a labor of love. I have spent months working on it every night after I get home from work and on weekends. 
