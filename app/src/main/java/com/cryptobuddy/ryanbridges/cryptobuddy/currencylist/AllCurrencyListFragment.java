@@ -40,8 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import butterknife.ButterKnife;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.SortUtil.sortList;
 import static com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment.SHAREDPREF_SETTINGS;
@@ -182,7 +180,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_all_currency_list, container, false);
         setHasOptionsMenu(true);
-        ButterKnife.bind(rootView);
         DatabaseHelperSingleton db = DatabaseHelperSingleton.getInstance(mContext);
         sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
         searchList = new ArrayList<>();
