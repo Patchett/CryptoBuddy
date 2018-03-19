@@ -13,8 +13,6 @@ import com.grizzly.rest.Model.afterTaskFailure;
 
 import org.springframework.http.HttpMethod;
 
-import java.util.HashSet;
-
 /**
  * Created by Ryan on 1/16/2018.
  */
@@ -24,7 +22,7 @@ public class CoinMarketCapService {
     public static final String COIN_MARKETCAP_ALL_COINS_URL = "https://api.coinmarketcap.com/v1/ticker/?limit=0";
     public static final String COIN_MARKETCAP_CHART_URL_ALL_DATA = "https://graphs2.coinmarketcap.com/currencies/%s/";
     public static final String COIN_MARKETCAP_CHART_URL_WINDOW = "https://graphs2.coinmarketcap.com/currencies/%s/%s/%s/";
-    public static final String COIN_MARKETCAP_QUICK_SEARCH_URL = "https://files.coinmarketcap.com/generated/search/quick_search.json";
+    public static final String COIN_MARKETCAP_QUICK_SEARCH_URL = "https://s2.coinmarketcap.com/generated/search/quick_search.json";
 
     public static void getAllCoins(Context context, afterTaskCompletion<CMCCoin[]> taskCompletion, afterTaskFailure failure, boolean async) {
         new GenericRestCall<>(Void.class, CMCCoin[].class, String.class)

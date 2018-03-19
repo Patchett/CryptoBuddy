@@ -98,6 +98,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     private CurrencyFormatterSingleton currencyFormatter;
     private SharedPreferences sharedPreferences;
     NumberFormat chartUSDPriceFormat = NumberFormat.getInstance();
+    SimpleDateFormat fullDateFormat = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
 
     public static final String SHAREDPREF_SETTINGS = "cryptobuddy_settings";
     public static final String CHART_SPINNER_SETTING = "chart_spinner_setting";
@@ -576,7 +577,6 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
 
     public String getFormattedFullDate(float unixSeconds) {
         Date date = new Date((long)unixSeconds);
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-        return sdf.format(date);
+        return fullDateFormat.format(date);
     }
 }
