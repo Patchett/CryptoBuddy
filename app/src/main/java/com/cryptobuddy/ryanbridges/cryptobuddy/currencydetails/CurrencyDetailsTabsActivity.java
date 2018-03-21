@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
@@ -17,7 +17,7 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
  * Created by Ryan on 12/17/2017.
  */
 
-public class CurrencyDetailsTabsActivity extends BaseAnimationActivity {
+public class CurrencyDetailsTabsActivity extends AppCompatActivity {
     private SectionsPagerAdapterDetails mSectionsPagerAdapter;
     public CustomViewPager mViewPager;
     private Toolbar mToolbar;

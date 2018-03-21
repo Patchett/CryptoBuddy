@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.News;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.NewsService;
@@ -33,7 +32,7 @@ import static com.cryptobuddy.ryanbridges.cryptobuddy.R.color.colorAccent;
  * Created by Ryan on 12/28/2017.
  */
 
-public class NewsListActivity extends BaseAnimationActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class NewsListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private NewsListAdapter adapter;
     private RecyclerView recyclerView;

@@ -8,9 +8,4 @@
         android:icon="@drawable/ic_import_export_white_24dp"
         app:showAsAction="always"/>
 
-    <item
-        android:id="@+id/news_button_favs_list"
-        android:title="@string/News"
-        android:icon="@drawable/ic_library_books_white_24dp"
-        app:showAsAction="always" />
 </menu>

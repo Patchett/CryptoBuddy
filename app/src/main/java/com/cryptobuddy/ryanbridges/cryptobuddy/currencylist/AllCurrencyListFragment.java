@@ -29,7 +29,6 @@ import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CurrencyDetailsTa
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCQuickSearch;
-import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.rest.CoinMarketCapService;
 import com.cryptobuddy.ryanbridges.cryptobuddy.singletons.DatabaseHelperSingleton;
 import com.grizzly.rest.Model.afterTaskCompletion;
@@ -219,9 +218,6 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.news_button:
-                mContext.startActivity(new Intent(mContext, NewsListActivity.class));
-                return true;
             case R.id.sort_button:
                 int sortType = sharedPreferences.getInt(SORT_SETTING, 1);
                 new MaterialDialog.Builder(getActivity())
