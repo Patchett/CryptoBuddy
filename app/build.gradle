@@ -47,6 +47,14 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.4.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.4.3'
+    implementation("com.mikepenz:materialdrawer:6.0.6@aar") {
+        transitive = true
+    }
+    implementation "com.android.support:appcompat-v7:25.4.0"
+    implementation "com.android.support:recyclerview-v7:25.4.0"
+    implementation "com.android.support:support-annotations:27.1.0"
+    implementation "com.android.support:design:25.4.0"
+    implementation 'com.mikepenz:fontawesome-typeface:5.0.6.0@aar'
     compile 'com.android.support:customtabs:25.4.0'
     compile 'com.nex3z:toggle-button-group:1.1.2'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'

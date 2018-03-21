@@ -7,11 +7,17 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.Toast;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.BaseAnimationActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 /**
  * Created by Ryan on 1/21/2018.
@@ -41,6 +47,25 @@ public class CurrencyListTabsActivity extends BaseAnimationActivity implements V
         setSupportActionBar(mToolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.currency_list_tabs);
         mViewPager = (ViewPager) findViewById(R.id.currency_list_tabs_container);
+
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(mToolbar)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withIdentifier(1).withName(R.string.Home).withIcon(FontAwesome.Icon.faw_home),
+                        new PrimaryDrawerItem().withIdentifier(2).withName(R.string.News).withIcon(FontAwesome.Icon.faw_newspaper),
+                        new PrimaryDrawerItem().withIdentifier(3).withName("About").withIcon(FontAwesome.Icon.faw_question_circle),
+                        new PrimaryDrawerItem().withIdentifier(4).withName("Open Source").withIcon(FontAwesome.Icon.faw_github_square),
+                        new PrimaryDrawerItem().withIdentifier(5).withName("Rate App").withIcon(FontAwesome.Icon.faw_thumbs_up)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        return true;
+                    }
+                })
+                .build();
+
         mSectionsPagerAdapter = new SectionsPagerAdapterCurrencyList(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
