@@ -1,17 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.cryptobuddy.ryanbridges.cryptobuddy"
-        minSdkVersion 21
-        targetSdkVersion 25
+        minSdkVersion 19
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", "\"empty\"")
-        //buildConfigField("String", "API_KEY", API_KEY)
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES.txt'
@@ -45,20 +43,21 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.4.0'
-    implementation 'com.afollestad.material-dialogs:core:0.9.4.3'
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation("com.mikepenz:materialdrawer:6.0.6@aar") {
         transitive = true
     }
-    implementation "com.android.support:appcompat-v7:25.4.0"
-    implementation "com.android.support:recyclerview-v7:25.4.0"
-    implementation "com.android.support:support-annotations:27.1.0"
-    implementation "com.android.support:design:25.4.0"
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
+    implementation "com.android.support:support-annotations:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
     implementation 'com.mikepenz:fontawesome-typeface:5.0.6.0@aar'
-    compile 'com.android.support:customtabs:25.4.0'
+    compile 'com.github.jrvansuita:MaterialAbout:0.2.1'
+    compile "com.android.support:customtabs:$supportLibVersion"
     compile 'com.nex3z:toggle-button-group:1.1.2'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.4'
-    compile 'com.android.support:design:25.4.0'
+    compile "com.android.support:design:$supportLibVersion"
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -69,3 +68,5 @@ dependencies {
     }
     testCompile 'junit:junit:4.12'
 }
+
+
