@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="define_int_customtabs">year;owner</string>
+	<!-- Author section -->
+	<string name="library_customtabs_author">Google Inc.</string>
+	<string name="library_customtabs_authorWebsite">https://github.com/GoogleChrome</string>
+	<!-- Library section -->
+	<string name="library_customtabs_libraryName">Custom Tabs</string>
+	<string name="library_customtabs_libraryDescription">Chrome Custom Tabs provides a way for an application to customize and interact with a Chrome Activity on Android. This makes the web content feel like being a part of the application, while retaining the full functionality and performance of a complete web browser.</string>
+	<string name="library_customtabs_libraryWebsite">https://github.com/GoogleChrome/custom-tabs-client</string>
+	<string name="library_customtabs_libraryVersion">27.1.0</string>
+	<!-- OpenSource section -->
+	<string name="library_customtabs_isOpenSource">true</string>
+	<string name="library_customtabs_repositoryLink">https://github.com/GoogleChrome/custom-tabs-client</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_customtabs_classPath">android.support.customtabs</string>
+	<!-- License section -->
+	<string name="library_customtabs_licenseId">apache_2_0</string>
+	<!-- Custom variables section -->
+</resources>

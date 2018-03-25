@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="define_int_materialabout">year;owner</string>
+    <!-- Author section -->
+    <string name="library_materialabout_author">Júnior Vansuita</string>
+    <string name="library_materialabout_authorWebsite">https://github.com/jrvansuita</string>
+    <!-- Library section -->
+    <string name="library_materialabout_libraryName">MaterialAbout</string>
+    <string name="library_materialabout_libraryDescription">Provides an easy API for creating a material design about screen with a developer profile</string>
+    <string name="library_materialabout_libraryWebsite">https://github.com/jrvansuita/MaterialAbout</string>
+    <string name="library_materialabout_libraryVersion">0.2.3</string>
+    <!-- OpenSource section -->
+    <string name="library_materialabout_isOpenSource">true</string>
+    <string name="library_materialabout_repositoryLink">https://github.com/jrvansuita/MaterialAbout</string>
+    <!-- ClassPath for autoDetect section -->
+    <string name="library_materialabout_classPath">com.vansuita.materialabout</string>
+    <!-- License section -->
+    <string name="library_materialabout_licenseId">apache_2_0</string>
+    <!-- Custom variables section -->
+</resources>

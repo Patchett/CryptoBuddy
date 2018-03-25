@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="define_int_togglebuttongroup">year;owner</string>
+	<!-- Author section -->
+	<string name="library_togglebuttongroup_author">Tianxing Li</string>
+	<string name="library_togglebuttongroup_authorWebsite">https://github.com/nex3z</string>
+	<!-- Library section -->
+	<string name="library_togglebuttongroup_libraryName">Toggle Button Group</string>
+	<string name="library_togglebuttongroup_libraryDescription">A group of flowable toggle buttons, with multiple / single selection support and button customization.</string>
+	<string name="library_togglebuttongroup_libraryWebsite">https://github.com/nex3z/ToggleButtonGroup</string>
+	<string name="library_togglebuttongroup_libraryVersion">1.1.2</string>
+	<!-- OpenSource section -->
+	<string name="library_togglebuttongroup_isOpenSource">true</string>
+	<string name="library_togglebuttongroup_repositoryLink">https://github.com/nex3z/ToggleButtonGroup</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_togglebuttongroup_classPath">com.nex3z.togglebuttongroup</string>
+	<!-- License section -->
+	<string name="library_togglebuttongroup_licenseId">apache_2_0</string>
+	<!-- Custom variables section -->
+</resources>

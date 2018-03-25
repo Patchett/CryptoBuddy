@@ -13,12 +13,14 @@ import android.text.Layout;
 import android.view.View;
 import android.widget.Toast;
 
-import com.cryptobuddy.ryanbridges.cryptobuddy.AboutLibrariesActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.AboutTheDevActivity;
+import com.cryptobuddy.ryanbridges.cryptobuddy.BuildConfig;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.TextDrawable;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
 import com.cryptobuddy.ryanbridges.cryptobuddy.news.NewsListActivity;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -97,7 +99,21 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
                     case 4:
                         drawer.closeDrawer();
                         drawer.setSelection(1);
-                        startActivity(new Intent(context, AboutLibrariesActivity.class));
+                        new LibsBuilder()
+                                //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
+                                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                                .withAboutIconShown(true)
+                                .withLicenseShown(true)
+                                .withVersionShown(true)
+                                .withAboutVersionShownName(true)
+                                .withAboutVersionShownCode(true)
+                                .withAboutVersionString("Version: " + BuildConfig.VERSION_NAME)
+                                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                                .withActivityTitle("CryptoBuddy")
+                                .withLibraries("easyrest", "materialabout", "androiddevicenames", "customtabs", "togglebuttongroup", "materialfavoritebutton")
+                                //start the activity
+                                .start(context);
+
                     default:
                         return true;
                 }

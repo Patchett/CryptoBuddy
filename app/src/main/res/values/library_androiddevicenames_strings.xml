@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="define_int_androiddevicenames">year;owner</string>
+	<!-- Author section -->
+	<string name="library_androiddevicenames_author">Jared Rummler</string>
+	<string name="library_androiddevicenames_authorWebsite">https://github.com/jaredrummler</string>
+	<!-- Library section -->
+	<string name="library_androiddevicenames_libraryName">AndroidDeviceNames</string>
+	<string name="library_androiddevicenames_libraryDescription">A small Android library to get the market name of an Android device</string>
+	<string name="library_androiddevicenames_libraryWebsite">https://github.com/jaredrummler/AndroidDeviceNames</string>
+	<string name="library_androiddevicenames_libraryVersion">1.1.6</string>
+	<!-- OpenSource section -->
+	<string name="library_androiddevicenames_isOpenSource">true</string>
+	<string name="library_androiddevicenames_repositoryLink">https://github.com/jaredrummler/AndroidDeviceNames</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_androiddevicenames_classPath">com.jaredrummler.android</string>
+	<!-- License section -->
+	<string name="library_androiddevicenames_licenseId">apache_2_0</string>
+	<!-- Custom variables section -->
+</resources>

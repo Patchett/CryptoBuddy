@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <string name="define_int_easyrest">year;owner</string>
+    <!-- Author section -->
+    <string name="library_easyrest_author" translatable="false">Francisco Pardo</string>
+    <string name="library_easyrest_authorWebsite" translatable="false">https://github.com/fcopardo</string>
+    <!-- Library section -->
+    <string name="library_easyrest_libraryName" translatable="false">EasyRest</string>
+    <string name="library_easyrest_libraryDescription" translatable="false">EasyRest is an extension to Spring-Android restTemplate that allows making rest calls using generics with built in caching and threading</string>
+    <string name="library_easyrest_libraryWebsite" translatable="false">https://github.com/fcopardo/EasyRest</string>
+    <string name="library_easyrest_libraryVersion" translatable="false">1.4.2</string>
+    <!-- OpenSource section -->
+    <string name="library_easyrest_isOpenSource" translatable="false">true</string>
+    <string name="library_easyrest_repositoryLink" translatable="false">https://github.com/fcopardo/EasyRest</string>
+    <!-- ClassPath for autoDetect section -->
+    <string name="library_easyrest_classPath" translatable="false">com.grizzly.rest</string>
+    <!-- License section -->
+    <string name="library_easyrest_licenseId" translatable="false">apache_2_0</string>
+    <!-- Custom variables section -->
+</resources>

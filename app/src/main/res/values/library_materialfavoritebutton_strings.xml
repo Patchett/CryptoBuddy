@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+	<string name="define_int_materialfavoritebutton">year;owner</string>
+	<!-- Author section -->
+	<string name="library_materialfavoritebutton_author">Ivan Baranov</string>
+	<string name="library_materialfavoritebutton_authorWebsite">https://github.com/IvBaranov</string>
+	<!-- Library section -->
+	<string name="library_materialfavoritebutton_libraryName">Material Favorite Button</string>
+	<string name="library_materialfavoritebutton_libraryDescription">Animated favorite/star/like button</string>
+	<string name="library_materialfavoritebutton_libraryWebsite">https://github.com/IvBaranov/MaterialFavoriteButton</string>
+	<string name="library_materialfavoritebutton_libraryVersion">0.1.4</string>
+	<!-- OpenSource section -->
+	<string name="library_materialfavoritebutton_isOpenSource">true</string>
+	<string name="library_materialfavoritebutton_repositoryLink">https://github.com/IvBaranov/MaterialFavoriteButton</string>
+	<!-- ClassPath for autoDetect section -->
+	<string name="library_materialfavoritebutton_classPath">com.github.ivbaranov.mfb</string>
+	<!-- License section -->
+	<string name="library_materialfavoritebutton_licenseId">apache_2_0</string>
+	<!-- Custom variables section -->
+</resources>
