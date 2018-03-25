@@ -48,6 +48,7 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
     public final static String HOUR = "1h";
     public final static String SORT_SETTING = "sort_setting";
     public AppCompatActivity context;
+    private LibsBuilder libsBuilder;
 
 
     @Override
@@ -59,6 +60,19 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
         setSupportActionBar(mToolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.currency_list_tabs);
         mViewPager = (ViewPager) findViewById(R.id.currency_list_tabs_container);
+        libsBuilder = new LibsBuilder()
+                //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
+                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                .withAboutIconShown(true)
+                .withLicenseShown(true)
+                .withVersionShown(true)
+                .withAboutVersionShownName(true)
+                .withAboutVersionShownCode(true)
+                .withAboutVersionString("Version: " + BuildConfig.VERSION_NAME)
+                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                .withActivityTitle("CryptoBuddy")
+                .withLibraries("easyrest", "materialabout", "androiddevicenames", "customtabs", "togglebuttongroup", "materialfavoritebutton");
+
         TextDrawable t = new TextDrawable(this);
         t.setText("ART");
         t.setTextAlign(Layout.Alignment.ALIGN_CENTER);
@@ -67,7 +81,6 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(t).build();
-
         final Drawer drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(mToolbar)
@@ -86,6 +99,9 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 switch (position) {
+                    case 1:
+                        drawer.closeDrawer();
+                        return true;
                     case 2:
                         drawer.closeDrawer();
                         drawer.setSelection(1);
@@ -99,21 +115,7 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
                     case 4:
                         drawer.closeDrawer();
                         drawer.setSelection(1);
-                        new LibsBuilder()
-                                //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
-                                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-                                .withAboutIconShown(true)
-                                .withLicenseShown(true)
-                                .withVersionShown(true)
-                                .withAboutVersionShownName(true)
-                                .withAboutVersionShownCode(true)
-                                .withAboutVersionString("Version: " + BuildConfig.VERSION_NAME)
-                                .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-                                .withActivityTitle("CryptoBuddy")
-                                .withLibraries("easyrest", "materialabout", "androiddevicenames", "customtabs", "togglebuttongroup", "materialfavoritebutton")
-                                //start the activity
-                                .start(context);
-
+                        libsBuilder.start(context);
                     default:
                         return true;
                 }
