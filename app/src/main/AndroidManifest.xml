@@ -22,6 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name="AboutTheDevActivity"></activity>
+        <activity android:name="AboutLibrariesActivity"></activity>
         <activity android:name=".news.NewsListActivity"></activity>
         <activity android:name=".news.WebViewActivity"
             android:parentActivityName=".news.NewsListActivity">

@@ -13,6 +13,7 @@ import android.text.Layout;
 import android.view.View;
 import android.widget.Toast;
 
+import com.cryptobuddy.ryanbridges.cryptobuddy.AboutLibrariesActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.AboutTheDevActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.TextDrawable;
@@ -93,6 +94,10 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
                         drawer.setSelection(1);
                         startActivity(new Intent(context, AboutTheDevActivity.class));
                         return true;
+                    case 4:
+                        drawer.closeDrawer();
+                        drawer.setSelection(1);
+                        startActivity(new Intent(context, AboutLibrariesActivity.class));
                     default:
                         return true;
                 }
