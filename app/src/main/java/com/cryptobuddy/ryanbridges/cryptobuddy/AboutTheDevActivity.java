@@ -29,7 +29,7 @@ public class AboutTheDevActivity extends AppCompatActivity {
         // TODO: Make a cryptobuddydev email address
         AboutView view = AboutBuilder.with(this)
                 .setPhoto(R.mipmap.oath_pic_edit_cropped)
-                .setCover(R.mipmap.profile_cover)
+                .setCover(R.mipmap.background_material_design)
                 .setName("Ryan Bridges")
                 .setSubTitle("Mobile Developer")
                 .addLinkedInLink("ryan-bridges")
