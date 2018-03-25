@@ -17,11 +17,16 @@ public class AboutTheDevActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DeviceName.DeviceInfo deviceInfo = DeviceName.getDeviceInfo(this);
         Intent helpIntent = new Intent(Intent.ACTION_SEND);
         helpIntent.putExtra(Intent.EXTRA_EMAIL, "cryptobuddydev@gmail.com");
-        helpIntent.putExtra(Intent.EXTRA_SUBJECT, "Support CryptoBuddy - Android");
-        helpIntent.putExtra(Intent.EXTRA_TEXT, "\n\n\n\n\n\n------------------------------\nApp Version: " + BuildConfig.VERSION_NAME + " (" + BuildConfig.VERSION_CODE + ")\nModel: " + DeviceName.getDeviceName());
+        helpIntent.putExtra(Intent.EXTRA_SUBJECT, "CryptoBuddy Support - Android");
+        helpIntent.putExtra(Intent.EXTRA_TEXT, "\n\n\n\n\n\n------------------------------\nApp Version: " + BuildConfig.VERSION_NAME +
+                " (" + BuildConfig.VERSION_CODE + ")\nDevice Market Name: "
+                + deviceInfo.marketName + "\nModel: " + deviceInfo.model +
+                "\nManufacturer: " + deviceInfo.manufacturer);
 
+        // TODO: Make a cryptobuddydev email address
         AboutView view = AboutBuilder.with(this)
                 .setPhoto(R.mipmap.profile_picture)
                 .setCover(R.mipmap.profile_cover)
@@ -41,6 +46,8 @@ public class AboutTheDevActivity extends AppCompatActivity {
                 .addEmailLink("rybridges16@gmail.com")
                 .addFacebookLink("ryan.bridges.37")
                 .addHelpAction(helpIntent)
+                .addUpdateAction()
+                .addFeedbackAction("rybridges16@gmail.com")
                 .build();
 
         setContentView(view);
