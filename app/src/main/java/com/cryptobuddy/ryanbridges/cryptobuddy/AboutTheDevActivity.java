@@ -43,6 +43,7 @@ public class AboutTheDevActivity extends AppCompatActivity {
                 .setWrapScrollView(true)
                 .setLinksAnimated(true)
                 .setShowAsCard(true)
+                .setAppIcon(R.drawable.cbteal_icon)
                 .addEmailLink("rybridges16@gmail.com")
                 .addFacebookLink("ryan.bridges.37")
                 .addHelpAction(helpIntent)
