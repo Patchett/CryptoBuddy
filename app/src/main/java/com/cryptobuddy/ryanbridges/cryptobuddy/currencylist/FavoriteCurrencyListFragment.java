@@ -159,7 +159,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
         setHasOptionsMenu(true);
         this.db = DatabaseHelperSingleton.getInstance(getActivity());
         sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
-        currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_favs_recycler_view);
+        currencyRecyclerView = rootView.findViewById(R.id.currency_favs_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(getActivity()).build();
         currencyRecyclerView.addItemDecoration(divider);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -177,7 +177,7 @@ public class FavoriteCurrencyListFragment extends Fragment implements SwipeRefre
             }
         });
         currencyRecyclerView.setAdapter(adapter);
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.currency_favs_swipe_refresh);
+        swipeRefreshLayout = rootView.findViewById(R.id.currency_favs_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {

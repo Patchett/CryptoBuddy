@@ -150,8 +150,8 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.News));
         mActivity = this;
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout_recycler);
-        recyclerView = (RecyclerView) findViewById(R.id.newsListRecyclerView);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout_recycler);
+        recyclerView = findViewById(R.id.newsListRecyclerView);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(this).build();
         recyclerView.addItemDecoration(divider);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -178,7 +178,8 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.news_refresh_button:
-                getNewsObservable(2, false);
+                swipeRefreshLayout.setRefreshing(true);
+                onRefresh();
                 return true;
             default:
                 finish();

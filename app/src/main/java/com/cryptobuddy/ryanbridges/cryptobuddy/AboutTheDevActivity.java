@@ -34,7 +34,7 @@ public class AboutTheDevActivity extends AppCompatActivity {
                 .setSubTitle("Mobile Developer")
                 .addLinkedInLink("ryan-bridges")
                 .setBrief("Innovator, dreamer, and boundary pusher with a deep passion for mobile app development")
-                .setAppIcon(R.mipmap.ic_launcher)
+                .setAppIcon(R.drawable.cbteal_icon)
                 .setAppName(R.string.app_name)
                 .addGitHubLink("Patchett")
                 .addFiveStarsAction()
@@ -50,9 +50,6 @@ public class AboutTheDevActivity extends AppCompatActivity {
                 .addUpdateAction()
                 .addFeedbackAction("rybridges16@gmail.com")
                 .build();
-
         setContentView(view);
-
     }
-
 }

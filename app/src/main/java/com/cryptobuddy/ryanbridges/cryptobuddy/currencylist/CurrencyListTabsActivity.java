@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.cryptobuddy.ryanbridges.cryptobuddy.AboutTheDevActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.BuildConfig;
+import com.cryptobuddy.ryanbridges.cryptobuddy.DrawerController;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.TextDrawable;
 import com.cryptobuddy.ryanbridges.cryptobuddy.models.rest.CMCCoin;
@@ -34,7 +35,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
  */
 
 public class CurrencyListTabsActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener,
-        FavoriteCurrencyListFragment.AllCoinsListUpdater, AllCurrencyListFragment.FavoritesListUpdater {
+        FavoriteCurrencyListFragment.AllCoinsListUpdater, AllCurrencyListFragment.FavoritesListUpdater, DrawerController {
 
     private SectionsPagerAdapterCurrencyList mSectionsPagerAdapter;
     public ViewPager mViewPager;
@@ -49,17 +50,17 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
     public final static String SORT_SETTING = "sort_setting";
     public AppCompatActivity context;
     private LibsBuilder libsBuilder;
-
+    private Drawer drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_list_tabs);
         context = this;
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_currency_list);
+        mToolbar = findViewById(R.id.toolbar_currency_list);
         setSupportActionBar(mToolbar);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.currency_list_tabs);
-        mViewPager = (ViewPager) findViewById(R.id.currency_list_tabs_container);
+        TabLayout tabLayout = findViewById(R.id.currency_list_tabs);
+        mViewPager = findViewById(R.id.currency_list_tabs_container);
         libsBuilder = new LibsBuilder()
                 //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
                 .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
@@ -81,7 +82,7 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(t).build();
-        final Drawer drawer = new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(mToolbar)
                 .withSelectedItem(1)
@@ -166,6 +167,15 @@ public class CurrencyListTabsActivity extends AppCompatActivity implements ViewP
                 doubleBackToExitPressedOnce = false;
             }
         }, 2000);
+    }
+
+    public void hideHamburger() {
+        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(false);
+    }
+
+    public void showHamburger() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawer.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
     }
 
     public void removeFavorite(CMCCoin coin) {

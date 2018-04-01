@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.cryptobuddy.ryanbridges.cryptobuddy.CustomItemClickListener;
+import com.cryptobuddy.ryanbridges.cryptobuddy.DrawerController;
 import com.cryptobuddy.ryanbridges.cryptobuddy.R;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.CurrencyDetailsTabsActivity;
 import com.cryptobuddy.ryanbridges.cryptobuddy.currencydetails.chartandtable.GraphFragment;
@@ -67,6 +68,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public static boolean searchViewFocused = false;
     private FavoritesListUpdater favsUpdateCallback;
     private SharedPreferences sharedPreferences;
+    private DrawerController drawerController;
 
     public interface FavoritesListUpdater {
         void removeFavorite(CMCCoin coin);
@@ -183,7 +185,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
         searchList = new ArrayList<>();
         // Setup currency list
-        currencyRecyclerView = (RecyclerView) rootView.findViewById(R.id.currency_list_recycler_view);
+        currencyRecyclerView = rootView.findViewById(R.id.currency_list_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(mContext).build();
         currencyRecyclerView.addItemDecoration(divider);
         LinearLayoutManager llm = new LinearLayoutManager(mContext);
@@ -289,6 +291,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
     public void onAttach(Context context) {
         super.onAttach(context);
         this.mContext = context;
+        this.drawerController = (DrawerController) getActivity();
         this.favsUpdateCallback = (FavoritesListUpdater) context;
     }
 
@@ -304,6 +307,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             public void onClick(View v) {
                 searchViewFocused = true;
                 setItemsVisibility(menu, searchItem, false);
+                drawerController.hideHamburger();
             }
         });
         // Detect SearchView close
@@ -312,6 +316,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
             public boolean onClose() {
                 searchViewFocused = false;
                 setItemsVisibility(menu, searchItem, true);
+                drawerController.showHamburger();
                 return false;
             }
         });
