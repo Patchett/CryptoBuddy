@@ -48,10 +48,10 @@ public class NewsView extends ConstraintLayout {
     
     protected void inflateComponents(){
         inflate(getContext(), R.layout.row_news_item, this);
-        articleTitleTextView = (TextView) findViewById(R.id.articleTitle);
-        ageTextView = (TextView) findViewById(R.id.age);
-        articleImageView = (ImageView) findViewById(R.id.articleImage);
-        sourceNameTextView = (TextView) findViewById(R.id.sourceName);
+        articleTitleTextView = findViewById(R.id.articleTitle);
+        ageTextView = findViewById(R.id.age);
+        articleImageView = findViewById(R.id.articleImage);
+        sourceNameTextView = findViewById(R.id.sourceName);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +75,7 @@ public class NewsView extends ConstraintLayout {
         this.newsItem = newsItem;
         if(this.newsItem != null){
             articleTitleTextView.setText(this.newsItem.articleTitle);
-            String publishTimeString = (String) DateUtils.getRelativeTimeSpanString((long) this.newsItem.publishedOn * 1000, System.currentTimeMillis(), MINUTE_IN_MILLIS);
+            String publishTimeString = (String) DateUtils.getRelativeTimeSpanString(this.newsItem.publishedOn * 1000, System.currentTimeMillis(), MINUTE_IN_MILLIS);
             ageTextView.setText(publishTimeString);
             sourceNameTextView.setText(this.newsItem.sourceName);
             Picasso.with(getContext()).load(this.newsItem.imageURL).into(articleImageView);

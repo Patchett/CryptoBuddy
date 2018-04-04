@@ -27,15 +27,15 @@ public class CurrencyDetailsTabsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_currency_details_tabs);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_currency_details);
+        mToolbar = findViewById(R.id.toolbar_currency_details);
         setSupportActionBar(mToolbar);
         String symbol = getIntent().getStringExtra(GraphFragment.ARG_SYMBOL);
         String id = getIntent().getStringExtra(GraphFragment.ARG_ID);
-        mViewPager = (CustomViewPager) findViewById(R.id.currencyTabsViewPager);
+        mViewPager = findViewById(R.id.currencyTabsViewPager);
         mSectionsPagerAdapter = new SectionsPagerAdapterDetails(getSupportFragmentManager(), symbol, id);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
         getSupportActionBar().setTitle(symbol);

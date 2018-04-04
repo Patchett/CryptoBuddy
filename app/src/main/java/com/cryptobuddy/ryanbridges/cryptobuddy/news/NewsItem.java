@@ -32,10 +32,7 @@ public class NewsItem {
         if (articleTitle == null || newsItem.articleTitle == null) {
             return false;
         }
-        if (articleTitle.equals(newsItem.articleTitle)) {
-            return true;
-        }
-        return false;
+        return articleTitle.equals(newsItem.articleTitle);
     }
 
     @Override

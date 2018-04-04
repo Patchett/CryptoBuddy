@@ -204,7 +204,7 @@ public class AllCurrencyListFragment extends Fragment implements SwipeRefreshLay
         });
         currencyRecyclerView.setAdapter(adapter);
         // Setup swipe refresh layout
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.currency_list_swipe_refresh);
+        swipeRefreshLayout = rootView.findViewById(R.id.currency_list_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {

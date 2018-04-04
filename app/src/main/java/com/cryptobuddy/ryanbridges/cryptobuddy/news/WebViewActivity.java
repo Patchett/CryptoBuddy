@@ -23,7 +23,7 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_webview);
+        mToolbar = findViewById(R.id.toolbar_webview);
         setSupportActionBar(mToolbar);
         Intent intent = getIntent();
         String url = intent.getStringExtra("url");
@@ -32,8 +32,8 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        mWebView = (WebView) this.findViewById(R.id.webView);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mWebView = this.findViewById(R.id.webView);
+        mProgressBar = findViewById(R.id.progressBar);
 
         mProgressBar.setMax(100);
         mWebView.setWebChromeClient(new CustomWebChromeClient(this));

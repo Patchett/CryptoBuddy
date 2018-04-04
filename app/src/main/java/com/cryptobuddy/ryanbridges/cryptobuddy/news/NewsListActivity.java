@@ -144,7 +144,7 @@ public class NewsListActivity extends AppCompatActivity implements SwipeRefreshL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_list);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar_news_list);
+        mToolbar = findViewById(R.id.toolbar_news_list);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

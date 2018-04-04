@@ -221,8 +221,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     }
 
     public void getCMCChart() {
-        final TextView percentChangeText = (TextView) rootView.findViewById(R.id.percent_change);
-        final TextView currPriceText = (TextView) rootView.findViewById(R.id.current_price);
+        final TextView percentChangeText = rootView.findViewById(R.id.percent_change);
+        final TextView currPriceText = rootView.findViewById(R.id.current_price);
         lineChart.setEnabled(true);
         lineChart.clear();
         chartProgressBar.setVisibility(View.VISIBLE);
@@ -251,9 +251,9 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
                 }
                 XAxis xAxis = lineChart.getXAxis();
                 xAxis.setValueFormatter(XAxisFormatter);
-                TextView currentPriceTextView = (TextView) rootView.findViewById(R.id.current_price);
+                TextView currentPriceTextView = rootView.findViewById(R.id.current_price);
                 float currPrice = closePrices.get(closePrices.size() - 1).getY();
-                TextView chartDateTextView = (TextView) rootView.findViewById(R.id.graphFragmentDateTextView);
+                TextView chartDateTextView = rootView.findViewById(R.id.graphFragmentDateTextView);
                 chartDateTextView.setText(getFormattedFullDate(closePrices.get(closePrices.size() - 1).getX()));
                 if (tsymbol.equals("USD")) {
                     currentPriceTextView.setText(String.format(getString(R.string.unrounded_usd_chart_price_format), String.valueOf(currPrice)));
@@ -366,63 +366,63 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         String positivePctFormat = getString(R.string.positive_pct_format);
         int negativeRedColor = getResources().getColor(R.color.percentNegativeRed);
         int positiveGreenColor = getResources().getColor(R.color.percentPositiveGreen);
-        TextView nameTextView = (TextView) rootVeiw.findViewById(R.id.tableNameDataTextView);
+        TextView nameTextView = rootVeiw.findViewById(R.id.tableNameDataTextView);
         if (coinObject.getName() == null) {
             nameTextView.setText("N/A");
         } else {
             nameTextView.setText(coinObject.getName());
         }
 
-        TextView priceUSDTextView = (TextView) rootVeiw.findViewById(R.id.tablePriceUSDDataTextView);
+        TextView priceUSDTextView = rootVeiw.findViewById(R.id.tablePriceUSDDataTextView);
         if (coinObject.getPrice_usd() == null) {
             priceUSDTextView.setText("N/A");
         } else {
             priceUSDTextView.setText(String.format(usdFormat, Double.parseDouble(coinObject.getPrice_usd())));
         }
 
-        TextView priceBTCTextView = (TextView) rootVeiw.findViewById(R.id.tablePriceBTCDataTextView);
+        TextView priceBTCTextView = rootVeiw.findViewById(R.id.tablePriceBTCDataTextView);
         if (coinObject.getPrice_btc() == null) {
             priceBTCTextView.setText("N/A");
         } else {
             priceBTCTextView.setText(String.format(getString(R.string.btc_format), coinObject.getPrice_btc()));
         }
 
-        TextView volumeTextView = (TextView) rootVeiw.findViewById(R.id.tableVolUSDDataTextView);
+        TextView volumeTextView = rootVeiw.findViewById(R.id.tableVolUSDDataTextView);
         if (coinObject.getVolume_usd_24h() == null) {
             volumeTextView.setText("N/A");
         } else {
             volumeTextView.setText(String.format(usdFormat, Double.parseDouble(coinObject.getVolume_usd_24h())));
         }
 
-        TextView mktCapTextView = (TextView) rootVeiw.findViewById(R.id.tableMktCapDataTextView);
+        TextView mktCapTextView = rootVeiw.findViewById(R.id.tableMktCapDataTextView);
         if (coinObject.getMarket_cap_usd() == null) {
             mktCapTextView.setText("N/A");
         } else {
             mktCapTextView.setText(String.format(usdFormat, Double.parseDouble(coinObject.getMarket_cap_usd())));
         }
 
-        TextView availSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableAvailableSupplyDataTextView);
+        TextView availSupplyTextView = rootVeiw.findViewById(R.id.tableAvailableSupplyDataTextView);
         if (coinObject.getAvailable_supply() == null) {
             availSupplyTextView.setText("N/A");
         } else {
             availSupplyTextView.setText(rawNumberFormat.format(Double.parseDouble(coinObject.getAvailable_supply())));
         }
 
-        TextView totalSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableTotalSupplyDataTextView);
+        TextView totalSupplyTextView = rootVeiw.findViewById(R.id.tableTotalSupplyDataTextView);
         if (coinObject.getTotal_supply() == null) {
             totalSupplyTextView.setText("N/A");
         } else {
             totalSupplyTextView.setText(rawNumberFormat.format(Double.parseDouble(coinObject.getTotal_supply())));
         }
 
-        TextView maxSupplyTextView = (TextView) rootVeiw.findViewById(R.id.tableMaxSupplyDataTextView);
+        TextView maxSupplyTextView = rootVeiw.findViewById(R.id.tableMaxSupplyDataTextView);
         if (coinObject.getMax_supply() == null) {
             maxSupplyTextView.setText("N/A");
         } else {
             maxSupplyTextView.setText(rawNumberFormat.format(Double.parseDouble(coinObject.getMax_supply())));
         }
 
-        TextView oneHrChangeTextView = (TextView) rootVeiw.findViewById(R.id.table1hrChangeDataTextView);
+        TextView oneHrChangeTextView = rootVeiw.findViewById(R.id.table1hrChangeDataTextView);
         if (coinObject.getPercent_change_1h() == null) {
             oneHrChangeTextView.setText("N/A");
         } else {
@@ -436,7 +436,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
             }
         }
 
-        TextView dayChangeTextView = (TextView) rootVeiw.findViewById(R.id.table24hrChangeDataTextView);
+        TextView dayChangeTextView = rootVeiw.findViewById(R.id.table24hrChangeDataTextView);
         if (coinObject.getPercent_change_24h() == null) {
             dayChangeTextView.setText("N/A");
         } else {
@@ -450,7 +450,7 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
             }
         }
 
-        TextView weekChangeTextView = (TextView) rootVeiw.findViewById(R.id.tableWeekChangeDataTextView);
+        TextView weekChangeTextView = rootVeiw.findViewById(R.id.tableWeekChangeDataTextView);
         if (coinObject.getPercent_change_7d() == null) {
             weekChangeTextView.setText("N/A");
         } else {
@@ -469,18 +469,18 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_graph, container, false);
-        lineChart = (LineChart) rootView.findViewById(R.id.chart);
+        lineChart = rootView.findViewById(R.id.chart);
         chartUSDPriceFormat = NumberFormat.getInstance();
         chartUSDPriceFormat.setMaximumFractionDigits(10);
         setUpChart();
         currencyFormatter = CurrencyFormatterSingleton.getInstance(getContext());
         WindowManager mWinMgr = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         displayWidth = mWinMgr.getDefaultDisplay().getWidth();
-        chartProgressBar = (ProgressBar) rootView.findViewById(R.id.chartProgressSpinner);
-        Button sourceButton = (Button) rootView.findViewById(R.id.sourceButton);
+        chartProgressBar = rootView.findViewById(R.id.chartProgressSpinner);
+        Button sourceButton = rootView.findViewById(R.id.sourceButton);
         sourceButton.setPaintFlags(sourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         sharedPreferences = getContext().getSharedPreferences(SHAREDPREF_SETTINGS, MODE_PRIVATE);
-        Spinner chartCurrencySelector = (Spinner) rootView.findViewById(R.id.chartCurrencySelectSpinnr);
+        Spinner chartCurrencySelector = rootView.findViewById(R.id.chartCurrencySelectSpinnr);
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, getResources().getStringArray(R.array.chart_spinner_options));
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         tsymbol = sharedPreferences.getString(CHART_SPINNER_SETTING, "USD");
@@ -507,8 +507,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
         });
 
         viewPager = (CustomViewPager) container;
-        nestedScrollView = (LockableNestedScrollView) rootView.findViewById(R.id.graphFragmentNestedScrollView);
-        buttonGroup = (SingleSelectToggleGroup) rootView.findViewById(R.id.chart_interval_button_grp);
+        nestedScrollView = rootView.findViewById(R.id.graphFragmentNestedScrollView);
+        buttonGroup = rootView.findViewById(R.id.chart_interval_button_grp);
         cryptoID = getArguments().getString(ARG_ID);
         setDayChecked(Calendar.getInstance());
         buttonGroup.check(R.id.dayButton);
@@ -562,8 +562,8 @@ public class GraphFragment extends Fragment implements OnChartValueSelectedListe
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        TextView currentPrice = (TextView) rootView.findViewById(R.id.current_price);
-        TextView dateTextView = (TextView) rootView.findViewById(R.id.graphFragmentDateTextView);
+        TextView currentPrice = rootView.findViewById(R.id.current_price);
+        TextView dateTextView = rootView.findViewById(R.id.graphFragmentDateTextView);
         if (tsymbol.equals("USD")) {
             currentPrice.setText(String.format(getString(R.string.unrounded_usd_chart_price_format), String.valueOf(e.getY())));
         } else {

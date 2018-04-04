@@ -22,6 +22,6 @@ public class CustomWebChromeClient extends WebChromeClient {
     }
 
     public interface ProgressListener {
-        public void onUpdateProgress(int progressValue);
+        void onUpdateProgress(int progressValue);
     }
 }

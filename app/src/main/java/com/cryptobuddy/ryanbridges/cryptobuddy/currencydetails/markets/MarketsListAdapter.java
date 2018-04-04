@@ -83,10 +83,10 @@ public class MarketsListAdapter extends RecyclerView.Adapter<MarketsListAdapter.
         {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            this.exchangeNameTextView = (TextView) itemLayoutView.findViewById(R.id.exchangeNameTextView);
-            this.volDataTextView = (TextView) itemLayoutView.findViewById(R.id.volDataTextView);
-            this.changeTextView = (TextView) itemLayoutView.findViewById(R.id.changeTextView);
-            this.priceTextView = (TextView) itemLayoutView.findViewById(R.id.priceTextView);
+            this.exchangeNameTextView = itemLayoutView.findViewById(R.id.exchangeNameTextView);
+            this.volDataTextView = itemLayoutView.findViewById(R.id.volDataTextView);
+            this.changeTextView = itemLayoutView.findViewById(R.id.changeTextView);
+            this.priceTextView = itemLayoutView.findViewById(R.id.priceTextView);
             this.listener = listener;
         }
 

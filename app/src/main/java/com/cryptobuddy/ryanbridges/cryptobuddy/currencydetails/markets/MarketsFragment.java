@@ -167,7 +167,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
         rootView = inflater.inflate(R.layout.fragment_markets, container, false);
         symbol = getArguments().getString(ARG_SYMBOL);
         spinnerDivider = rootView.findViewById(R.id.marketSpinnerDivider);
-        marketsSourceButton = (Button) rootView.findViewById(R.id.marketsSourceButton);
+        marketsSourceButton = rootView.findViewById(R.id.marketsSourceButton);
         marketsSourceButton.setPaintFlags(marketsSourceButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         marketsSourceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,8 +178,8 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }
         });
 
-        noMarketsText = (TextView) rootView.findViewById(R.id.noMarketsTextView);
-        marketsRecyclerView = (RecyclerView) rootView.findViewById(R.id.markets_recycler_view);
+        noMarketsText = rootView.findViewById(R.id.noMarketsTextView);
+        marketsRecyclerView = rootView.findViewById(R.id.markets_recycler_view);
         HorizontalDividerItemDecoration divider = new HorizontalDividerItemDecoration.Builder(getActivity()).build();
         marketsRecyclerView.addItemDecoration(divider);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -197,7 +197,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
             }
         });
         marketsRecyclerView.setAdapter(adapter);
-        spinner = (Spinner) rootView.findViewById(R.id.top_pairs_spinner);
+        spinner = rootView.findViewById(R.id.top_pairs_spinner);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -213,7 +213,7 @@ public class MarketsFragment extends Fragment implements SwipeRefreshLayout.OnRe
 
             }
         });
-        swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.markets_swipe_refresh);
+        swipeRefreshLayout = rootView.findViewById(R.id.markets_swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.post(new Runnable() {

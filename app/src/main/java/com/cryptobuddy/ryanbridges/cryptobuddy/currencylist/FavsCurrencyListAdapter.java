@@ -144,16 +144,16 @@ public class FavsCurrencyListAdapter extends RecyclerView.Adapter<FavsCurrencyLi
         {
             super(itemLayoutView);
             itemLayoutView.setOnClickListener(this);
-            rankTextViewFavs = (TextView) itemLayoutView.findViewById(R.id.rankTextViewFavs);
-            currencyListfullNameTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
-            currencyListCurrPriceTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
-            currencyListCoinImageView = (ImageView) itemLayoutView.findViewById(R.id.currencyListCoinImageView);
-            currencyListVolumeTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
-            currencyListMarketcapTextView = (TextView) itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
-            trashButton = (ImageView) itemLayoutView.findViewById(R.id.favsCurrencyListTrashImage);
-            oneHourChangeTextView = (TextView) itemLayoutView.findViewById(R.id.oneHourChangeTextView);
-            dayChangeTextView = (TextView) itemLayoutView.findViewById(R.id.dayChangeTextView);
-            weekChangeTextView = (TextView) itemLayoutView.findViewById(R.id.weekChangeTextView);
+            rankTextViewFavs = itemLayoutView.findViewById(R.id.rankTextViewFavs);
+            currencyListfullNameTextView = itemLayoutView.findViewById(R.id.currencyListfullNameTextView);
+            currencyListCurrPriceTextView = itemLayoutView.findViewById(R.id.currencyListCurrPriceTextView);
+            currencyListCoinImageView = itemLayoutView.findViewById(R.id.currencyListCoinImageView);
+            currencyListVolumeTextView = itemLayoutView.findViewById(R.id.currencyListVolumeTextView);
+            currencyListMarketcapTextView = itemLayoutView.findViewById(R.id.currencyListMarketcapTextView);
+            trashButton = itemLayoutView.findViewById(R.id.favsCurrencyListTrashImage);
+            oneHourChangeTextView = itemLayoutView.findViewById(R.id.oneHourChangeTextView);
+            dayChangeTextView = itemLayoutView.findViewById(R.id.dayChangeTextView);
+            weekChangeTextView = itemLayoutView.findViewById(R.id.weekChangeTextView);
             this.listener = listener;
         }
 
