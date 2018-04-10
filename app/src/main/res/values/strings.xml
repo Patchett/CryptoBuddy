@@ -37,6 +37,7 @@
     <string name="AllTime">All Time</string>
     <string name="action_search">Search</string>
     <string name="action_sort">Sort</string>
+    <string name="action_internet">Browser</string>
     <string name="sort_by">Sort by\u2026</string>
     <string name="noChartDataString">No Chart Data :(</string>
     <string name="noMarketsString">No Markets Available :(</string>

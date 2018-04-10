@@ -2,9 +2,13 @@ package com.cryptobuddy.ryanbridges.cryptobuddy.news;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -18,6 +22,7 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
     private WebView mWebView;
     private ProgressBar mProgressBar;
     private Toolbar mToolbar;
+    private String url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +31,7 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
         mToolbar = findViewById(R.id.toolbar_webview);
         setSupportActionBar(mToolbar);
         Intent intent = getIntent();
-        String url = intent.getStringExtra("url");
+        url = intent.getStringExtra("url");
         String title = intent.getStringExtra("title");
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,8 +61,6 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
 
             }
         });
-
-//        mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.loadUrl(url);
         mProgressBar.setProgress(0);
     }
@@ -71,7 +74,19 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_webview_menu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.internet_button:
+                CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                CustomTabsIntent customTabsIntent = builder.build();
+                customTabsIntent.launchUrl(this, Uri.parse(url));
+        }
         finish();
         return true;
     }
