@@ -7,7 +7,7 @@ android {
         applicationId "com.cryptobuddy.ryanbridges.cryptobuddy"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 8
+        versionCode 9
         versionName "5.3.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

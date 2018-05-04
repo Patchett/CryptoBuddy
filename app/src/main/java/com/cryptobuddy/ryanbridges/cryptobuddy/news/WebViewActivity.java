@@ -86,13 +86,15 @@ public class WebViewActivity extends AppCompatActivity implements CustomWebChrom
                 CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                 CustomTabsIntent customTabsIntent = builder.build();
                 customTabsIntent.launchUrl(this, Uri.parse(url));
+                return true;
             case R.id.share_button:
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
                 String shareBody = "Check out this article I found on CryptoBuddy: " + this.url;
-                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Cryptocurrency Article");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Cryptocurrency Article");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                 startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                return true;
         }
         finish();
         return true;
