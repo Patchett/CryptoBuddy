@@ -7,8 +7,8 @@ android {
         applicationId "com.cryptobuddy.ryanbridges.cryptobuddy"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 7
-        versionName "5.3.2"
+        versionCode 8
+        versionName "5.3.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     packagingOptions {
@@ -62,7 +62,7 @@ dependencies {
     compile "com.android.support:design:$supportLibVersion"
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support.constraint:constraint-layout:1.1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.google.code.gson:gson:2.8.1'
     compile('com.github.fcopardo:easyrest:v1.4.2@aar') {
