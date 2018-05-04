@@ -6,6 +6,11 @@
     <item android:id="@+id/internet_button"
         android:title="@string/action_internet"
         android:icon="@drawable/ic_internet_white_24dp"
+        app:showAsAction="ifRoom"/>
+
+    <item android:id="@+id/share_button"
+        android:title="@string/action_share"
+        android:icon="@drawable/ic_share_white_24dp"
         app:showAsAction="always"/>
 
 </menu>
